@@ -1,0 +1,14 @@
+name: oh-sense-backend
+run-name: ${{ github.actor }} is learning GitHub Actions
+on: [push]
+jobs:
+  check-bats-version:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4.0.0
+        with:
+          node-version: '20.x'
+      - run: npm install -g bats
+      - run: bats -v
+          
