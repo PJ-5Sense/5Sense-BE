@@ -12,5 +12,5 @@ export const ormConfig: DataSourceOptions = {
   username: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASS,
   database: process.env.DATABASE_DB,
-  entities: [`src/database/migrations/**/*.entity.ts`],
+  entities: [`${PROJECT_SRC_ROOT}/**/*.entity.ts`],
 };

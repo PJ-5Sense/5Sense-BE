@@ -7,12 +7,52 @@ npm install --save @nestjs/typeorm typeorm mysql2
 npm i --save @nestjs/config
 npm i --save class-validator class-transformer
 
-# typeorm migration
+# typeorm migration & seed With typeorm-extension package
+
+**[Click Github [typeorm-extension] Click](https://github.com/tada5hi/typeorm-extension)**
+
+### Database Schema Create
 
 ```
-"typeorm": "node -r tsconfig-paths/register -r ts-node/register ./node_modules/typeorm/cli",
-"typeorm:migration": "node -r tsconfig-paths/register -r ts-node/register ./node_modules/typeorm/cli -d ./src/database/configs/migration.config.ts",
-"migration:create": "npm run typeorm migration:create ./src/database/migrations/$npm_config_name",
-"migration:generate": "npm run typeorm:migration migration:generate ./src/database/migrations/$npm_config_name",
-"migration:run": "npm run typeorm:migration migration:run",
+npm run db:create
+```
+
+### Database Schema drop
+
+```
+npm run db:drop
+```
+
+### seed 생성
+
+```
+ npm run seed:create --name=<이름>
+
+ # EX. npm run seed:create --name=user -> 1700746434744-user
+```
+
+### seed 실행
+
+```
+ npm run seed:run --name=<이름>
+
+ # EX. npm run seed:create --name=user -> 1700746434744-user
+```
+
+### database migration generate
+
+```
+npm run migration:generate
+```
+
+### database migration run
+
+```
+npm run migration:run
+```
+
+### database migration revert
+
+```
+npm run migration:revert
 ```
