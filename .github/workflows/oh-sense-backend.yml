@@ -2,7 +2,7 @@ name: oh-sense-backend
 run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
 jobs:
-  check-bats-version:
+  nestjs-ci-cd:
     runs-on: ubuntu-20.04
     steps:
       - name: checkout
