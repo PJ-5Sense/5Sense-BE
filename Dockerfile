@@ -1,17 +1,25 @@
-FROM node:18
+FROM node:20-alpine AS builder
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package* ./
 
-RUN npm install
+RUN npm install --silent
 
 COPY . .
 
-COPY .env .env.development ./
-
 RUN npm run build
 
-EXPOSE 3001
+RUN npm prune --production
 
-CMD ["npm", "run", "start:prod"]
+# 개발 과정에서만 사용되었던 의존성 패키지들을 삭제함 - 이슈가 생길 시 우선파악할 요소
+RUN wget https://gobinaries.com/tj/node-prune --output-document - | /bin/sh && node-prune
+
+FROM node:20-alpine
+
+WORKDIR /usr/src/app
+
+COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+
+CMD [ "node", "./dist/main" ]
