@@ -1,8 +1,10 @@
-name: oh-sense-backend
+name: dev-trigger
 
 run-name: ${{ github.actor }} is learning GitHub Actions
 
-on: [push]
+on:
+  pull_request:
+    branches: [dev]
 jobs:
   nestjs-ci-cd:
     runs-on: ubuntu-20.04
