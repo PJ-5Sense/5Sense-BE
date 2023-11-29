@@ -1,10 +1,10 @@
-name: oh-sense-backend
+name: dev-trigger
 
 run-name: ${{ github.actor }} is learning GitHub Actions
 
 on:
-  push:
-    branches: [main]
+  pull_request:
+    branches: [dev]
 jobs:
   nestjs-ci-cd:
     runs-on: ubuntu-20.04
@@ -19,7 +19,3 @@ jobs:
         run: npm ci
       - name: run test
         run: npm test
-# 시나리오
-# main에 pull requests가 들어오면 해당 브렌치로 이동해서 테스트를 진행한다.
-# 테스트가 완료가 되어야 병합이 가능하다.
-# 병합 이벤트가 생기면 배포를 진행한다.

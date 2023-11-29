@@ -1,0 +1,21 @@
+name: mian-trigger
+
+run-name: ${{ github.actor }} is learning GitHub Actions
+
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  nestjs-ci-cd:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup node
+        uses: actions/setup-node@v4.0.0
+        with:
+          node-version: 20.x
+      - name: install dependencies
+        run: npm ci
+      - name: run test
+        run: npm test
