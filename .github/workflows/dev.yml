@@ -8,7 +8,7 @@ on:
   pull_request:
     branches: [dev]
 jobs:
-  Build:
+  Dev-Testing:
     runs-on: ubuntu-20.04
     steps:
       - name: checkout
