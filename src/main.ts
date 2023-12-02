@@ -13,7 +13,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  console.log(process.env);
+
   await app.listen(configService.get('APP.port'));
 }
 bootstrap();
