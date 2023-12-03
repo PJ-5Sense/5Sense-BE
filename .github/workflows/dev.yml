@@ -8,6 +8,9 @@ on:
 jobs:
   Dev-Testing:
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: checkout
         uses: actions/checkout@v4
