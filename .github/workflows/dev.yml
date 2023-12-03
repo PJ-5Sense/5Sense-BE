@@ -44,7 +44,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_HOOK_URL }}
           status: ${{ job.status }}
-          content: 'Hey <@492562319726084113>'
+          content: "There's a problem with your code. Check it out! <@492562319726084113>"
           title: 'Testing'
           description: 'If you want to check the results of the test, click the link above'
           color: 0xff0000

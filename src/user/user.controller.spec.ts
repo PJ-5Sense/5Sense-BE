@@ -15,7 +15,6 @@ describe('UserController', () => {
   });
 
   it('should be defined', () => {
-    throw new Error('s');
     expect(controller).toBeDefined();
   });
 });
