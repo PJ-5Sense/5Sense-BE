@@ -40,7 +40,7 @@ jobs:
 
       - name: Send Discord noti
         uses: sarisia/actions-status-discord@v1
-        if: always()
+        if: failure()
         with:
           webhook: ${{ secrets.DISCORD_HOOK_URL }}
           status: ${{ job.status }}
@@ -53,5 +53,6 @@ jobs:
           nocontext: true
           description: |
             # [Triggered by ${{ github.actor }}]
-            If you want to check the results of the test, click the link above
+            **If you want to check the results of the test, click the link above**
+
             > ${{github.repository}}
