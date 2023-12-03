@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 20.x
       - name: install dependencies
-        run: npm ci
+        run: npm i
       - name: Run Unit Test
         run: npm run test:report
       - name: Test Report
