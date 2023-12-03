@@ -18,8 +18,7 @@ jobs:
       - name: install dependencies
         run: npm ci
       - name: Run Unit Test
-        run: npm test
-
+        run: npm test:report
       - name: Test Report
         uses: dorny/test-reporter@v1
         # run this step even if previous step failed
