@@ -17,5 +17,16 @@ jobs:
           node-version: 20.x
       - name: install dependencies
         run: npm ci
-      - name: run test
+      - name: Run Unit Test
         run: npm test
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        # run this step even if previous step failed
+        if: success() || failure()
+        with:
+          name: test-results
+          path: junit.xml
+          fail-on-error: 'false'
+          reporter: jest-junit # Format of test results
+          token: ${{ secrets.GITHUB_TOKEN }}
