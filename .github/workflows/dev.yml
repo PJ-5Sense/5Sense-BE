@@ -4,10 +4,12 @@ run-name: ${{ github.actor }} is learning GitHub Actions
 
 on:
   pull_request:
-    branches: [dev]
+    branches:
+      - dev
 jobs:
   Dev-Testing:
     runs-on: ubuntu-20.04
+    permissions: write-all
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -16,6 +18,16 @@ jobs:
         with:
           node-version: 20.x
       - name: install dependencies
-        run: npm ci
-      - name: run test
-        run: npm test
+        run: npm i
+      - name: Run Unit Test
+        run: npm run test:report
+      - name: Test Report
+        uses: dorny/test-reporter@v1.7.0
+        # run this step even if previous step failed
+        if: success() || failure()
+        with:
+          name: test-results
+          path: junit.xml
+          fail-on-error: 'false'
+          reporter: jest-junit # Format of test results
+          token: ${{ secrets.GITHUB_TOKEN }}

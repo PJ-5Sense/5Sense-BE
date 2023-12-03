@@ -2,10 +2,11 @@
 
 # install history
 
-npm install typeorm-extension --save
-npm install --save @nestjs/typeorm typeorm mysql2
+npm i --save typeorm-extension
+npm i --save @nestjs/typeorm typeorm mysql2
 npm i --save @nestjs/config
 npm i --save class-validator class-transformer
+npm i --dev jest-junit
 
 # typeorm migration & seed With typeorm-extension package
 
