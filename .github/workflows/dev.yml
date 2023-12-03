@@ -51,4 +51,4 @@ jobs:
           url: '${{ steps.test-report.outputs.url_html }}'
           username: GitHub Actions Bot
           avatar_url: ${{ secrets.DISCORD_AVATAR_URL }}
-          nodetail: true
+          nocontext: true
