@@ -4,15 +4,12 @@ run-name: ${{ github.actor }} is learning GitHub Actions
 
 on:
   pull_request:
-    branches: [dev]
+    branches:
+      - dev
 jobs:
   Dev-Testing:
     runs-on: ubuntu-20.04
-    permissions:
-      id-token: write
-      contents: read
-      issues: write
-      pull-requests: write
+    permissions: write-all
     steps:
       - name: checkout
         uses: actions/checkout@v4
