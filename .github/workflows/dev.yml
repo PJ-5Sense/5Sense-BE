@@ -16,15 +16,19 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+
       - name: setup node
         uses: actions/setup-node@v4.0.0
         with:
           node-version: 20.x
+
       - name: install dependencies
         run: npm i
       - name: Run Unit Test
         run: npm run test:report
+
       - name: Test Report
+        id: test-report
         uses: dorny/test-reporter@v1.7.0
         # run this step even if previous step failed
         if: success() || failure()
@@ -34,3 +38,21 @@ jobs:
           fail-on-error: 'false'
           reporter: jest-junit # Format of test results
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Test Report URL
+        run: |
+          echo "Test Report URL: ${{ steps.test-report.outputs.check_run_html }}"
+        if: always()
+
+      - name: Send Discord noti
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_HOOK_URL }}
+          status: ${{ job.status }}
+          content: 'Hey <@492562319726084113>'
+          title: 'Testing'
+          description: 'NestJS Testing with jest'
+          color: 0x0000ff
+          url: 'https://github.com/sarisia/actions-status-discord'
+          username: GitHub Actions Bot
