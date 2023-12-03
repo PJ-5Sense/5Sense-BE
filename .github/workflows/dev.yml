@@ -51,6 +51,4 @@ jobs:
           username: GitHub Actions Bot
           avatar_url: ${{ secrets.DISCORD_AVATAR_URL }}
           nocontext: true
-          description: |
-          '[Triggered by `${{ github.actor }}`], 
-          If you want to check the results of the test, click the link above'
+          description: '[Triggered by `${{ github.actor }}`]\nIf you want to check the results of the test, click the link above'
