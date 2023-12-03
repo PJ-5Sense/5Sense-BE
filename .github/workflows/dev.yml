@@ -39,11 +39,6 @@ jobs:
           reporter: jest-junit # Format of test results
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get Test Report URL
-        run: |
-          echo "Test Report URL: ${{ steps.test-report.outputs.check_run_html }}"
-        if: always()
-
       - name: Send Discord noti
         uses: sarisia/actions-status-discord@v1
         if: always()
@@ -54,5 +49,5 @@ jobs:
           title: 'Testing'
           description: 'NestJS Testing with jest'
           color: 0x0000ff
-          url: 'https://github.com/sarisia/actions-status-discord'
+          url: '${{ steps.test-report.outputs.url_html }}'
           username: GitHub Actions Bot
