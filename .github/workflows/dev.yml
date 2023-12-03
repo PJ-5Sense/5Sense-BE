@@ -46,9 +46,9 @@ jobs:
           status: ${{ job.status }}
           content: "There's a problem with your code. Check it out! <@492562319726084113>"
           title: 'Testing from ${{github.head_ref}}'
-          description: 'If you want to check the results of the test, click the link above'
           color: 0xff0000
           url: '${{ steps.test-report.outputs.url_html }}'
           username: GitHub Actions Bot
           avatar_url: ${{ secrets.DISCORD_AVATAR_URL }}
           nocontext: true
+          description: 'Triggered by ${{ github.actor }}, If you want to check the results of the test, click the link above'
