@@ -52,6 +52,6 @@ jobs:
           avatar_url: ${{ secrets.DISCORD_AVATAR_URL }}
           nocontext: true
           description: |
+            # [Triggered by ${{ github.actor }}]
+            If you want to check the results of the test, click the link above
             > ${{github.repository}}
-            # [`Triggered by ${{ github.actor }}`]
-            ## If you want to check the results of the test, click the link above
