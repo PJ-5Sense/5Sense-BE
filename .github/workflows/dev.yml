@@ -40,14 +40,15 @@ jobs:
 
       - name: Send Discord noti
         uses: sarisia/actions-status-discord@v1
-        if: failure()
+        if: always()
         with:
           webhook: ${{ secrets.DISCORD_HOOK_URL }}
           status: ${{ job.status }}
           content: "There's a problem with your code. Check it out! <@492562319726084113>"
-          title: 'Testing'
+          title: 'Testing from ${{github.head_ref}}'
           description: 'If you want to check the results of the test, click the link above'
           color: 0xff0000
           url: '${{ steps.test-report.outputs.url_html }}'
           username: GitHub Actions Bot
           avatar_url: ${{ secrets.DISCORD_AVATAR_URL }}
+          nodetail: true
