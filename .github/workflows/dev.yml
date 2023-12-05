@@ -1,7 +1,5 @@
 name: Dev trigger
 
-run-name: ${{ github.actor }} is learning GitHub Actions
-
 on:
   pull_request:
     branches:
