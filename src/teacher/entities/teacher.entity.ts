@@ -1,14 +1,15 @@
 import { CenterEntity } from 'src/center/entities/center.entity';
 import { HardDeleteBaseEntity } from 'src/database/base.entity';
 import { LessonEntity } from 'src/lesson/entities/lesson.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity({ name: 'teacher' })
 export class TeacherEntity extends HardDeleteBaseEntity {
-  @ManyToOne(() => CenterEntity, center => center.teachers)
+  @ManyToOne(() => CenterEntity, center => center.teachers, { nullable: false })
+  @JoinColumn({ name: 'center_id' })
   center: CenterEntity;
 
-  @OneToMany(() => LessonEntity, lessons => lessons.teachers)
+  @OneToMany(() => LessonEntity, lessons => lessons.teacher)
   lessons: LessonEntity[];
 
   @Column({ comment: '강사 이름' })

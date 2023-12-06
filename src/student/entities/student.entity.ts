@@ -1,11 +1,12 @@
 import { CenterEntity } from 'src/center/entities/center.entity';
 import { HardDeleteBaseEntity } from 'src/database/base.entity';
-import { LessonRegistration } from 'src/lesson-registration/entities/lesson-student.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { LessonRegistration } from 'src/lesson-registration/entities/lesson-registration.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity({ name: 'student' })
 export class StudentEntity extends HardDeleteBaseEntity {
-  @ManyToOne(() => CenterEntity, center => center.students)
+  @ManyToOne(() => CenterEntity, center => center.students, { nullable: false })
+  @JoinColumn({ name: 'center_id', referencedColumnName: 'id' })
   center: CenterEntity;
 
   @OneToMany(() => LessonRegistration, lessonRegistration => lessonRegistration.student)

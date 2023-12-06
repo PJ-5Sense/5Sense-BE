@@ -1,15 +1,17 @@
 import { HardDeleteBaseEntity } from 'src/database/base.entity';
 import { LessonEntity } from 'src/lesson/entities/lesson.entity';
 import { StudentEntity } from 'src/student/entities/student.entity';
-import { ChildEntity, Column, Entity, ManyToOne, TableInheritance } from 'typeorm';
+import { ChildEntity, Column, Entity, JoinColumn, ManyToOne, TableInheritance } from 'typeorm';
 
 @Entity({ name: 'lesson_registration' })
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })
 export class LessonRegistration extends HardDeleteBaseEntity {
-  @ManyToOne(() => StudentEntity, student => student.lessonRegistrations)
+  @ManyToOne(() => StudentEntity, student => student.lessonRegistrations, { nullable: false })
+  @JoinColumn({ name: 'student_id', referencedColumnName: 'id' })
   student: StudentEntity;
 
-  @ManyToOne(() => LessonEntity, lesson => lesson.lessonRegistrations)
+  @ManyToOne(() => LessonEntity, lesson => lesson.lessonRegistrations, { nullable: false })
+  @JoinColumn({ name: 'lesson_id', referencedColumnName: 'id' })
   lesson: LessonEntity;
 
   @Column({ name: 'payment_status', comment: '결제 상태' })

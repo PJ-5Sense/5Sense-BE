@@ -10,7 +10,7 @@ import { StudentModule } from './student/student.module';
 import { LessonModule } from './lesson/lesson.module';
 
 @Module({
-  imports: [EnvironmentModule, DatabaseModule, UserModule, CenterModule, TeacherModule, StudentModule, LessonModule],
+  imports: [EnvironmentModule, DatabaseModule, UserModule, LessonModule, CenterModule, StudentModule, TeacherModule],
   controllers: [AppController],
   providers: [AppService],
 })

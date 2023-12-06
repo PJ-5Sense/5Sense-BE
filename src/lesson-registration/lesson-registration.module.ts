@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { LessonRegistrationService } from './lesson-student.service';
+import { LessonRegistrationService } from './lesson-registration.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LessonRegistration } from './entities/lesson-student.entity';
+import { LessonRegistration } from './entities/lesson-registration.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([LessonRegistration])],
