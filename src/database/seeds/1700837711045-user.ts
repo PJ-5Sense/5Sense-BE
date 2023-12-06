@@ -1,15 +1,12 @@
-import { User } from 'src/user/entities/user.entity';
+import { UserEntity } from 'src/user/entities/user.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 
 export default class Alw1700837711045 implements Seeder {
   track = false;
 
-  public async run(
-    dataSource: DataSource,
-    factoryManager: SeederFactoryManager,
-  ): Promise<any> {
-    const userFactory = factoryManager.get(User);
+  public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<any> {
+    const userFactory = factoryManager.get(UserEntity);
     // save 1 factory generated entity, to the database
     await userFactory.save();
 
