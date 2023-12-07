@@ -5,13 +5,6 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity({ name: 'teacher' })
 export class TeacherEntity extends HardDeleteBaseEntity {
-  @ManyToOne(() => CenterEntity, center => center.teachers, { nullable: false })
-  @JoinColumn({ name: 'center_id' })
-  center: CenterEntity;
-
-  @OneToMany(() => LessonEntity, lessons => lessons.teacher)
-  lessons: LessonEntity[];
-
   @Column({ comment: '강사 이름' })
   name: string;
 
@@ -23,4 +16,11 @@ export class TeacherEntity extends HardDeleteBaseEntity {
 
   @Column({ comment: '프로필 이미지' })
   profile: string;
+
+  @ManyToOne(() => CenterEntity, center => center.id, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @JoinColumn({ name: 'center_id' })
+  center: number;
+
+  @OneToMany(() => LessonEntity, lesson => lesson.teacher)
+  lessons: LessonEntity[];
 }

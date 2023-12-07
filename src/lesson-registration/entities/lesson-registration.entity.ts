@@ -6,13 +6,13 @@ import { ChildEntity, Column, Entity, JoinColumn, ManyToOne, TableInheritance } 
 @Entity({ name: 'lesson_registration' })
 @TableInheritance({ column: { type: 'varchar', name: 'type' } })
 export class LessonRegistration extends HardDeleteBaseEntity {
-  @ManyToOne(() => StudentEntity, student => student.lessonRegistrations, { nullable: false })
-  @JoinColumn({ name: 'student_id', referencedColumnName: 'id' })
-  student: StudentEntity;
+  @ManyToOne(() => StudentEntity, student => student.id, { nullable: false })
+  @JoinColumn({ name: 'student_id' })
+  student: number;
 
-  @ManyToOne(() => LessonEntity, lesson => lesson.lessonRegistrations, { nullable: false })
-  @JoinColumn({ name: 'lesson_id', referencedColumnName: 'id' })
-  lesson: LessonEntity;
+  @ManyToOne(() => LessonEntity, lesson => lesson.id, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @JoinColumn({ name: 'lesson_id' })
+  lesson: number;
 
   @Column({ name: 'payment_status', comment: '결제 상태' })
   paymentStatus: string;

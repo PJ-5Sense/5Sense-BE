@@ -3,7 +3,7 @@ import { LessonEntity } from 'src/lesson/entities/lesson.entity';
 import { StudentEntity } from 'src/student/entities/student.entity';
 import { TeacherEntity } from 'src/teacher/entities/teacher.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
 @Entity({ name: 'center' })
 export class CenterEntity extends SoftDeleteBaseEntity {
@@ -19,16 +19,16 @@ export class CenterEntity extends SoftDeleteBaseEntity {
   @Column({ comment: '프로필 이미지, 없을 시 기본 이미지 배정' })
   profile: string;
 
-  @ManyToOne(() => UserEntity, user => user.id, { nullable: false })
+  @OneToOne(() => UserEntity, user => user.id, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
-  user: UserEntity;
+  user: number;
 
-  @OneToMany(() => StudentEntity, students => students.center)
+  @OneToMany(() => StudentEntity, student => student.center, { cascade: true })
   students: StudentEntity[];
 
-  @OneToMany(() => TeacherEntity, teachers => teachers.center)
+  @OneToMany(() => TeacherEntity, teacher => teacher.center, { cascade: true })
   teachers: TeacherEntity[];
 
-  @OneToMany(() => LessonEntity, lessons => lessons.center)
+  @OneToMany(() => LessonEntity, lesson => lesson.center, { cascade: true })
   lessons: LessonEntity[];
 }

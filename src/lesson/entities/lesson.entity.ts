@@ -1,5 +1,6 @@
 import { CenterEntity } from 'src/center/entities/center.entity';
 import { SoftDeleteBaseEntity } from 'src/database/base.entity';
+import { LessonCategoryEntity } from 'src/lesson-category/entities/lesson-category.entity';
 import { LessonRegistration } from 'src/lesson-registration/entities/lesson-registration.entity';
 import { TeacherEntity } from 'src/teacher/entities/teacher.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
@@ -27,14 +28,17 @@ export class LessonEntity extends SoftDeleteBaseEntity {
   @Column({ name: 'repeat_date', comment: '반복 요일 ex) 월, 화, 수' })
   repeatDate: string;
 
-  @ManyToOne(() => CenterEntity, center => center.lessons, { nullable: false })
-  @JoinColumn({ name: 'center_id', referencedColumnName: 'id' })
-  center: CenterEntity;
+  @ManyToOne(() => CenterEntity, center => center.id, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @JoinColumn({ name: 'center_id' })
+  center: number;
 
-  @ManyToOne(() => TeacherEntity, teacher => teacher.lessons, { nullable: false })
-  @JoinColumn({ name: 'teacher_id', referencedColumnName: 'id' })
-  teacher: TeacherEntity;
+  @ManyToOne(() => TeacherEntity, teacher => teacher.id, { nullable: false })
+  @JoinColumn({ name: 'teacher_id' })
+  teacher: number;
 
-  @OneToMany(() => LessonRegistration, lessonRegistration => lessonRegistration.lesson)
+  @OneToMany(() => LessonRegistration, lessonRegistration => lessonRegistration.lesson, { cascade: true })
   lessonRegistrations: LessonRegistration[];
+
+  @OneToMany(() => LessonCategoryEntity, lessonCategory => lessonCategory.lesson, { cascade: true })
+  lessonCategories: LessonCategoryEntity[];
 }
