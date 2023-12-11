@@ -16,11 +16,11 @@ export default class Category1702021555297 implements Seeder {
       ['프로듀싱', '작곡 & 작사', '디제잉'],
     ];
 
-    const repository = dataSource.getRepository(CategoryEntity);
-    for (let i = 0; i < major.length; i++) await repository.save({ name: major[i] });
+    const categoryFactory = dataSource.getRepository(CategoryEntity);
+    for (let i = 0; i < major.length; i++) await categoryFactory.save({ name: major[i] });
     for (let i = 0; i < sub.length; i++) {
       for (let j = 0; j < sub[i].length; j++) {
-        await repository.save({ name: sub[i][j], parentId: i + 1 });
+        await categoryFactory.save({ name: sub[i][j], parentId: i + 1 });
       }
     }
   }

@@ -12,10 +12,8 @@ export class AuthController {
     return this.authService.create(createAuthDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
+  @Post('kakao/login')
+  async kakaoLog1in(@Body() kakaoDto: { code: string; state: string }) {}
 
   @Get(':id')
   findOne(@Param('id') id: string) {

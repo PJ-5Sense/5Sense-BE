@@ -32,7 +32,7 @@ export default () => {
     type: process.env.DATABASE_TYPE,
     username: process.env.DATABASE_USER,
     logging: isProduction,
-    // synchronize: isProduction,
+    synchronize: isProduction,
   };
 
   ValidateConfig(env, DatabaseConfig);

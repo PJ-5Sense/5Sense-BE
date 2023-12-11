@@ -1,10 +1,12 @@
 import { HardDeleteBaseEntity } from 'src/database/base.entity';
 import { LessonEntity } from 'src/lesson/entities/lesson.entity';
 import { StudentEntity } from 'src/student/entities/student.entity';
+import { LessonType } from 'src/lesson/types/lesson.type';
 import { ChildEntity, Column, Entity, JoinColumn, ManyToOne, TableInheritance } from 'typeorm';
+import { PaymentStatus } from 'src/lesson/types/lesson-payment-status.type';
 
 @Entity({ name: 'lesson_registration' })
-@TableInheritance({ column: { type: 'varchar', name: 'type' } })
+@TableInheritance({ column: { type: 'enum', enum: LessonType, name: 'type' } })
 export class LessonRegistration extends HardDeleteBaseEntity {
   @ManyToOne(() => StudentEntity, student => student.id, { nullable: false })
   @JoinColumn({ name: 'student_id' })
@@ -14,11 +16,14 @@ export class LessonRegistration extends HardDeleteBaseEntity {
   @JoinColumn({ name: 'lesson_id' })
   lesson: number;
 
-  @Column({ name: 'payment_status', comment: '결제 상태' })
-  paymentStatus: string;
+  @Column({ name: 'payment_status', type: 'enum', enum: PaymentStatus, comment: '결제 상태' })
+  paymentStatus: PaymentStatus;
+
+  @Column({ type: 'enum', enum: LessonType, comment: '결제 상태' })
+  type: LessonType;
 }
 
-@ChildEntity()
+@ChildEntity({ type: LessonType.DURATION })
 export class PeriodLesson extends LessonRegistration {
   @Column({
     name: 'start_date',
@@ -31,7 +36,7 @@ export class PeriodLesson extends LessonRegistration {
   endDate: string;
 }
 
-@ChildEntity()
+@ChildEntity(LessonType.SESSION)
 export class SessionLesson extends LessonRegistration {
   @Column({ name: 'total_times', comment: '총 회수, 추가로 연장하면 회수가 결제한 금액의 회수만큼 늘어남' })
   totalTimes: string;
@@ -39,3 +44,7 @@ export class SessionLesson extends LessonRegistration {
   @Column({ name: 'used_times', comment: '총 회수에서 몇회 소진했는지 기록' })
   usedTimes: string;
 }
+
+// 클래스 - 기간, 회차반
+// 기간반 학생 등록
+// 회차반 학생 등록

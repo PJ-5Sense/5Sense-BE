@@ -1,13 +1,13 @@
-import { CenterEntity } from 'src/center/entities/center.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
+import { TeacherEntity } from 'src/teacher/entities/teacher.entity';
 
-export default class Center1701866900068 implements Seeder {
+export class Teacher1702050683984 implements Seeder {
   track = false;
 
   public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<any> {
-    const centerFactory = factoryManager.get(CenterEntity);
+    const teacherFactory = factoryManager.get(TeacherEntity);
 
-    await centerFactory.saveMany(10);
+    await teacherFactory.saveMany(10);
   }
 }
