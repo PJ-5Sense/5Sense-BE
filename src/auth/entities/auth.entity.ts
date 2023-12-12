@@ -1,14 +1,15 @@
 import { SoftDeleteBaseEntity } from 'src/database/base.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { SocialLoginType } from '../types/social.type';
 
 @Entity({ name: 'auth' })
 export class AuthEntity extends SoftDeleteBaseEntity {
   @Column({ name: 'social_id' })
   socialId: string;
 
-  @Column({ name: 'social_type' })
-  socialType: string;
+  @Column({ type: 'enum', enum: SocialLoginType, name: 'social_type' })
+  socialType: SocialLoginType;
 
   @Column({ name: 'social_access_token' })
   socialAccessToken: string;

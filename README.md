@@ -8,6 +8,7 @@ npm i --save @nestjs/typeorm typeorm mysql2
 npm i --save @nestjs/config
 npm i --save class-validator class-transformer
 npm i --dev jest-junit
+npm i axios
 
 # Github npm docs
 
