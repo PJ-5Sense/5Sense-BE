@@ -22,11 +22,10 @@
     "test:e2e": "NODE_ENV=test jest --config ./test/jest-e2e.json",
     "typeorm": "node -r tsconfig-paths/register -r ts-node/register ./node_modules/typeorm/cli",
     "typeorm:migration": "node -r tsconfig-paths/register -r ts-node/register ./node_modules/typeorm/cli -d ./src/database/configs/migration.config.ts",
-    "migration:create": "npm run typeorm migration:create ./src/database/migrations/$npm_config_name",
     "migration:generate": "npm run typeorm:migration migration:generate ./src/database/migrations/$npm_config_name",
     "migration:run": "npm run typeorm:migration migration:run",
     "migration:revert": "npm run typeorm:migration migration:revert",
-    "db:create": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create -d ./src/database/configs/migration.config.ts",
+    "db:create": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs db:create -d ./src/database/configs/migration.config.ts",
     "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d ./src/database/configs/migration.config.ts",
     "seed:create": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:create --name ./src/database/seeds/$npm_config_name.ts",
     "seed:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/configs/seeder.config.ts --name ./src/database/seeds/$npm_config_name.ts"
@@ -35,9 +34,11 @@
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^9.0.0",
+    "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/typeorm": "^10.0.1",
+    "axios": "^1.6.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "jest-junit": "^16.0.0",
@@ -49,6 +50,7 @@
     "typeorm-extension": "^3.1.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.3.1",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",

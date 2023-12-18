@@ -1,26 +1,25 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { SocialType } from 'src/auth/types/social.type';
+import { CreateUser } from './dto/create-user.dto';
+import { UserEntity } from './entities/user.entity';
+import { IUserService } from './user.service.interface';
+import { IUserDao, USER_DAO } from './dao/user.dao.interface';
 
 @Injectable()
-export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+export class UserService implements IUserService {
+  constructor(@Inject(USER_DAO) private readonly userDao: IUserDao) {}
+  /**
+   * 유저 정보를 성공적으로 삽입하면 UserEntity를 리턴함
+   * (UserEntity를 Controller의 Response로 사용하지 않도록 주의 및 확인 필요)
+   *
+   * @param user
+   * @returns UserEntity
+   */
+  async create(user: CreateUser): Promise<UserEntity> {
+    return await this.userDao.create(user);
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async findOneBySocialId(socialId: string, socialType: SocialType) {
+    return await this.userDao.findOneBySocialId(socialId, socialType);
   }
 }
