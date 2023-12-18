@@ -1,26 +1,24 @@
 import { IsString } from 'class-validator';
 import ValidateConfig from '../environment.validator';
 
-export class KakaoSocialConfig {
+export class KaKaoConfig {
   @IsString()
-  KAKAO_CLIENT_ID: string;
+  client_id: string;
 
   @IsString()
-  KAKAO_CLIENT_SECRET: string;
+  client_secret: string;
 
   @IsString()
-  CALLBACK_URL: string;
+  redirect_uri: string;
 }
 export default () => {
   const env = {
-    KAKAO_CLIENT_ID: process.env.KAKAO_CLIENT_ID,
-    KAKAO_CLIENT_SECRET: process.env.KAKAO_CLIENT_SECRET,
-    CALLBACK_URL: process.env.CALLBACK_URL,
+    client_id: process.env.KAKAO_CLIENT_ID,
+    client_secret: process.env.KAKAO_CLIENT_SECRET,
+    redirect_uri: process.env.CALLBACK_URL,
   };
 
-  ValidateConfig(env, KakaoSocialConfig);
+  ValidateConfig(env, KaKaoConfig);
 
-  return {
-    KAKAO: env,
-  };
+  return { KAKAO: env };
 };

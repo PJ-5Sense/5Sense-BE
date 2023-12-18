@@ -2,8 +2,7 @@ import { SoftDeleteBaseEntity } from 'src/database/base.entity';
 import { LessonEntity } from 'src/lesson/entities/lesson.entity';
 import { StudentEntity } from 'src/student/entities/student.entity';
 import { TeacherEntity } from 'src/teacher/entities/teacher.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity({ name: 'center' })
 export class CenterEntity extends SoftDeleteBaseEntity {
@@ -18,10 +17,6 @@ export class CenterEntity extends SoftDeleteBaseEntity {
 
   @Column({ comment: '프로필 이미지, 없을 시 기본 이미지 배정' })
   profile: string;
-
-  @OneToOne(() => UserEntity, user => user.id, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
-  user: number;
 
   @OneToMany(() => StudentEntity, student => student.center, { cascade: true })
   students: StudentEntity[];

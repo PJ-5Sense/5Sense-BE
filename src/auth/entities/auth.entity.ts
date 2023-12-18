@@ -1,26 +1,26 @@
-import { SoftDeleteBaseEntity } from 'src/database/base.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
-import { SocialLoginType } from '../types/social.type';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn } from 'typeorm';
+import { SocialType } from '../types/social.type';
 
 @Entity({ name: 'auth' })
-export class AuthEntity extends SoftDeleteBaseEntity {
-  @Column({ name: 'social_id' })
+export class AuthEntity {
+  @PrimaryColumn({ name: 'social_id' })
   socialId: string;
 
-  @Column({ type: 'enum', enum: SocialLoginType, name: 'social_type' })
-  socialType: SocialLoginType;
+  @Column({ type: 'enum', enum: SocialType, name: 'social_type' })
+  socialType: SocialType;
 
-  @Column({ name: 'social_access_token' })
+  @Column({ name: 'social_access_token', nullable: true })
   socialAccessToken: string;
 
-  @Column({ name: 'social_refresh_token' })
+  @Column({ name: 'social_refresh_token', nullable: true })
   socialRefreshToken: string;
 
-  @Column({ name: 'app_refresh_token' })
+  @Column({ name: 'app_refresh_token', nullable: true })
   appRefreshToken: string;
 
-  @OneToOne(() => UserEntity, user => user.id, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
-  user: number;
+  @CreateDateColumn({ name: 'created_date' })
+  createdDate: Date;
+
+  @DeleteDateColumn({ name: 'deleted_date' })
+  deletedDate: Date;
 }

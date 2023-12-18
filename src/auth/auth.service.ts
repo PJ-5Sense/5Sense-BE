@@ -1,71 +1,86 @@
-import { AuthDao } from './dao/auth.dao';
-import { Injectable } from '@nestjs/common';
-import { SocialLoginType } from './types/social.type';
-import { KakaoSocialConfig } from 'src/environment/values/kakao.config';
-import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
-import { UserService } from 'src/user/user.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { SocialType } from './types/social.type';
+import { JwtService } from '@nestjs/jwt';
+import { KakaoLoginStrategy } from './strategies/kakao-login.strategy';
+import { SocialLoginStrategy } from './strategies/social-login-strategy.interface';
+import { IUserService, USER_SERVICE } from 'src/user/user.service.interface';
+import { IAuthService } from './auth.service.interface';
+import { IAuthDao } from './dao/auth.dao.interface';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements IAuthService {
+  private strategies: Map<string, SocialLoginStrategy>;
+
   constructor(
-    private readonly configService: ConfigService,
-    private readonly authDao: AuthDao,
-    private readonly userService: UserService,
-  ) {}
-  async socialLogin(type: SocialLoginType, code: string, state: string | null) {
-    try {
-      const { KAKAO_CLIENT_ID, CALLBACK_URL, KAKAO_CLIENT_SECRET }: KakaoSocialConfig = this.configService.get('KAKAO');
-      // 토큰 받기
-      const KaKaoData = {
-        grant_type: 'authorization_code',
-        client_id: KAKAO_CLIENT_ID,
-        redirect_uri: CALLBACK_URL,
-        state,
-        code,
-        client_secret: KAKAO_CLIENT_SECRET,
-      };
+    @Inject(USER_SERVICE) private readonly userService: IUserService,
+    @Inject(USER_SERVICE) private readonly authDao: IAuthDao,
+    private readonly jwtService: JwtService,
+    private readonly kakaoStrategy: KakaoLoginStrategy,
+  ) {
+    this.strategies = new Map([
+      [SocialType.Kakao, this.kakaoStrategy],
+      // [SocialType.Naver, this.naverStrategy],
+      // [SocialType.Google, this.googleStrategy],
+    ]);
+  }
 
-      const response = (await axios.post('https://kauth.kakao.com/oauth/token', KaKaoData, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      })) as any;
-      const KakaoToken = response.data.access_token;
-
-      const userInfo = (await axios.get('https://kapi.kakao.com/v2/user/me', {
-        headers: {
-          Authorization: `Bearer ${KakaoToken}`,
-        },
-      })) as any;
-      console.log(userInfo.data.id);
-      console.log(userInfo.data.profile.thumbnail_image_url);
-      console.log(userInfo.data.kakao_account.profile.nickname);
-      console.log(userInfo.data.kakao_account.email);
-      console.log(userInfo.data);
-
-      const exsitUser = await this.authDao.findOneBySocialId(userInfo.data.id);
-      // 토큰 받은 후 유저 정보 받기
-      console.log(exsitUser);
-      if (!exsitUser) {
-        await this.userService.create({
-          profile: userInfo.data.profile.thumbnail_image_url,
-          name: userInfo.data.kakao_account.profile.nickname,
-          email: userInfo.data.kakao_account.email,
-          phone: null,
-        });
-      } else {
-        console.log('이미 존재하지않는데 무슨이링겨?');
-      }
-      // 유저 정보 받기 하고 유저정보 확인(로그인? 회원가입?)
-      // state값도 유저정보에 저장하며 유저 정보에 state 넘겨주기
-      // redirect front URL?state='wqeuqwekja'
-      const data = { accessToken: 'af', refreshToken: 'rf' };
-      return data;
-    } catch (e) {
-      console.log(e);
-
-      return 'fail';
+  async socialLogin(
+    provider: SocialType,
+    code: string,
+    state: string,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const strategy = this.strategies.get(provider);
+    if (!strategy) {
+      throw new Error(`Unsupported social login provider: ${provider}`);
     }
+
+    const socialLoginResponse = await strategy.login(code, state);
+    let user = await this.userService.findOneBySocialId(socialLoginResponse.socialUserInfo.socialId, SocialType.Kakao);
+
+    if (!user) {
+      await this.authDao.createOrUpdate({
+        socialId: socialLoginResponse.socialUserInfo.socialId,
+        socialType: socialLoginResponse.socialUserInfo.socialType,
+        socialAccessToken: null,
+        socialRefreshToken: null,
+        appRefreshToken: null,
+      });
+
+      user = await this.userService.create({
+        profile: socialLoginResponse.socialUserInfo.profile,
+        name: socialLoginResponse.socialUserInfo.name,
+        email: socialLoginResponse.socialUserInfo.email,
+        socialId: socialLoginResponse.socialUserInfo.socialId,
+        centerId: null,
+        phone: null,
+      });
+    }
+
+    const { accessToken, refreshToken } = await this.generateJWtToken({
+      userId: user.id,
+      socialId: socialLoginResponse.socialUserInfo.socialId,
+      centerId: user.centerId,
+    });
+
+    await this.authDao.createOrUpdate({
+      socialId: socialLoginResponse.socialUserInfo.socialId,
+      socialAccessToken: socialLoginResponse.accessToken,
+      socialRefreshToken: socialLoginResponse.refreshToken,
+      appRefreshToken: refreshToken,
+      socialType: socialLoginResponse.socialUserInfo.socialType,
+    });
+
+    return { accessToken, refreshToken };
+  }
+
+  async generateJWtToken(payload: {
+    userId: number;
+    socialId: string;
+    centerId: number;
+  }): Promise<{ accessToken: string; refreshToken: string }> {
+    const accessToken = await this.jwtService.signAsync(payload);
+    const refreshToken = await this.jwtService.signAsync(payload, { expiresIn: '7d' });
+
+    return { accessToken, refreshToken };
   }
 }

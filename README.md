@@ -9,6 +9,7 @@ npm i --save @nestjs/config
 npm i --save class-validator class-transformer
 npm i --dev jest-junit
 npm i axios
+npm install --save @nestjs/jwt
 
 # Github npm docs
 

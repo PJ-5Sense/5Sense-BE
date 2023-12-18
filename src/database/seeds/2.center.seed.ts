@@ -15,7 +15,7 @@ export default class Center1701866900068 implements Seeder {
       center.address = `${faker.location.state()} ${faker.location.city()} ${faker.location.street()} ${faker.location.secondaryAddress()}`;
       center.mainPhone = '010' + faker.string.numeric(8);
       center.profile = faker.image.url();
-      center.user = i + 1;
+      // center.user = i + 1;
 
       await centerFactory.save(center);
     }

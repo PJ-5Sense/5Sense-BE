@@ -1,5 +1,5 @@
-export enum SocialLoginType {
-  KAKAO = 'kakao',
-  GOOGLE = 'google',
-  NAVER = 'naver',
+export enum SocialType {
+  Kakao = 'kakao',
+  Google = 'google',
+  Naver = 'naver',
 }

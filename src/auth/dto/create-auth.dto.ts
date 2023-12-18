@@ -1,9 +1,13 @@
-import { IsOptional, IsString } from 'class-validator';
+import { SocialType } from '../types/social.type';
 
-export class socialLoginDto {
-  @IsString()
-  code: string;
+export class CreateAuthDto {
+  socialId: string;
 
-  @IsOptional()
-  state: string;
+  socialType: SocialType;
+
+  socialAccessToken: string;
+
+  socialRefreshToken: string;
+
+  appRefreshToken: string;
 }
