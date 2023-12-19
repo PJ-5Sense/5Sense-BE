@@ -5,7 +5,7 @@ import { KakaoLoginStrategy } from './strategies/kakao-login.strategy';
 import { SocialLoginStrategy } from './strategies/social-login-strategy.interface';
 import { IUserService, USER_SERVICE } from 'src/user/user.service.interface';
 import { IAuthService } from './auth.service.interface';
-import { IAuthDao } from './dao/auth.dao.interface';
+import { AUTH_DAO, IAuthDao } from './dao/auth.dao.interface';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -13,7 +13,7 @@ export class AuthService implements IAuthService {
 
   constructor(
     @Inject(USER_SERVICE) private readonly userService: IUserService,
-    @Inject(USER_SERVICE) private readonly authDao: IAuthDao,
+    @Inject(AUTH_DAO) private readonly authDao: IAuthDao,
     private readonly jwtService: JwtService,
     private readonly kakaoStrategy: KakaoLoginStrategy,
   ) {
