@@ -37,7 +37,7 @@ export class AuthService implements IAuthService {
     }
 
     const socialLoginResponse = await strategy.login(code, state);
-    let user = await this.userService.findOneBySocialId(socialLoginResponse.socialUserInfo.socialId, SocialType.Kakao);
+    let user = await this.userService.findOneBySocialId(socialLoginResponse.socialUserInfo.socialId, provider);
 
     if (!user) {
       await this.authDao.createOrUpdate({
