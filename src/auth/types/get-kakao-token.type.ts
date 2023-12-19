@@ -1,5 +1,5 @@
 // https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#request-token
-export type KaKaoRequireData = {
+export type KakaoRequireData = {
   grant_type: string;
   code: string;
   state: string;

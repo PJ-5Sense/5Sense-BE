@@ -1,4 +1,4 @@
-import { CreateAuthDto } from '../dto/create-auth.dto';
+import { CreateAuthDto } from '../types/create-auth.dto';
 import { AuthEntity } from '../entities/auth.entity';
 import { SocialType } from '../types/social.type';
 

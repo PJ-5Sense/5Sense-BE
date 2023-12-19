@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { KakaoLoginStrategy } from './strategies/kakao-login.strategy';
 import { AUTH_SERVICE } from './auth.service.interface';
 import { AUTH_DAO } from './dao/auth.dao.interface';
+import { GoogleLoginStrategy } from './strategies/google-login.strategy';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AUTH_DAO } from './dao/auth.dao.interface';
     { provide: AUTH_SERVICE, useClass: AuthService },
     { provide: AUTH_DAO, useClass: AuthDao },
     KakaoLoginStrategy,
+    GoogleLoginStrategy,
   ],
 })
 export class AuthModule {}

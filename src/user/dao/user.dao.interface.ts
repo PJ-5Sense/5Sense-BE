@@ -1,5 +1,5 @@
 import { SocialType } from 'src/auth/types/social.type';
-import { CreateUser } from '../dto/create-user.dto';
+import { CreateUser } from '../types/create-user.type';
 import { UserEntity } from '../entities/user.entity';
 
 export interface IUserDao {

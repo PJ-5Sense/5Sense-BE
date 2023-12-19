@@ -1,6 +1,6 @@
 import { SocialType } from 'src/auth/types/social.type';
 import { UserEntity } from './entities/user.entity';
-import { CreateUser } from './dto/create-user.dto';
+import { CreateUser } from './types/create-user.type';
 
 // social-login-strategy.interface.ts
 export interface IUserService {
