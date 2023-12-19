@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthEntity } from '../entities/auth.entity';
 import { Repository } from 'typeorm';
-import { CreateAuthDto } from '../dto/create-auth.dto';
+import { CreateAuthDto } from '../types/create-auth.dto';
 import { SocialType } from '../types/social.type';
 import { IAuthDao } from './auth.dao.interface';
 

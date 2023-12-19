@@ -1,6 +1,6 @@
-import { SocialType } from '../types/social.type';
+import { SocialType } from './social.type';
 
-export class CreateAuthDto {
+export type CreateAuthDto = {
   socialId: string;
 
   socialType: SocialType;
@@ -10,4 +10,4 @@ export class CreateAuthDto {
   socialRefreshToken: string;
 
   appRefreshToken: string;
-}
+};

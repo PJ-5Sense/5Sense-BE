@@ -6,21 +6,23 @@ import { SocialLoginStrategy } from './strategies/social-login-strategy.interfac
 import { IUserService, USER_SERVICE } from 'src/user/user.service.interface';
 import { IAuthService } from './auth.service.interface';
 import { AUTH_DAO, IAuthDao } from './dao/auth.dao.interface';
+import { GoogleLoginStrategy } from './strategies/google-login.strategy';
 
 @Injectable()
 export class AuthService implements IAuthService {
-  private strategies: Map<string, SocialLoginStrategy>;
+  private strategies: Map<SocialType, SocialLoginStrategy>;
 
   constructor(
     @Inject(USER_SERVICE) private readonly userService: IUserService,
     @Inject(AUTH_DAO) private readonly authDao: IAuthDao,
     private readonly jwtService: JwtService,
     private readonly kakaoStrategy: KakaoLoginStrategy,
+    private readonly googleStrategy: GoogleLoginStrategy,
   ) {
-    this.strategies = new Map([
+    this.strategies = new Map<SocialType, SocialLoginStrategy>([
       [SocialType.Kakao, this.kakaoStrategy],
       // [SocialType.Naver, this.naverStrategy],
-      // [SocialType.Google, this.googleStrategy],
+      [SocialType.Google, this.googleStrategy],
     ]);
   }
 
