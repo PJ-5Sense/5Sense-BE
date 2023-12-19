@@ -1,13 +1,11 @@
 import { SocialLogin } from './../types/social-login.type';
-// kakao-login.strategy.ts
 import { ConfigService } from '@nestjs/config';
 import { SocialLoginStrategy } from './social-login-strategy.interface';
 import { Injectable } from '@nestjs/common';
 import { KaKaoConfig } from 'src/environment/values/kakao.config';
-import { KaKaoRequireData } from '../types/get-kakao-token.type';
+import { KakaoRequireData } from '../types/get-kakao-token.type';
 import axios from 'axios';
 import { SocialType } from '../types/social.type';
-// 다른 필요한 import 구문들...
 
 @Injectable()
 export class KakaoLoginStrategy implements SocialLoginStrategy {
@@ -33,7 +31,7 @@ export class KakaoLoginStrategy implements SocialLoginStrategy {
   private async getKakaoToken(code: string, state: string): Promise<{ accessToken: string; refreshToken: string }> {
     const { client_id, client_secret, redirect_uri }: KaKaoConfig = this.configService.get('KAKAO');
 
-    const kaKaoRequireData: KaKaoRequireData = {
+    const kakaoRequireData: KakaoRequireData = {
       grant_type: 'authorization_code',
       state,
       code,
@@ -42,7 +40,7 @@ export class KakaoLoginStrategy implements SocialLoginStrategy {
       redirect_uri,
     };
 
-    const KaKaoToken = (await axios.post('https://kauth.kakao.com/oauth/token', kaKaoRequireData, {
+    const KaKaoToken = (await axios.post('https://kauth.kakao.com/oauth/token', kakaoRequireData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
