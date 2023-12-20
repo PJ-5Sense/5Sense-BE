@@ -1,7 +1,8 @@
 import { SocialType } from './social.type';
 export type SocialUserInfo = {
   socialId: string;
-  email: string;
+  email: string | null;
+  phone: string | null;
   profile: string;
   name: string;
   socialType: SocialType;

@@ -7,6 +7,7 @@ import { IUserService, USER_SERVICE } from 'src/user/user.service.interface';
 import { IAuthService } from './auth.service.interface';
 import { AUTH_DAO, IAuthDao } from './dao/auth.dao.interface';
 import { GoogleLoginStrategy } from './strategies/google-login.strategy';
+import { NaverLoginStrategy } from './strategies/naver-login.strategy';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -18,10 +19,11 @@ export class AuthService implements IAuthService {
     private readonly jwtService: JwtService,
     private readonly kakaoStrategy: KakaoLoginStrategy,
     private readonly googleStrategy: GoogleLoginStrategy,
+    private readonly naverStrategy: NaverLoginStrategy,
   ) {
     this.strategies = new Map<SocialType, SocialLoginStrategy>([
       [SocialType.Kakao, this.kakaoStrategy],
-      // [SocialType.Naver, this.naverStrategy],
+      [SocialType.Naver, this.naverStrategy],
       [SocialType.Google, this.googleStrategy],
     ]);
   }

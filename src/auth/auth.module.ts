@@ -12,6 +12,7 @@ import { KakaoLoginStrategy } from './strategies/kakao-login.strategy';
 import { AUTH_SERVICE } from './auth.service.interface';
 import { AUTH_DAO } from './dao/auth.dao.interface';
 import { GoogleLoginStrategy } from './strategies/google-login.strategy';
+import { NaverLoginStrategy } from './strategies/naver-login.strategy';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { GoogleLoginStrategy } from './strategies/google-login.strategy';
     { provide: AUTH_DAO, useClass: AuthDao },
     KakaoLoginStrategy,
     GoogleLoginStrategy,
+    NaverLoginStrategy,
   ],
 })
 export class AuthModule {}
