@@ -28,7 +28,7 @@ export class GoogleLoginStrategy implements SocialLoginStrategy {
   private async getToken(code: string, state: string) {
     const { client_id, client_secret, redirect_uri }: GoogleConfig = this.configService.get('GOOGLE');
 
-    const GoogleToken = (await axios.post(
+    const googleToken = (await axios.post(
       `https://oauth2.googleapis.com/token?` +
         `code=${code}&` +
         `grant_type=authorization_code&` +
@@ -44,12 +44,19 @@ export class GoogleLoginStrategy implements SocialLoginStrategy {
       },
     )) as { data: { access_token: string; refresh_token: string } };
 
-    return { accessToken: GoogleToken.data.access_token, refreshToken: GoogleToken.data.refresh_token };
+    return { accessToken: googleToken.data.access_token, refreshToken: googleToken.data.refresh_token };
   }
 
+  /**
+   * 구글 엑세스 토큰을 이용해 유저 정보를 받아 리턴하는 함수
+   *
+   * @param googleAccessToken 구글에서 제공하는 엑세스 토큰
+   * @returns
+   */
   private async getUserInfo(googleAccessToken: string): Promise<{
     socialId: string;
-    email: string;
+    email: string | null;
+    phone: string | null;
     profile: string;
     name: string;
     socialType: SocialType;
@@ -69,9 +76,10 @@ export class GoogleLoginStrategy implements SocialLoginStrategy {
 
     return {
       socialId: googleUser.data.id.toString(),
-      email: googleUser.data.email,
+      email: googleUser.data?.email,
       name: googleUser.data.name,
       profile: googleUser.data.picture,
+      phone: null,
       socialType: SocialType.Google,
     };
   }

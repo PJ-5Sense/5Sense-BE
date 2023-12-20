@@ -9,7 +9,6 @@ import { SocialType } from '../types/social.type';
 
 @Injectable()
 export class KakaoLoginStrategy implements SocialLoginStrategy {
-  // 필요한 서비스 주입...
   constructor(private readonly configService: ConfigService) {}
 
   async login(code: string, state: string): Promise<SocialLogin> {
@@ -40,13 +39,13 @@ export class KakaoLoginStrategy implements SocialLoginStrategy {
       redirect_uri,
     };
 
-    const KaKaoToken = (await axios.post('https://kauth.kakao.com/oauth/token', kakaoRequireData, {
+    const kakaoToken = (await axios.post('https://kauth.kakao.com/oauth/token', kakaoRequireData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     })) as { data: { access_token: string; refresh_token: string } };
 
-    return { accessToken: KaKaoToken.data.access_token, refreshToken: KaKaoToken.data.refresh_token };
+    return { accessToken: kakaoToken.data.access_token, refreshToken: kakaoToken.data.refresh_token };
   }
 
   /**
@@ -59,7 +58,8 @@ export class KakaoLoginStrategy implements SocialLoginStrategy {
    */
   private async getUserInfo(kakaoAccessToken: string): Promise<{
     socialId: string;
-    email: string;
+    email: string | null;
+    phone: string | null;
     profile: string;
     name: string;
     socialType: SocialType;
@@ -77,9 +77,10 @@ export class KakaoLoginStrategy implements SocialLoginStrategy {
 
     return {
       socialId: kakaoUser.data.id.toString(),
-      email: kakaoUser.data.kakao_account.email,
+      email: kakaoUser.data.kakao_account?.email,
       name: kakaoUser.data.kakao_account.profile.nickname,
       profile: kakaoUser.data.kakao_account.profile.thumbnail_image_url,
+      phone: null,
       socialType: SocialType.Kakao,
     };
   }
