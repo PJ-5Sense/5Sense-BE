@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { SocialType } from './types/social.type';
 import { JwtService } from '@nestjs/jwt';
 import { KakaoLoginStrategy } from './strategies/kakao-login.strategy';
@@ -65,11 +65,16 @@ export class AuthService implements IAuthService {
       );
   }
 
-  async generateJWtToken(payload: JwtPayload): Promise<{ accessToken: string; refreshToken: string }> {
+  private async generateAccessToken(payload: JwtPayload): Promise<string> {
     const accessToken = await this.jwtService.signAsync({ ...payload }, { ...this.jwtOptions.access });
+
+    return accessToken;
+  }
+
+  private async generateRefreshToken(payload: JwtPayload): Promise<string> {
     const refreshToken = await this.jwtService.signAsync({ ...payload }, { ...this.jwtOptions.refresh });
 
-    return { accessToken, refreshToken };
+    return refreshToken;
   }
 
   private async processUserSocialDataAndGenerateTokens(socialLoginInfo: SocialLogin, userAgent: string) {
@@ -80,10 +85,11 @@ export class AuthService implements IAuthService {
       phone: socialLoginInfo.socialUserInfo.phone,
     });
 
-    const { accessToken, refreshToken } = await this.generateJWtToken({
+    const refreshToken = await this.generateRefreshToken({
       userId: Number(newUser.id),
       socialId: socialLoginInfo.socialUserInfo.socialId,
       centerId: null,
+      socialType: socialLoginInfo.socialUserInfo.socialType,
     });
 
     await this.authDao.createOrUpdate({
@@ -96,7 +102,15 @@ export class AuthService implements IAuthService {
       userAgent,
     });
 
-    return { accessToken, refreshToken };
+    return {
+      accessToken: await this.generateAccessToken({
+        userId: Number(newUser.id),
+        socialId: socialLoginInfo.socialUserInfo.socialId,
+        centerId: null,
+        socialType: socialLoginInfo.socialUserInfo.socialType,
+      }),
+      refreshToken,
+    };
   }
 
   private async registerUserAndGenerateTokens(
@@ -106,10 +120,11 @@ export class AuthService implements IAuthService {
     socialRefreshToken: string,
   ) {
     // 센터는 하나만 등록되도록 되어있던가, 여러개의 센터일 경우 센터를 선택해서 로그인 하도록 해야함 ( 12/24 )
-    const { accessToken, refreshToken } = await this.generateJWtToken({
+    const refreshToken = await this.generateRefreshToken({
       userId: Number(userSocialInfo.userId),
       socialId: userSocialInfo.socialId,
       centerId: null,
+      socialType: userSocialInfo.socialType,
     });
 
     const socialData: CreateAuthDto = {
@@ -126,6 +141,31 @@ export class AuthService implements IAuthService {
 
     await this.authDao.createOrUpdate(socialData);
 
-    return { accessToken, refreshToken };
+    return {
+      accessToken: await this.generateAccessToken({
+        userId: Number(userSocialInfo.userId),
+        socialId: userSocialInfo.socialId,
+        centerId: null,
+        socialType: userSocialInfo.socialType,
+      }),
+      refreshToken,
+    };
+  }
+
+  async reissueAccessToken(userAgent: string, refreshToken: string, jwtInfo: JwtPayload) {
+    const userSocialData = await this.authDao.findOneBySocialId(jwtInfo.socialId, jwtInfo.socialType);
+    const [type, token] = refreshToken.split(' ');
+    if (type !== 'Bearer' || userSocialData.appRefreshToken !== token || userAgent !== userSocialData.userAgent) {
+      throw new UnauthorizedException('Invalid Refresh Token, you need to check');
+    }
+
+    return {
+      accessToken: await this.generateAccessToken({
+        userId: Number(userSocialData.userId),
+        socialId: userSocialData.socialId,
+        centerId: null,
+        socialType: userSocialData.socialType,
+      }),
+    };
   }
 }
