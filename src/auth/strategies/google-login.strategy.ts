@@ -2,9 +2,9 @@ import { ConfigService } from '@nestjs/config';
 import { SocialLoginStrategy } from './social-login-strategy.interface';
 import { Injectable } from '@nestjs/common';
 import { SocialLogin } from '../types/social-login.type';
-import { GoogleConfig } from 'src/environment/values/google.config';
 import { SocialType } from '../types/social.type';
 import axios from 'axios';
+import { SocialConfig } from '../types/social-config.type';
 
 @Injectable()
 export class GoogleLoginStrategy implements SocialLoginStrategy {
@@ -26,7 +26,7 @@ export class GoogleLoginStrategy implements SocialLoginStrategy {
    * @returns 인가코드를 이용하여 발급받은 accessToken, refreshToken을 리턴함
    */
   private async getToken(code: string, state: string) {
-    const { client_id, client_secret, redirect_uri }: GoogleConfig = this.configService.get('GOOGLE');
+    const { client_id, client_secret, redirect_uri }: SocialConfig = this.configService.get('GOOGLE_CONFIG');
 
     const googleToken = (await axios.post(
       `https://oauth2.googleapis.com/token?` +

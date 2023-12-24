@@ -2,6 +2,8 @@ import { Controller, Post, Body, Inject, Param, ParseEnumPipe, BadRequestExcepti
 import { socialLoginDto } from './dto/request/kakao-login.dto';
 import { SocialType } from './types/social.type';
 import { AUTH_SERVICE, IAuthService } from './auth.service.interface';
+import { Public } from 'src/common/decorator/public.decorator';
+import { ReqHeader } from 'src/common/decorator/user-agent.decorator';
 
 const customPipeErrorMessage = {
   exceptionFactory: () =>
@@ -14,15 +16,17 @@ const customPipeErrorMessage = {
 export class AuthController {
   constructor(@Inject(AUTH_SERVICE) private readonly authService: IAuthService) {}
 
+  @Public()
   @Post(':socialType/login')
   async kakaoLogin(
     @Param('socialType', new ParseEnumPipe(SocialType, customPipeErrorMessage))
     socialType: SocialType,
-    @Body() kakaoDto: socialLoginDto,
+    @Body() socialDto: socialLoginDto,
+    @ReqHeader('user-agent') userAgent: string,
   ) {
-    const { code, state } = kakaoDto;
+    const { code, state } = socialDto;
 
-    const data = await this.authService.socialLogin(socialType, code, state);
+    const data = await this.authService.socialLogin(socialType, code, state, userAgent);
     return { success: true, message: `Success ${socialType} Social Login`, data };
   }
 }

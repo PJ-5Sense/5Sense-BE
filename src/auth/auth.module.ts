@@ -6,8 +6,6 @@ import { AuthEntity } from './entities/auth.entity';
 import { AuthDao } from './dao/auth.dao';
 import { UserModule } from 'src/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
-import { EnvironmentModule } from 'src/environment/environment.module';
-import { ConfigService } from '@nestjs/config';
 import { KakaoLoginStrategy } from './strategies/kakao-login.strategy';
 import { AUTH_SERVICE } from './auth.service.interface';
 import { AUTH_DAO } from './dao/auth.dao.interface';
@@ -15,17 +13,7 @@ import { GoogleLoginStrategy } from './strategies/google-login.strategy';
 import { NaverLoginStrategy } from './strategies/naver-login.strategy';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([AuthEntity]),
-    UserModule,
-    JwtModule.registerAsync({
-      imports: [EnvironmentModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        return configService.get('JWT');
-      },
-    }),
-  ],
+  imports: [TypeOrmModule.forFeature([AuthEntity]), UserModule, JwtModule.register({ global: true })],
   controllers: [AuthController],
   providers: [
     { provide: AUTH_SERVICE, useClass: AuthService },

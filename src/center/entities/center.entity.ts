@@ -2,7 +2,8 @@ import { SoftDeleteBaseEntity } from 'src/database/base.entity';
 import { LessonEntity } from 'src/lesson/entities/lesson.entity';
 import { StudentEntity } from 'src/student/entities/student.entity';
 import { TeacherEntity } from 'src/teacher/entities/teacher.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { UserEntity } from 'src/user/entities/user.entity';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity({ name: 'center' })
 export class CenterEntity extends SoftDeleteBaseEntity {
@@ -26,4 +27,10 @@ export class CenterEntity extends SoftDeleteBaseEntity {
 
   @OneToMany(() => LessonEntity, lesson => lesson.center, { cascade: true })
   lessons: LessonEntity[];
+
+  @Column({ name: 'user_id', type: 'bigint', unsigned: true, nullable: true })
+  userId: number;
+
+  @ManyToOne(() => UserEntity, user => user.id, { nullable: false, onDelete: 'CASCADE' })
+  user: UserEntity;
 }

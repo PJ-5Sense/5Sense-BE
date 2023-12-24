@@ -6,6 +6,7 @@ export interface IAuthService {
     provider: SocialType,
     code: string,
     state: string,
+    userAgent: string,
   ): Promise<{ accessToken: string; refreshToken: string }>;
   generateJWtToken(payload: {
     userId: number;
