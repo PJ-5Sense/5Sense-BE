@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { SocialLogin } from '../types/social-login.type';
 import { SocialType } from '../types/social.type';
 import axios from 'axios';
-import { NaverConfig } from 'src/environment/values/naver.config';
+import { SocialConfig } from '../types/social-config.type';
 
 @Injectable()
 export class NaverLoginStrategy implements SocialLoginStrategy {
@@ -26,7 +26,7 @@ export class NaverLoginStrategy implements SocialLoginStrategy {
    * @returns 인가코드를 이용하여 발급받은 accessToken, refreshToken을 리턴함
    */
   private async getToken(code: string, state: string) {
-    const { client_id, client_secret, redirect_uri }: NaverConfig = this.configService.get('NAVER');
+    const { client_id, client_secret, redirect_uri }: SocialConfig = this.configService.get('NAVER_CONFIG');
 
     const naverToken = (await axios.post(
       `https://nid.naver.com/oauth2.0/token?` +

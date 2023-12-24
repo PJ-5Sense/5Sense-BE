@@ -1,21 +1,40 @@
 import { IsString } from 'class-validator';
 import ValidateConfig from '../environment.validator';
 
-export class JwtConfig {
+class JwtConfig {
   @IsString()
-  secret: string;
+  JWT_ACCESS_EXPIRE_TIME: string;
 
   @IsString()
-  expiresIn: string;
+  JWT_REFRESH_EXPIRE_TIME: string;
+
+  @IsString()
+  JWT_ACCESS_SECRET_KEY: string;
+
+  @IsString()
+  JWT_REFRESH_SECRET_KEY: string;
 }
+
+export type JwtOptions = {
+  access: JwtTokenSettings;
+  refresh: JwtTokenSettings;
+};
+type JwtTokenSettings = { secret: string; expiresIn: string };
 
 export default () => {
   const env = {
-    secret: process.env.JWT_SECRET_KEY,
-    expiresIn: process.env.JWT_EXPIRE_TIME,
+    JWT_ACCESS_SECRET_KEY: process.env.JWT_ACCESS_SECRET_KEY,
+    JWT_REFRESH_SECRET_KEY: process.env.JWT_REFRESH_SECRET_KEY,
+    JWT_ACCESS_EXPIRE_TIME: process.env.JWT_ACCESS_EXPIRE_TIME,
+    JWT_REFRESH_EXPIRE_TIME: process.env.JWT_REFRESH_EXPIRE_TIME,
   };
 
   ValidateConfig(env, JwtConfig);
 
-  return { JWT: { secret: env.secret, signOptions: { expiresIn: env.expiresIn } } };
+  return {
+    JWT_OPTIONS: {
+      access: { secret: env.JWT_ACCESS_SECRET_KEY, expiresIn: env.JWT_ACCESS_EXPIRE_TIME },
+      refresh: { secret: env.JWT_REFRESH_SECRET_KEY, expiresIn: env.JWT_REFRESH_EXPIRE_TIME },
+    },
+  };
 };

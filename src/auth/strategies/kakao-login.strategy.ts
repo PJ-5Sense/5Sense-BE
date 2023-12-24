@@ -2,10 +2,10 @@ import { SocialLogin } from './../types/social-login.type';
 import { ConfigService } from '@nestjs/config';
 import { SocialLoginStrategy } from './social-login-strategy.interface';
 import { Injectable } from '@nestjs/common';
-import { KaKaoConfig } from 'src/environment/values/kakao.config';
 import { KakaoRequireData } from '../types/get-kakao-token.type';
 import axios from 'axios';
 import { SocialType } from '../types/social.type';
+import { SocialConfig } from '../types/social-config.type';
 
 @Injectable()
 export class KakaoLoginStrategy implements SocialLoginStrategy {
@@ -28,7 +28,7 @@ export class KakaoLoginStrategy implements SocialLoginStrategy {
    * @returns 인가코드를 이용하여 발급받은 accessToken, refreshToken을 리턴함
    */
   private async getToken(code: string, state: string): Promise<{ accessToken: string; refreshToken: string }> {
-    const { client_id, client_secret, redirect_uri }: KaKaoConfig = this.configService.get('KAKAO');
+    const { client_id, client_secret, redirect_uri }: SocialConfig = this.configService.get('KAKAO_CONFIG');
 
     const kakaoRequireData: KakaoRequireData = {
       grant_type: 'authorization_code',

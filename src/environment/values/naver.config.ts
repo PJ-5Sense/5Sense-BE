@@ -1,24 +1,30 @@
 import { IsString } from 'class-validator';
 import ValidateConfig from '../environment.validator';
 
-export class NaverConfig {
+class NaverConfig {
   @IsString()
-  client_id: string;
+  NAVER_CLIENT_ID: string;
 
   @IsString()
-  client_secret: string;
+  NAVER_CLIENT_SECRET: string;
 
   @IsString()
-  redirect_uri: string;
+  NAVER_CALLBACK_URL: string;
 }
 export default () => {
   const env = {
-    client_id: process.env.NAVER_CLIENT_ID,
-    client_secret: process.env.NAVER_CLIENT_SECRET,
-    redirect_uri: process.env.NAVER_CALLBACK_URL,
+    NAVER_CLIENT_ID: process.env.NAVER_CLIENT_ID,
+    NAVER_CLIENT_SECRET: process.env.NAVER_CLIENT_SECRET,
+    NAVER_CALLBACK_URL: process.env.NAVER_CALLBACK_URL,
   };
 
   ValidateConfig(env, NaverConfig);
 
-  return { NAVER: env };
+  return {
+    NAVER_CONFIG: {
+      client_id: env.NAVER_CLIENT_ID,
+      client_secret: env.NAVER_CLIENT_SECRET,
+      redirect_uri: env.NAVER_CALLBACK_URL,
+    },
+  };
 };

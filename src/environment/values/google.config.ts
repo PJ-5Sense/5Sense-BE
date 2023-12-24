@@ -1,24 +1,31 @@
 import { IsString } from 'class-validator';
 import ValidateConfig from '../environment.validator';
 
-export class GoogleConfig {
+class GoogleConfig {
   @IsString()
-  client_id: string;
+  GOOGLE_CLIENT_ID: string;
 
   @IsString()
-  client_secret: string;
+  GOOGLE_CLIENT_SECRET: string;
 
   @IsString()
-  redirect_uri: string;
+  GOOGLE_CALLBACK_URL: string;
 }
+
 export default () => {
   const env = {
-    client_id: process.env.GOOGLE_CLIENT_ID,
-    client_secret: process.env.GOOGLE_CLIENT_SECRET,
-    redirect_uri: process.env.GOOGLE_CALLBACK_URL,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL,
   };
 
   ValidateConfig(env, GoogleConfig);
 
-  return { GOOGLE: env };
+  return {
+    GOOGLE_CONFIG: {
+      client_id: env.GOOGLE_CLIENT_ID,
+      client_secret: env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: env.GOOGLE_CALLBACK_URL,
+    },
+  };
 };
