@@ -2,19 +2,13 @@ import { ConfigService } from '@nestjs/config';
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JsonWebTokenError, JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { Reflector } from '@nestjs/core';
-
 /**
  * JWT Access Token을 재발급 하기위해서 Refresh Token의 유효성 검사를 하는 가드
  *
  */
 @Injectable()
-export class ReissueGuard implements CanActivate {
-  constructor(
-    private jwtService: JwtService,
-    private readonly configService: ConfigService,
-    private reflector: Reflector,
-  ) {}
+export class RefreshTokenGuard implements CanActivate {
+  constructor(private jwtService: JwtService, private readonly configService: ConfigService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
