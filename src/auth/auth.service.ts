@@ -178,7 +178,7 @@ export class AuthService implements IAuthService {
       accessToken: await this.generateAccessToken({
         userId: Number(userSocialData.userId),
         socialId: userSocialData.socialId,
-        centerId: null,
+        centerId: await this.userService.findOneUserCenterByUserId(userSocialData.userId),
         socialType: userSocialData.socialType,
       }),
     };
