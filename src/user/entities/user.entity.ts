@@ -1,7 +1,7 @@
 import { AuthEntity } from 'src/auth/entities/auth.entity';
 import { CenterEntity } from 'src/center/entities/center.entity';
 import { SoftDeleteBaseEntity } from 'src/database/base.entity';
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity({ name: 'user' })
 export class UserEntity extends SoftDeleteBaseEntity {

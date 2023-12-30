@@ -1,4 +1,4 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { SocialType } from './types/social.type';
 import { JwtService } from '@nestjs/jwt';
 import { KakaoLoginStrategy } from './strategies/kakao-login.strategy';
@@ -48,16 +48,16 @@ export class AuthService implements IAuthService {
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const strategy = this.strategies.get(provider);
     if (!strategy) {
-      throw new Error(`Unsupported social login provider: ${provider}`);
+      throw new InternalServerErrorException(`Unsupported social login provider: ${provider}`);
     }
 
     const socialLoginInfo = await strategy.login(code, state);
     const userSocialInfo = await this.authDao.findOneBySocialId(socialLoginInfo.socialUserInfo.socialId, provider);
 
     // 존재하지 않을 경우, 소셜로그인 정보 저장과 유저 정보를 저장한다.
-    if (!userSocialInfo) return await this.processUserSocialDataAndGenerateTokens(socialLoginInfo, userAgent);
+    if (!userSocialInfo) return await this.processNewUserAndGenerateTokens(socialLoginInfo, userAgent);
     else
-      return await this.registerUserAndGenerateTokens(
+      return await this.processExistingUserAndGenerateTokens(
         userSocialInfo,
         userAgent,
         socialLoginInfo.accessToken,
@@ -77,7 +77,14 @@ export class AuthService implements IAuthService {
     return refreshToken;
   }
 
-  private async processUserSocialDataAndGenerateTokens(socialLoginInfo: SocialLogin, userAgent: string) {
+  /**
+   * 유저 정보와 소셜 인증 정보를 등록하고 토큰을 생성
+   *
+   * @param socialLoginInfo 유저정보와 소셜 인증 정보
+   * @param userAgent 디바이스 정보
+   * @returns
+   */
+  private async processNewUserAndGenerateTokens(socialLoginInfo: SocialLogin, userAgent: string) {
     const newUser = await this.userService.create({
       profile: socialLoginInfo.socialUserInfo.profile,
       name: socialLoginInfo.socialUserInfo.name,
@@ -113,7 +120,15 @@ export class AuthService implements IAuthService {
     };
   }
 
-  private async registerUserAndGenerateTokens(
+  /**
+   * 기존 유저는 소셜 인증 정보(Social Tokens, App Refresh Token)
+   * @param userSocialInfo
+   * @param userAgent
+   * @param socialAccessToken
+   * @param socialRefreshToken
+   * @returns
+   */
+  private async processExistingUserAndGenerateTokens(
     userSocialInfo: AuthEntity,
     userAgent: string,
     socialAccessToken: string,
