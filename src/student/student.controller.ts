@@ -1,8 +1,8 @@
-import { Controller, Post, Body, Inject, Get, Query } from '@nestjs/common';
-import { CreateStudentDto } from './dto/create-student.dto';
+import { Controller, Post, Body, Inject, Get, Query, Param, ParseIntPipe } from '@nestjs/common';
+import { CreateStudentDto } from './dto/request/create-student.dto';
 import { IStudentService, STUDENT_SERVICE } from './student.service.interface';
 import { User } from 'src/common/decorator/user.decorator';
-import { FindStudentsDto } from './dto/find-students.dto';
+import { FindStudentsDto } from './dto/request/find-students.dto';
 
 @Controller('students')
 export class StudentController {
@@ -17,12 +17,21 @@ export class StudentController {
     };
   }
 
-  @Get('')
+  @Get()
   async findManyByCenterId(@Query() findStudentsDto: FindStudentsDto, @User('centerId') centerId: number) {
     return {
       success: true,
       message: 'Successfully retrieved the student list',
       data: await this.studentService.findManyByCenterId(findStudentsDto, centerId),
+    };
+  }
+
+  @Get('/:studentId')
+  async findOne(@Param('studentId', ParseIntPipe) studentId: number, @User('centerId') centerId: number) {
+    return {
+      success: true,
+      message: 'Successfully retrieved the student',
+      data: await this.studentService.findOneByStudentId(studentId, centerId),
     };
   }
 }

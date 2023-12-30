@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { IStudentDao } from './student.dao.interface';
-import { CreateStudentDto } from '../dto/create-student.dto';
+import { CreateStudentDto } from '../dto/request/create-student.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentEntity } from '../entities/student.entity';
 import { Repository } from 'typeorm';
-import { FindStudentsDto } from '../dto/find-students.dto';
+import { FindStudentsDto } from '../dto/request/find-students.dto';
 
 @Injectable()
 export class StudentDaoImpl implements IStudentDao {
@@ -13,12 +13,12 @@ export class StudentDaoImpl implements IStudentDao {
     return await this.studentRepository.save({ ...createStudentDto, centerId });
   }
 
-  async findExistingStudent(name: string, phone: string) {
-    return await this.studentRepository.findOneBy({ name, phone });
+  async findExistingStudent(name: string, phone: string, centerId: number) {
+    return await this.studentRepository.findOneBy({ name, phone, centerId });
   }
 
   async findManyByCenterId(findStudentsDto: FindStudentsDto, centerId: number) {
-    const queryBuilder = await this.studentRepository
+    const queryBuilder = this.studentRepository
       .createQueryBuilder('student')
       .where('student.centerId = :centerId', { centerId });
 
@@ -29,5 +29,9 @@ export class StudentDaoImpl implements IStudentDao {
       queryBuilder.andWhere('student.phone LIKE :phone', { phone: `%${findStudentsDto.phone}$` });
 
     return await queryBuilder.getMany();
+  }
+
+  async findOneByStudentId(studentId: number, centerId: number) {
+    return await this.studentRepository.findOneBy({ id: studentId, centerId });
   }
 }

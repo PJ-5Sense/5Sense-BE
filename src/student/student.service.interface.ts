@@ -1,15 +1,12 @@
-import { CreateStudentDto } from './dto/create-student.dto';
-import { FindStudentsDto } from './dto/find-students.dto';
+import { CreateStudentDto } from './dto/request/create-student.dto';
+import { FindStudentsDto } from './dto/request/find-students.dto';
+import { ResponseStudentDto } from './dto/response/student.dto';
 export interface IStudentService {
-  create(
-    createStudentDto: CreateStudentDto,
-    centerId: number,
-  ): Promise<{ id: number; name: string; phone: string; particulars: string }>;
+  create(createStudentDto: CreateStudentDto, centerId: number): Promise<ResponseStudentDto>;
 
-  findManyByCenterId(
-    findStudentsDto: FindStudentsDto,
-    centerId: number,
-  ): Promise<{ students: { id: number; name: string; phone: string; particulars: string }[] }>;
+  findManyByCenterId(findStudentsDto: FindStudentsDto, centerId: number): Promise<{ students: ResponseStudentDto[] }>;
+
+  findOneByStudentId(studentId: number, centerId: number): Promise<ResponseStudentDto>;
 }
 
 export const STUDENT_SERVICE = Symbol('STUDENT_SERVICE');
