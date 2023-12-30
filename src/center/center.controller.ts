@@ -12,7 +12,7 @@ export class CenterController {
   async create(@Body() createCenterDto: CreateCenterDto, @User() userInfo: JwtPayload) {
     return {
       success: true,
-      message: 'Center has been registered',
+      message: 'The center has been successfully registered',
       data: await this.centerService.create(createCenterDto, userInfo),
     };
   }
@@ -21,7 +21,7 @@ export class CenterController {
   async findOneByUserId(@User() userInfo: JwtPayload) {
     return {
       success: true,
-      message: 'Successfully getting center information.',
+      message: 'Successfully getting center information',
       data: await this.centerService.findOneMyCenter(userInfo.userId, userInfo.centerId),
     };
   }
