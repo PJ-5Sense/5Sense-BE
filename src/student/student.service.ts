@@ -2,6 +2,7 @@ import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { IStudentDao, STUDENT_DAO } from './dao/student.dao.interface';
 import { IStudentService } from './student.service.interface';
 import { CreateStudentDto } from './dto/create-student.dto';
+import { FindStudentsDto } from './dto/find-students.dto';
 
 @Injectable()
 export class StudentServiceImpl implements IStudentService {
@@ -13,11 +14,20 @@ export class StudentServiceImpl implements IStudentService {
 
     const student = await this.studentDao.create(createStudentDto, centerId);
 
-    return {
-      name: student.name,
-      phone: student.phone,
-      particulars: student.particulars,
-    };
+    return { id: student.id, name: student.name, phone: student.phone, particulars: student.particulars };
+  }
+
+  async findManyByCenterId(findStudentsDto: FindStudentsDto, centerId: number) {
+    const students = (await this.studentDao.findManyByCenterId(findStudentsDto, centerId)).map(student => {
+      return {
+        id: student.id,
+        name: student.name,
+        phone: student.phone,
+        particulars: student.particulars,
+      };
+    });
+
+    return { students };
   }
 
   /**
