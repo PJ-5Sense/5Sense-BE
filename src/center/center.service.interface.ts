@@ -7,7 +7,9 @@ export interface ICenterService {
     userInfo: JwtPayload,
   ): Promise<{ name: string; address: string; mainPhone: string }>;
 
-  findOneByUserId(centerId: number): Promise<{ name: string; address: string; mainPhone: string }>;
+  findOneByUserId(userId: number): Promise<{ name: string; address: string; mainPhone: string }>;
+
+  findOneMyCenter(userId: number, centerId: number): Promise<{ name: string; address: string; mainPhone: string }>;
 }
 
 export const CENTER_SERVICE = Symbol('CENTER_SERVICE');

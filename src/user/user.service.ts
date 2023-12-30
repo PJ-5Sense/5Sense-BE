@@ -11,4 +11,8 @@ export class UserService implements IUserService {
   async create(user: CreateUser): Promise<UserEntity> {
     return await this.userDao.create(user);
   }
+
+  async findOneUserCenterByUserId(userId: number) {
+    return (await this.userDao.findOneUserCenterByUserId(userId)).center[0].id;
+  }
 }

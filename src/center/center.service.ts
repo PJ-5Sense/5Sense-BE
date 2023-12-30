@@ -9,6 +9,7 @@ export class CenterServiceImpl implements ICenterService {
   constructor(@Inject(CENTER_DAO) private readonly centerDao: ICenterDao) {}
   async create(createCenterDto: CreateCenterDto, userInfo: JwtPayload) {
     const existCenter = await this.findOneByUserId(userInfo.userId);
+
     if (existCenter) throw new InternalServerErrorException('현재는 두개 이상의 센터를 등록 할 수 없습니다.');
     if (userInfo.centerId) throw new InternalServerErrorException('현재는 두개 이상의 센터를 등록 할 수 없습니다.');
 
@@ -21,8 +22,18 @@ export class CenterServiceImpl implements ICenterService {
     };
   }
 
-  async findOneByUserId(centerId: number) {
-    if (!centerId) return null;
-    return await this.centerDao.findOneByUserId(centerId);
+  async findOneByUserId(userId: number) {
+    if (!userId) return null;
+    return await this.centerDao.findOneByUserId(userId);
+  }
+
+  async findOneMyCenter(userId: number, centerId: number) {
+    const myCenter = await this.centerDao.findOneMyCenter(userId, centerId);
+
+    return {
+      name: myCenter.name,
+      address: myCenter.address,
+      mainPhone: myCenter.mainPhone,
+    };
   }
 }

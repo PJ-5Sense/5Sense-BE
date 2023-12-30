@@ -11,6 +11,13 @@ export interface IUserService {
    * @returns UserEntity
    */
   create(user: CreateUser): Promise<UserEntity>;
+
+  /**
+   * 유저에게 등록된 센터정보가 있는지 확인하는 함수
+   * (JWT Token에 Center 정보를 등록하기 위해 사용됨)
+   * @param userId
+   */
+  findOneUserCenterByUserId(userId: number): Promise<number>;
 }
 
 export const USER_SERVICE = Symbol('USER_SERVICE');

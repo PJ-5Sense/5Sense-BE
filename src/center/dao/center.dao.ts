@@ -16,4 +16,8 @@ export class CenterDaoImpl implements ICenterDao {
   async findOneByUserId(userId: number) {
     return await this.centerRepository.findOneBy({ userId });
   }
+
+  async findOneMyCenter(userId: number, centerId: number) {
+    return await this.centerRepository.findOneBy({ userId, id: centerId });
+  }
 }

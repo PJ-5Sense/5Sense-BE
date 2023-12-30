@@ -45,6 +45,11 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException('Invalid token');
       }
     }
+
+    // 센터 등록 API를 제외하고는 Center ID가 JWT Token에 존재해야함
+    if (!request.user.centerId && request.originalUrl !== '/center' && request.method !== 'POST')
+      throw new UnauthorizedException('Center information must be registered to be available');
+
     return true;
   }
 
