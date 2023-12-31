@@ -180,13 +180,16 @@ export class AuthService implements IAuthService {
       throw new UnauthorizedException('Invalid Refresh Token, you need to check');
     }
 
+    const accessToken = await this.generateAccessToken({
+      userId: Number(userSocialData.userId),
+      socialId: userSocialData.socialId,
+      centerId: await this.userService.findOneUserCenterByUserId(userSocialData.userId),
+      socialType: userSocialData.socialType,
+    });
+
     return {
-      accessToken: await this.generateAccessToken({
-        userId: Number(userSocialData.userId),
-        socialId: userSocialData.socialId,
-        centerId: await this.userService.findOneUserCenterByUserId(userSocialData.userId),
-        socialType: userSocialData.socialType,
-      }),
+      accessToken,
+      accessTokenExp: new Date((await this.jwtService.decode(accessToken)['exp']) * 1000),
     };
   }
 }
