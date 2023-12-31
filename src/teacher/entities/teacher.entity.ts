@@ -11,15 +11,12 @@ export class TeacherEntity extends HardDeleteBaseEntity {
   @Column({ comment: '강사 휴대전화 번호' })
   phone: string;
 
-  @Column({ comment: '강사 성별' })
-  gender: string;
-
-  @Column({ comment: '프로필 이미지' })
-  profile: string;
+  @Column({ name: 'center_id', type: 'bigint', unsigned: true, nullable: false })
+  centerId: number;
 
   @ManyToOne(() => CenterEntity, center => center.id, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'center_id' })
-  center: number;
+  center: CenterEntity;
 
   @OneToMany(() => LessonEntity, lesson => lesson.teacher)
   lessons: LessonEntity[];
