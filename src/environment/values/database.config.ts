@@ -43,7 +43,7 @@ export default () => {
       port: env.DATABASE_PORT,
       type: env.DATABASE_TYPE,
       username: env.DATABASE_USER,
-      logging: isProduction,
+      // logging: isProduction,
       synchronize: isProduction,
     },
   };

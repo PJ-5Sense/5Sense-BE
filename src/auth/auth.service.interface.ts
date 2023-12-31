@@ -8,7 +8,7 @@ export interface IAuthService {
     code: string,
     state: string,
     userAgent: string,
-  ): Promise<{ accessToken: string; refreshToken: string }>;
+  ): Promise<{ accessToken: string; refreshToken: string; accessTokenExp: Date }>;
 
   reissueAccessToken(userAgent: string, refreshToken: string, jwtInfo: JwtPayload): Promise<{ accessToken: string }>;
 }

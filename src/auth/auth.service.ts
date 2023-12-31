@@ -45,7 +45,7 @@ export class AuthService implements IAuthService {
     code: string,
     state: string,
     userAgent: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<{ accessToken: string; refreshToken: string; accessTokenExp: Date }> {
     const strategy = this.strategies.get(provider);
     if (!strategy) {
       throw new InternalServerErrorException(`Unsupported social login provider: ${provider}`);
@@ -109,14 +109,17 @@ export class AuthService implements IAuthService {
       userAgent,
     });
 
+    const accessToken = await this.generateAccessToken({
+      userId: Number(newUser.id),
+      socialId: socialLoginInfo.socialUserInfo.socialId,
+      centerId: null,
+      socialType: socialLoginInfo.socialUserInfo.socialType,
+    });
+
     return {
-      accessToken: await this.generateAccessToken({
-        userId: Number(newUser.id),
-        socialId: socialLoginInfo.socialUserInfo.socialId,
-        centerId: null,
-        socialType: socialLoginInfo.socialUserInfo.socialType,
-      }),
+      accessToken,
       refreshToken,
+      accessTokenExp: new Date((await this.jwtService.decode(accessToken))['exp'] * 1000),
     };
   }
 
@@ -156,14 +159,17 @@ export class AuthService implements IAuthService {
 
     await this.authDao.createOrUpdate(socialData);
 
+    const accessToken = await this.generateAccessToken({
+      userId: Number(userSocialInfo.userId),
+      socialId: userSocialInfo.socialId,
+      centerId: null,
+      socialType: userSocialInfo.socialType,
+    });
+
     return {
-      accessToken: await this.generateAccessToken({
-        userId: Number(userSocialInfo.userId),
-        socialId: userSocialInfo.socialId,
-        centerId: null,
-        socialType: userSocialInfo.socialType,
-      }),
+      accessToken,
       refreshToken,
+      accessTokenExp: new Date((await this.jwtService.decode(accessToken))['exp'] * 1000),
     };
   }
 
