@@ -1,26 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { CreateTeacherDto } from './dto/create-teacher.dto';
-import { UpdateTeacherDto } from './dto/update-teacher.dto';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import { CreateTeacherDto } from './dto/reqeust/create-teacher.dto';
+import { ITeacherService } from './teacher.service.interface';
+import { ITeacherDao, TEACHER_DAO } from './dao/teacher.dao.interface';
 
 @Injectable()
-export class TeacherService {
-  create(createTeacherDto: CreateTeacherDto) {
-    return 'This action adds a new teacher';
+export class TeacherServiceImpl implements ITeacherService {
+  constructor(@Inject(TEACHER_DAO) private readonly teacherDao: ITeacherDao) {}
+  async create(createTeacherDto: CreateTeacherDto, centerId: number) {
+    if (await this.checkDuplicateTeacher(createTeacherDto.name, createTeacherDto.phone, centerId))
+      throw new ConflictException('Duplicate teacher information');
+
+    const teacher = await this.teacherDao.create(createTeacherDto, centerId);
+
+    return {
+      name: teacher.name,
+      phone: teacher.phone,
+    };
   }
 
-  findAll() {
-    return `This action returns all teacher`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} teacher`;
-  }
-
-  update(id: number, updateTeacherDto: UpdateTeacherDto) {
-    return `This action updates a #${id} teacher`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} teacher`;
+  /**
+   * @description 이름과 휴대번호를 가지고 이미 등록된 강사 정보 여부를 확인하는 함수
+   *
+   * @returns 중복된 경우 true, 중복되지 않은 경우 false 리턴함
+   */
+  private async checkDuplicateTeacher(name: string, phone: string, centerId: number): Promise<boolean> {
+    return (await this.teacherDao.findExistingTeacher(name, phone, centerId)) === null ? false : true;
   }
 }

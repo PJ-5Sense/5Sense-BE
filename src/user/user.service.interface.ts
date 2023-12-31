@@ -17,7 +17,7 @@ export interface IUserService {
    * (JWT Token에 Center 정보를 등록하기 위해 사용됨)
    * @param userId
    */
-  findOneUserCenterByUserId(userId: number): Promise<number>;
+  findOneUserCenterByUserId(userId: number): Promise<number | null>;
 }
 
 export const USER_SERVICE = Symbol('USER_SERVICE');
