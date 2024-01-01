@@ -13,7 +13,8 @@ export class UserService implements IUserService {
   }
 
   async findOneUserCenterByUserId(userId: number) {
-    const center = await this.userDao.findOneUserCenterByUserId(userId);
-    return center.center[0]?.id ?? null;
+    const centerId = (await this.userDao.findOneUserCenterByUserId(userId))?.center[0].id;
+
+    return centerId ? Number(centerId) : null;
   }
 }

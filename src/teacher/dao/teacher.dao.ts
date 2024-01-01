@@ -1,9 +1,10 @@
-import { CreateTeacherDto } from './../dto/reqeust/create-teacher.dto';
+import { CreateTeacherDto } from '../dto/request/create-teacher.dto';
 import { Injectable } from '@nestjs/common';
 import { ITeacherDao } from './teacher.dao.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TeacherEntity } from '../entities/teacher.entity';
 import { Repository } from 'typeorm';
+import { FindTeachersDto } from '../dto/request/find-teachers.dto';
 
 @Injectable()
 export class TeacherDaoImpl implements ITeacherDao {
@@ -14,5 +15,19 @@ export class TeacherDaoImpl implements ITeacherDao {
 
   async findExistingTeacher(name: string, phone: string, centerId: number) {
     return await this.teacherRepository.findOneBy({ name, phone, centerId });
+  }
+
+  async findManyByCenterId(findTeachersDto: FindTeachersDto, centerId: number) {
+    const queryBuilder = this.teacherRepository
+      .createQueryBuilder('teacher')
+      .where('teacher.centerId = :centerId', { centerId });
+
+    if (findTeachersDto.searchBy === 'name')
+      queryBuilder.andWhere('teacher.name LIKE :name', { name: `%${findTeachersDto.name}%` });
+
+    if (findTeachersDto.searchBy === 'phone')
+      queryBuilder.andWhere('teacher.phone LIKE :phone', { phone: `%${findTeachersDto.phone}$` });
+
+    return await queryBuilder.getMany();
   }
 }

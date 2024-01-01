@@ -1,7 +1,9 @@
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
-import { CreateTeacherDto } from './dto/reqeust/create-teacher.dto';
+import { CreateTeacherDto } from './dto/request/create-teacher.dto';
 import { ITeacherService } from './teacher.service.interface';
 import { ITeacherDao, TEACHER_DAO } from './dao/teacher.dao.interface';
+import { FindTeachersDto } from './dto/request/find-teachers.dto';
+import { ResponseTeacherDto } from './dto/response/teacher.dto';
 
 @Injectable()
 export class TeacherServiceImpl implements ITeacherService {
@@ -12,10 +14,15 @@ export class TeacherServiceImpl implements ITeacherService {
 
     const teacher = await this.teacherDao.create(createTeacherDto, centerId);
 
-    return {
-      name: teacher.name,
-      phone: teacher.phone,
-    };
+    return ResponseTeacherDto.of(teacher);
+  }
+
+  async findManyByCenterId(findTeachersDto: FindTeachersDto, centerId: number) {
+    const teachers = (await this.teacherDao.findManyByCenterId(findTeachersDto, centerId)).map(teacher => {
+      return ResponseTeacherDto.of(teacher);
+    });
+
+    return { teachers };
   }
 
   /**

@@ -5,7 +5,7 @@ import { StudentEntity } from '../entities/student.entity';
 export interface IStudentDao {
   create(createStudentDto: CreateStudentDto, centerId: number): Promise<StudentEntity>;
   findExistingStudent(name: string, phone: string, centerId: number): Promise<StudentEntity>;
-  findManyByCenterId(findStudentsDto: FindStudentsDto, centerId: number): Promise<StudentEntity[]>;
+  findManyByCenterId(findStudentsDto: FindStudentsDto, centerId: number): Promise<[StudentEntity[], number]>;
   findOneByStudentId(studentId: number, centerId: number): Promise<StudentEntity>;
 }
 

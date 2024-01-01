@@ -142,10 +142,11 @@ export class AuthService implements IAuthService {
     socialRefreshToken: string,
   ) {
     // 센터는 하나만 등록되도록 되어있던가, 여러개의 센터일 경우 센터를 선택해서 로그인 하도록 해야함 ( 12/24 )
+    const centerId = await this.userService.findOneUserCenterByUserId(userSocialInfo.userId);
     const refreshToken = await this.generateRefreshToken({
       userId: Number(userSocialInfo.userId),
       socialId: userSocialInfo.socialId,
-      centerId: null,
+      centerId,
       socialType: userSocialInfo.socialType,
     });
 
@@ -166,7 +167,7 @@ export class AuthService implements IAuthService {
     const accessToken = await this.generateAccessToken({
       userId: Number(userSocialInfo.userId),
       socialId: userSocialInfo.socialId,
-      centerId: null,
+      centerId,
       socialType: userSocialInfo.socialType,
     });
 
