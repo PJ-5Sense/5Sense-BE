@@ -18,11 +18,18 @@ export class TeacherServiceImpl implements ITeacherService {
   }
 
   async findManyByCenterId(findTeachersDto: FindTeachersDto, centerId: number) {
-    const teachers = (await this.teacherDao.findManyByCenterId(findTeachersDto, centerId)).map(teacher => {
-      return ResponseTeacherDto.of(teacher);
-    });
+    const [teachers, total] = await this.teacherDao.findManyByCenterId(findTeachersDto, centerId);
 
-    return { teachers };
+    return {
+      teachers: teachers.map(teacher => {
+        return ResponseTeacherDto.of(teacher);
+      }),
+      meta: {
+        page: findTeachersDto.getPage(),
+        take: findTeachersDto.getTake(),
+        hasNextPage: findTeachersDto.hasNextPage(total),
+      },
+    };
   }
 
   /**

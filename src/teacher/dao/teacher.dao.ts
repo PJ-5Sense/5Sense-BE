@@ -20,7 +20,8 @@ export class TeacherDaoImpl implements ITeacherDao {
   async findManyByCenterId(findTeachersDto: FindTeachersDto, centerId: number) {
     const queryBuilder = this.teacherRepository
       .createQueryBuilder('teacher')
-      .where('teacher.centerId = :centerId', { centerId });
+      .where('teacher.centerId = :centerId', { centerId })
+      .andWhere('teacher.id > :id', { id: findTeachersDto.cursor });
 
     if (findTeachersDto.searchBy === 'name')
       queryBuilder.andWhere('teacher.name LIKE :name', { name: `%${findTeachersDto.name}%` });
@@ -28,6 +29,6 @@ export class TeacherDaoImpl implements ITeacherDao {
     if (findTeachersDto.searchBy === 'phone')
       queryBuilder.andWhere('teacher.phone LIKE :phone', { phone: `%${findTeachersDto.phone}$` });
 
-    return await queryBuilder.getMany();
+    return await queryBuilder.offset(findTeachersDto.getSkip()).limit(findTeachersDto.getTake()).getManyAndCount();
   }
 }
