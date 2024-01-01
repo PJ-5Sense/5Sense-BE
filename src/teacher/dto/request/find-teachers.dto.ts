@@ -1,4 +1,5 @@
 import { IsEnum, IsString, ValidateIf } from 'class-validator';
+import { PaginationRequest } from 'src/common/dto/request-page.dto';
 
 export enum TeacherSearchType {
   NONE = 'none',
@@ -6,7 +7,7 @@ export enum TeacherSearchType {
   PHONE = 'phone',
 }
 
-export class FindTeachersDto {
+export class FindTeachersDto extends PaginationRequest {
   @IsEnum(TeacherSearchType)
   searchBy: TeacherSearchType;
 
