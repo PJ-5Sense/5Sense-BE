@@ -19,11 +19,19 @@ export class StudentServiceImpl implements IStudentService {
   }
 
   async findManyByCenterId(findStudentsDto: FindStudentsDto, centerId: number) {
-    const students = (await this.studentDao.findManyByCenterId(findStudentsDto, centerId)).map(student => {
-      return ResponseStudentDto.of(student);
-    });
+    const [students, total] = await this.studentDao.findManyByCenterId(findStudentsDto, centerId);
 
-    return { students };
+    return {
+      students: students.map(student => {
+        return ResponseStudentDto.of(student);
+      }),
+
+      meta: {
+        page: findStudentsDto.getPage(),
+        take: findStudentsDto.getTake(),
+        hasNextPage: findStudentsDto.hasNextPage(total),
+      },
+    };
   }
 
   async findOneByStudentId(studentId: number, centerId: number) {

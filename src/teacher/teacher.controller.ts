@@ -19,11 +19,11 @@ export class TeacherController {
   }
 
   @Get()
-  async findManyByCenterId(@Query() findStudentsDto: FindTeachersDto, @User('centerId') centerId: number) {
+  async findManyByCenterId(@Query() findTeachersDto: FindTeachersDto, @User('centerId') centerId: number) {
     return {
       success: true,
-      message: 'Successfully retrieved the student list',
-      data: await this.teacherService.findManyByCenterId(findStudentsDto, centerId),
+      message: 'Successfully retrieved the Teacher list',
+      data: await this.teacherService.findManyByCenterId(findTeachersDto, centerId),
     };
   }
 }
