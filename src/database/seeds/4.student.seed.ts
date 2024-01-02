@@ -8,6 +8,6 @@ export default class Student1701866831258 implements Seeder {
   public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<any> {
     const studentFactory = factoryManager.get(StudentEntity);
 
-    await studentFactory.saveMany(10);
+    await studentFactory.saveMany(100);
   }
 }
