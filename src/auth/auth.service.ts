@@ -52,13 +52,16 @@ export class AuthService implements IAuthService {
     }
 
     const socialLoginInfo = await strategy.login(code, state);
-    const userSocialInfo = await this.authDao.findOneBySocialId(
+    let userSocialInfo = await this.authDao.findOneByUserAgent(
       socialLoginInfo.socialUserInfo.socialId,
       provider,
       userAgent,
     );
 
-    // 존재하지 않을 경우, 소셜로그인 정보 저장과 유저 정보를 저장한다.
+    // 사용자 접속 환경이 달라서 정보가 안나왔을 수 있으므로 소셜아이디 정보가 있는지 확인한다.
+    if (!userSocialInfo)
+      userSocialInfo = await this.authDao.findOnSocialId(socialLoginInfo.socialUserInfo.socialId, provider);
+
     if (!userSocialInfo) return await this.processNewUserAndGenerateTokens(socialLoginInfo, userAgent);
     else
       return await this.processExistingUserAndGenerateTokens(
@@ -157,10 +160,10 @@ export class AuthService implements IAuthService {
       socialRefreshToken,
       appRefreshToken: refreshToken,
       userAgent,
+      userId: userSocialInfo.userId,
     };
 
     if (userAgent === userSocialInfo.userAgent) socialData['id'] = userSocialInfo.id;
-    else socialData['userId'] = userSocialInfo.userId;
 
     await this.authDao.createOrUpdate(socialData);
 
@@ -179,7 +182,7 @@ export class AuthService implements IAuthService {
   }
 
   async reissueAccessToken(userAgent: string, refreshToken: string, jwtInfo: JwtPayload) {
-    const userSocialData = await this.authDao.findOneBySocialId(jwtInfo.socialId, jwtInfo.socialType, userAgent);
+    const userSocialData = await this.authDao.findOneByUserAgent(jwtInfo.socialId, jwtInfo.socialType, userAgent);
     const [type, token] = refreshToken.split(' ');
 
     if (type !== 'Bearer' || userSocialData.appRefreshToken !== token || userAgent !== userSocialData.userAgent) {

@@ -9,6 +9,7 @@ export interface ITeacherService {
     findTeachersDto: FindTeachersDto,
     centerId: number,
   ): Promise<{ teachers: ResponseTeacherDto[]; meta: PageMeta }>;
+  findOneByTeacherId(teacherId: number, centerId: number): Promise<ResponseTeacherDto>;
 }
 
 export const TEACHER_SERVICE = Symbol('TEACHER_SERVICE');
