@@ -10,7 +10,11 @@ import { IAuthDao } from './auth.dao.interface';
 export class AuthDao implements IAuthDao {
   constructor(@InjectRepository(AuthEntity) private readonly authRepository: Repository<AuthEntity>) {}
 
-  async findOneBySocialId(socialId: string, socialType: SocialType, userAgent: string) {
+  async findOnSocialId(socialId: string, socialType: SocialType) {
+    return await this.authRepository.findOne({ where: { socialId, socialType }, relations: ['user'] });
+  }
+
+  async findOneByUserAgent(socialId: string, socialType: SocialType, userAgent: string) {
     return await this.authRepository.findOne({ where: { socialId, socialType, userAgent }, relations: ['user'] });
   }
 

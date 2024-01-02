@@ -32,6 +32,12 @@ export class TeacherServiceImpl implements ITeacherService {
     };
   }
 
+  async findOneByTeacherId(teacherId: number, centerId: number) {
+    const teacher = await this.teacherDao.findOneByTeacherId(teacherId, centerId);
+
+    return ResponseTeacherDto.of(teacher);
+  }
+
   /**
    * @description 이름과 휴대번호를 가지고 이미 등록된 강사 정보 여부를 확인하는 함수
    *

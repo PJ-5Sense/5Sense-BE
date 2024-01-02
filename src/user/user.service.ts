@@ -14,7 +14,6 @@ export class UserService implements IUserService {
 
   async findOneUserCenterByUserId(userId: number) {
     const centerId = (await this.userDao.findOneUserCenterByUserId(userId)).center[0]?.id;
-
     return centerId ? Number(centerId) : null;
   }
 }

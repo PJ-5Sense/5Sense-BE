@@ -31,4 +31,8 @@ export class TeacherDaoImpl implements ITeacherDao {
 
     return await queryBuilder.offset(findTeachersDto.getSkip()).limit(findTeachersDto.getTake()).getManyAndCount();
   }
+
+  async findOneByTeacherId(teacherId: number, centerId: number) {
+    return await this.teacherRepository.findOneBy({ id: teacherId, centerId });
+  }
 }

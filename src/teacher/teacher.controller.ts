@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Inject, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body, Inject, Get, Query, ParseIntPipe, Param } from '@nestjs/common';
 import { TeacherServiceImpl } from './teacher.service';
 import { CreateTeacherDto } from './dto/request/create-teacher.dto';
 import { TEACHER_SERVICE } from './teacher.service.interface';
@@ -15,6 +15,15 @@ export class TeacherController {
       success: true,
       message: 'The teacher has been successfully registered',
       data: await this.teacherService.create(createTeacherDto, centerId),
+    };
+  }
+
+  @Get('/:teacherId')
+  async findOne(@Param('teacherId', ParseIntPipe) teacherId: number, @User('centerId') centerId: number) {
+    return {
+      success: true,
+      message: 'Successfully retrieved the teacher',
+      data: await this.teacherService.findOneByTeacherId(teacherId, centerId),
     };
   }
 
