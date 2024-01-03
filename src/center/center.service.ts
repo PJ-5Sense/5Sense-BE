@@ -10,8 +10,9 @@ export class CenterServiceImpl implements ICenterService {
   async create(createCenterDto: CreateCenterDto, userInfo: JwtPayload) {
     const existCenter = await this.findOneByUserId(userInfo.userId);
 
-    if (existCenter) throw new InternalServerErrorException('현재는 두개 이상의 센터를 등록 할 수 없습니다.');
-    if (userInfo.centerId) throw new InternalServerErrorException('현재는 두개 이상의 센터를 등록 할 수 없습니다.');
+    if (existCenter) throw new InternalServerErrorException('More than one center cannot be registered at this time');
+    if (userInfo.centerId)
+      throw new InternalServerErrorException('More than one center cannot be registered at this time');
 
     const center = await this.centerDao.create(createCenterDto, userInfo.userId);
 
