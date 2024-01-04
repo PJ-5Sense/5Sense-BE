@@ -20,8 +20,9 @@ export class StudentDaoImpl implements IStudentDao {
   async findManyByCenterId(findStudentsDto: FindStudentsDto, centerId: number) {
     const queryBuilder = this.studentRepository
       .createQueryBuilder('student')
-      .where('student.centerId = :centerId', { centerId })
-      .andWhere('student.id > :id', { id: findStudentsDto.cursor });
+      .where('student.centerId = :centerId', { centerId });
+
+    if (findStudentsDto.cursor) queryBuilder.andWhere('student.id < :id', { id: findStudentsDto.cursor });
 
     if (findStudentsDto.searchBy === 'name')
       queryBuilder.andWhere('student.name LIKE :name', { name: `%${findStudentsDto.name}%` });
@@ -29,7 +30,11 @@ export class StudentDaoImpl implements IStudentDao {
     if (findStudentsDto.searchBy === 'phone')
       queryBuilder.andWhere('student.phone LIKE :phone', { phone: `%${findStudentsDto.phone}$` });
 
-    return await queryBuilder.offset(findStudentsDto.getSkip()).limit(findStudentsDto.getTake()).getManyAndCount();
+    return await queryBuilder
+      .offset(findStudentsDto.getSkip())
+      .limit(findStudentsDto.getTake())
+      .orderBy('student.createdDate', 'DESC')
+      .getManyAndCount();
   }
 
   async findOneByStudentId(studentId: number, centerId: number) {
