@@ -20,7 +20,7 @@ export class StudentServiceImpl implements IStudentService {
 
   async findManyByCenterId(findStudentsDto: FindStudentsDto, centerId: number) {
     const [students, total] = await this.studentDao.findManyByCenterId(findStudentsDto, centerId);
-    console.log(total);
+
     return {
       students: students.map(student => {
         return ResponseStudentDto.of(student);
