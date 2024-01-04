@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
+import { UserServiceImpl } from './user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { UserDao } from './dao/user.dao';
@@ -9,11 +8,10 @@ import { USER_DAO } from './dao/user.dao.interface';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],
-  controllers: [UserController],
   providers: [
     {
       provide: USER_SERVICE,
-      useClass: UserService,
+      useClass: UserServiceImpl,
     },
     {
       provide: USER_DAO,
@@ -23,7 +21,7 @@ import { USER_DAO } from './dao/user.dao.interface';
   exports: [
     {
       provide: USER_SERVICE,
-      useClass: UserService,
+      useClass: UserServiceImpl,
     },
   ],
 })

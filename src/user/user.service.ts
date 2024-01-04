@@ -5,7 +5,7 @@ import { IUserService } from './user.service.interface';
 import { IUserDao, USER_DAO } from './dao/user.dao.interface';
 
 @Injectable()
-export class UserService implements IUserService {
+export class UserServiceImpl implements IUserService {
   constructor(@Inject(USER_DAO) private readonly userDao: IUserDao) {}
 
   async create(user: CreateUser): Promise<UserEntity> {

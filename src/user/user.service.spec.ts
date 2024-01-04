@@ -1,88 +1,87 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from './user.service';
-import { IUserDao, USER_DAO } from './dao/user.dao.interface';
+import { UserServiceImpl } from './user.service';
+import { USER_DAO } from './dao/user.dao.interface';
 import { CreateUser } from './types/create-user.type';
 import { UserEntity } from './entities/user.entity';
-import { SocialType } from 'src/auth/types/social.type';
-import { AuthEntity } from 'src/auth/entities/auth.entity';
+import { CenterEntity } from 'src/center/entities/center.entity';
+import { IUserService, USER_SERVICE } from './user.service.interface';
+
+const mockDao = {
+  create: jest.fn(),
+  findOneUserCenterByUserId: jest.fn(),
+};
 
 describe('UserService', () => {
-  let userService: UserService;
-  let userDaoMock: IUserDao;
+  let userService: IUserService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UserService,
+        { provide: USER_SERVICE, useClass: UserServiceImpl },
         {
           provide: USER_DAO,
-          useValue: {
-            create: jest.fn(),
-            findOneBySocialId: jest.fn(),
-          },
+          useValue: mockDao,
         },
       ],
     }).compile();
 
-    userService = module.get<UserService>(UserService);
-    userDaoMock = module.get<IUserDao>(USER_DAO);
+    userService = module.get<IUserService>(USER_SERVICE);
   });
 
   it('should be defined', () => {
     expect(userService).toBeDefined();
   });
 
-  describe('create', () => {
+  describe('Create User - create()', () => {
     it('should create a new user', async () => {
-      const socialEntity: AuthEntity = {
-        socialId: '99999999',
-        socialType: SocialType.Kakao,
-        socialAccessToken: 'socialAccessToken',
-        socialRefreshToken: 'socialRefreshToken',
-        appRefreshToken: 'appRefreshToken',
-        createdDate: new Date(),
-        deletedDate: new Date(),
+      const createUser: CreateUser = {
+        name: '테스트',
+        profile: '테스트 프로필',
+        email: 'test@gmail.com',
+        phone: '01000001111',
       };
 
-      const userDto: CreateUser = {
-        name: '윤태식',
-        profile: 'profile_url',
-        email: 'test@google.com',
-        socialId: '99999999',
-        phone: null,
-        centerId: null,
-      };
+      const user = mockDao.create.mockReturnValue(createUser);
 
-      const expectedResult: UserEntity = {
-        ...userDto,
-        id: 1,
-        createdDate: new Date(),
-        deletedDate: new Date(),
-        center: null,
-        social: socialEntity,
-      };
-
-      userDaoMock.create.mockResolvedValue(expectedResult);
-      const result = await userService.create(userDto);
-
-      expect(result).toEqual(expectedResult);
-      expect(userDaoMock.create).toHaveBeenCalledWith(userDto);
+      expect(await userService.create(createUser)).toEqual(user());
     });
   });
 
-  describe('findOneBySocialId', () => {
-    it('should return a user by social ID and type', async () => {
-      const socialId = 'someSocialId';
-      const socialType = SocialType.FACEBOOK;
-      const expectedResult: UserEntity = {
-        /* expected user entity */
+  describe('Find User Center ID - findOneUserCenterByUserId()', () => {
+    it('if User Have Center, get it', async () => {
+      const mockUserId = 1;
+      const mockCenterId = 10;
+      const mockUser: UserEntity = {
+        id: mockUserId,
+        name: '테스트',
+        profile: '테스트 프로필',
+        email: 'test@gmail.com',
+        phone: '01000001111',
+        createdDate: new Date(),
+        deletedDate: null,
+        center: [],
+        social: [],
+      };
+      const mockCenter: CenterEntity = {
+        id: mockCenterId,
+        name: '센터 테스트 이름',
+        address: '센터 주소',
+        mainPhone: '센터 연락처',
+        profile: '센터프로필',
+        userId: mockUserId,
+        user: mockUser,
+        students: [],
+        teachers: [],
+        lessons: [],
+        createdDate: new Date(),
+        deletedDate: null,
       };
 
-      userDaoMock.findOneBySocialId.mockResolvedValue(expectedResult);
-      const result = await userService.findOneBySocialId(socialId, socialType);
+      mockUser.center.push(mockCenter);
 
-      expect(result).toEqual(expectedResult);
-      expect(userDaoMock.findOneBySocialId).toHaveBeenCalledWith(socialId, socialType);
+      mockDao.findOneUserCenterByUserId.mockReturnValue(mockUser);
+
+      expect(await userService.findOneUserCenterByUserId(mockUserId)).toEqual(mockCenterId);
     });
   });
 });
