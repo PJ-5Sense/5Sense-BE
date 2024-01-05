@@ -30,11 +30,7 @@ export class StudentDaoImpl implements IStudentDao {
     if (findStudentsDto.searchBy === 'phone')
       queryBuilder.andWhere('student.phone LIKE :phone', { phone: `%${findStudentsDto.phone}$` });
 
-    return await queryBuilder
-      .offset(findStudentsDto.getSkip())
-      .limit(findStudentsDto.getTake())
-      .orderBy('student.createdDate', 'DESC')
-      .getManyAndCount();
+    return await queryBuilder.limit(findStudentsDto.getTake()).orderBy('student.createdDate', 'DESC').getManyAndCount();
   }
 
   async findOneByStudentId(studentId: number, centerId: number) {

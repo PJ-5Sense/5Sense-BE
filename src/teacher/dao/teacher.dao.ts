@@ -30,11 +30,7 @@ export class TeacherDaoImpl implements ITeacherDao {
     if (findTeachersDto.searchBy === 'phone')
       queryBuilder.andWhere('teacher.phone LIKE :phone', { phone: `%${findTeachersDto.phone}$` });
 
-    return await queryBuilder
-      .offset(findTeachersDto.getSkip())
-      .limit(findTeachersDto.getTake())
-      .orderBy('teacher.createdDate', 'DESC')
-      .getManyAndCount();
+    return await queryBuilder.limit(findTeachersDto.getTake()).orderBy('teacher.createdDate', 'DESC').getManyAndCount();
   }
 
   async findOneByTeacherId(teacherId: number, centerId: number) {
