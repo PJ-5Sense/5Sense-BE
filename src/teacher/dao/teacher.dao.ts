@@ -28,7 +28,7 @@ export class TeacherDaoImpl implements ITeacherDao {
       queryBuilder.andWhere('teacher.name LIKE :name', { name: `%${findTeachersDto.name}%` });
 
     if (findTeachersDto.searchBy === 'phone')
-      queryBuilder.andWhere('teacher.phone LIKE :phone', { phone: `%${findTeachersDto.phone}$` });
+      queryBuilder.andWhere('teacher.phone LIKE :phone', { phone: `%${findTeachersDto.phone}%` });
 
     return await queryBuilder.limit(findTeachersDto.getTake()).orderBy('teacher.createdDate', 'DESC').getManyAndCount();
   }

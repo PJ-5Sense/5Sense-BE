@@ -28,7 +28,7 @@ export class StudentDaoImpl implements IStudentDao {
       queryBuilder.andWhere('student.name LIKE :name', { name: `%${findStudentsDto.name}%` });
 
     if (findStudentsDto.searchBy === 'phone')
-      queryBuilder.andWhere('student.phone LIKE :phone', { phone: `%${findStudentsDto.phone}$` });
+      queryBuilder.andWhere('student.phone LIKE :phone', { phone: `%${findStudentsDto.phone}%` });
 
     return await queryBuilder.limit(findStudentsDto.getTake()).orderBy('student.createdDate', 'DESC').getManyAndCount();
   }
