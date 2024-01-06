@@ -4,16 +4,13 @@
 
 npm i --save typeorm-extension
 npm i --save-dev @faker-js/faker
-npm i --save @nestjs/typeorm typeorm mysql2
-npm i --save @nestjs/config
-npm i --save class-validator class-transformer
-npm i --dev jest-junit
 npm i axios
 npm install --save @nestjs/jwt
 
 # Github npm docs
 
 [Faker Docs](https://fakerjs.dev/guide/)
+
 
 # typeorm migration & seed With typeorm-extension package
 
