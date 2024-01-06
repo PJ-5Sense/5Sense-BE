@@ -8,7 +8,7 @@ export interface IAuthService {
     code: string,
     state: string,
     userAgent: string,
-  ): Promise<{ accessToken: string; refreshToken: string; accessTokenExp: Date }>;
+  ): Promise<{ accessToken: string; refreshToken: string; accessTokenExp: Date; hasCenter: boolean }>;
 
   reissueAccessToken(
     userAgent: string,

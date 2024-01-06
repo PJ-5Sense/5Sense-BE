@@ -6,12 +6,12 @@ import { UserEntity } from './entities/user.entity';
 import { CenterEntity } from 'src/center/entities/center.entity';
 import { IUserService, USER_SERVICE } from './user.service.interface';
 
-const mockDao = {
-  create: jest.fn(),
-  findOneUserCenterByUserId: jest.fn(),
-};
-
 describe('UserService', () => {
+  const mockDao = {
+    create: jest.fn(),
+    findOneUserCenterByUserId: jest.fn(),
+  };
+
   let userService: IUserService;
 
   beforeEach(async () => {

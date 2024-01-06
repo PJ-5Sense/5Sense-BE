@@ -19,7 +19,7 @@ export class CenterEntity extends SoftDeleteBaseEntity {
   @Column({ comment: '프로필 이미지, 없을 시 기본 이미지 배정', nullable: true })
   profile: string;
 
-  @Column({ name: 'user_id', type: 'bigint', unsigned: true, nullable: true })
+  @Column({ name: 'user_id', type: 'bigint', unsigned: true, nullable: false })
   userId: number;
 
   @OneToMany(() => StudentEntity, student => student.center, { cascade: true })

@@ -1,4 +1,4 @@
-import { IsEnum, IsString, ValidateIf } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
 import { PaginationRequest } from 'src/common/dto/request-page.dto';
 
 export enum TeacherSearchType {
@@ -12,10 +12,12 @@ export class FindTeachersDto extends PaginationRequest {
   searchBy: TeacherSearchType;
 
   @IsString()
+  @IsNotEmpty()
   @ValidateIf(object => object.searchBy === 'name')
   name: string;
 
   @IsString()
+  @IsNotEmpty()
   @ValidateIf(object => object.searchBy === 'phone')
   phone: string;
 }

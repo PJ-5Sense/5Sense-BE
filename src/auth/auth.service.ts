@@ -16,7 +16,7 @@ import { AuthEntity } from './entities/auth.entity';
 import { CreateAuthDto } from './types/create-auth.dto';
 
 @Injectable()
-export class AuthService implements IAuthService {
+export class AuthServiceImpl implements IAuthService {
   private strategies: Map<SocialType, SocialLoginStrategy>;
   private readonly jwtOptions: JwtOptions;
 
@@ -40,12 +40,7 @@ export class AuthService implements IAuthService {
     this.jwtOptions = jwtOptions;
   }
 
-  async socialLogin(
-    provider: SocialType,
-    code: string,
-    state: string,
-    userAgent: string,
-  ): Promise<{ accessToken: string; refreshToken: string; accessTokenExp: Date }> {
+  async socialLogin(provider: SocialType, code: string, state: string, userAgent: string) {
     const strategy = this.strategies.get(provider);
     if (!strategy) {
       throw new InternalServerErrorException(`Unsupported social login provider: ${provider}`);
@@ -127,6 +122,7 @@ export class AuthService implements IAuthService {
       accessToken,
       refreshToken,
       accessTokenExp: new Date((await this.jwtService.decode(accessToken))['exp'] * 1000),
+      hasCenter: false,
     };
   }
 
@@ -178,6 +174,7 @@ export class AuthService implements IAuthService {
       accessToken,
       refreshToken,
       accessTokenExp: new Date((await this.jwtService.decode(accessToken))['exp'] * 1000),
+      hasCenter: !centerId ? false : true,
     };
   }
 

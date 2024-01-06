@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthServiceImpl } from './auth.service';
 import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthEntity } from './entities/auth.entity';
@@ -16,7 +16,7 @@ import { NaverLoginStrategy } from './strategies/naver-login.strategy';
   imports: [TypeOrmModule.forFeature([AuthEntity]), UserModule, JwtModule.register({ global: true })],
   controllers: [AuthController],
   providers: [
-    { provide: AUTH_SERVICE, useClass: AuthService },
+    { provide: AUTH_SERVICE, useClass: AuthServiceImpl },
     { provide: AUTH_DAO, useClass: AuthDao },
     KakaoLoginStrategy,
     GoogleLoginStrategy,
