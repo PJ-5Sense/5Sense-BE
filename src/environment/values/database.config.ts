@@ -1,43 +1,50 @@
 import { IsString, IsIn, IsNumber } from 'class-validator';
 import ValidateConfig from '../environment.validator';
 
-export class DatabaseConfig {
+class DatabaseConfig {
   @IsString()
-  database: string;
+  DATABASE_DB: string;
 
   @IsString()
-  host: string;
+  DATABASE_HOST: string;
 
   @IsString()
-  password: string;
+  DATABASE_PASS: string;
 
   @IsNumber()
-  port: number;
+  DATABASE_PORT: number;
 
   @IsIn(['mysql'])
-  type: 'mysql';
+  DATABASE_TYPE: 'mysql';
 
   @IsString()
-  logging: string;
+  DATABASE_USER: string;
 }
 
 export default () => {
   const isProduction = process.env.NODE_ENV === 'local' ? true : false;
 
   const env = {
-    database: process.env.DATABASE_DB,
-    host: process.env.DATABASE_HOST,
-    password: process.env.DATABASE_PASS,
-    port: process.env.DATABASE_PORT,
-    type: process.env.DATABASE_TYPE,
-    username: process.env.DATABASE_USER,
-    logging: isProduction,
-    synchronize: isProduction,
+    DATABASE_DB: process.env.DATABASE_DB,
+    DATABASE_HOST: process.env.DATABASE_HOST,
+    DATABASE_PASS: process.env.DATABASE_PASS,
+    DATABASE_PORT: process.env.DATABASE_PORT,
+    DATABASE_TYPE: process.env.DATABASE_TYPE,
+    DATABASE_USER: process.env.DATABASE_USER,
   };
 
   ValidateConfig(env, DatabaseConfig);
 
   return {
-    DATABASE: env,
+    DATABASE: {
+      database: env.DATABASE_DB,
+      host: env.DATABASE_HOST,
+      password: env.DATABASE_PASS,
+      port: env.DATABASE_PORT,
+      type: env.DATABASE_TYPE,
+      username: env.DATABASE_USER,
+      // logging: isProduction,
+      synchronize: isProduction,
+    },
   };
 };

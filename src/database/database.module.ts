@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
         return {
           ...configService.get('DATABASE'),
           autoLoadEntities: true,
+          timezone: process.env.DB_TZ,
         };
       },
       inject: [ConfigService],
