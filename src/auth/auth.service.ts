@@ -123,6 +123,7 @@ export class AuthServiceImpl implements IAuthService {
       refreshToken,
       accessTokenExp: new Date((await this.jwtService.decode(accessToken))['exp'] * 1000),
       hasCenter: false,
+      isNew: true,
     };
   }
 
@@ -175,6 +176,7 @@ export class AuthServiceImpl implements IAuthService {
       refreshToken,
       accessTokenExp: new Date((await this.jwtService.decode(accessToken))['exp'] * 1000),
       hasCenter: !centerId ? false : true,
+      isNew: false,
     };
   }
 
