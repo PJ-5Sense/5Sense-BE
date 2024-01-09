@@ -10,6 +10,5 @@ export class CreateStudentDto {
   phone: string;
 
   @IsString()
-  @IsNotEmpty()
   particulars: string;
 }
