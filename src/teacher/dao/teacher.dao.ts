@@ -45,7 +45,7 @@ export class TeacherDaoImpl implements ITeacherDao {
         .getManyAndCount();
     }
 
-    return await queryBuilder.limit(findTeachersDto.getTake()).orderBy('teacher.createdDate', 'DESC').getManyAndCount();
+    return await queryBuilder.limit(findTeachersDto.getTake()).orderBy('teacher.name', 'ASC').getManyAndCount();
   }
 
   async findOneByTeacherId(teacherId: number, centerId: number) {
