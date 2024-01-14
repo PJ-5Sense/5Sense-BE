@@ -1,15 +1,17 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Inject, Injectable } from '@nestjs/common';
 import { IStudentDao, STUDENT_DAO } from './dao/student.dao.interface';
 import { IStudentService } from './student.service.interface';
 import { CreateStudentDto } from './dto/request/create-student.dto';
 import { FindStudentsDto } from './dto/request/find-students.dto';
 import { ResponseStudentDto } from './dto/response/student.dto';
+import { PageMeta } from 'src/common/dto/response-page.dto';
+import { UpdateStudentDto } from './dto/request/update-student.dto';
 
 @Injectable()
 export class StudentServiceImpl implements IStudentService {
   constructor(@Inject(STUDENT_DAO) private readonly studentDao: IStudentDao) {}
 
-  async create(createStudentDto: CreateStudentDto, centerId: number) {
+  async create(createStudentDto: CreateStudentDto, centerId: number): Promise<ResponseStudentDto> {
     if (await this.checkDuplicateStudent(createStudentDto.name, createStudentDto.phone, centerId))
       throw new ConflictException('Duplicate student information');
 
@@ -18,7 +20,10 @@ export class StudentServiceImpl implements IStudentService {
     return ResponseStudentDto.of(student);
   }
 
-  async findManyByCenterId(findStudentsDto: FindStudentsDto, centerId: number) {
+  async findManyByCenterId(
+    findStudentsDto: FindStudentsDto,
+    centerId: number,
+  ): Promise<{ students: ResponseStudentDto[]; meta: PageMeta }> {
     const [students, total] = await this.studentDao.findManyByCenterId(findStudentsDto, centerId);
 
     return {
@@ -34,7 +39,7 @@ export class StudentServiceImpl implements IStudentService {
     };
   }
 
-  async findOneByStudentId(studentId: number, centerId: number) {
+  async findOneByStudentId(studentId: number, centerId: number): Promise<ResponseStudentDto> {
     const student = await this.studentDao.findOneByStudentId(studentId, centerId);
 
     return ResponseStudentDto.of(student);
@@ -47,5 +52,10 @@ export class StudentServiceImpl implements IStudentService {
    */
   private async checkDuplicateStudent(name: string, phone: string, centerId: number): Promise<boolean> {
     return (await this.studentDao.findExistingStudent(name, phone, centerId)) === null ? false : true;
+  }
+
+  async updateStudent(updateStudentDto: UpdateStudentDto, studentId: number, centerId: number): Promise<void> {
+    if (!(await this.studentDao.updateStudent(updateStudentDto, studentId, centerId)))
+      throw new BadRequestException('Center information or student information is invalid');
   }
 }
