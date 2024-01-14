@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Inject, Get, Query, Param, ParseIntPipe, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Inject, Get, Query, Param, ParseIntPipe, Put } from '@nestjs/common';
 import { CreateStudentDto } from './dto/request/create-student.dto';
 import { IStudentService, STUDENT_SERVICE } from './student.service.interface';
 import { User } from 'src/common/decorator/user.decorator';
@@ -36,7 +36,7 @@ export class StudentController {
     };
   }
 
-  @Patch('/:studentId')
+  @Put('/:studentId')
   async updateStudent(
     @Body() updateStudentDto: UpdateStudentDto,
     @Param('studentId', ParseIntPipe) studentId: number,
