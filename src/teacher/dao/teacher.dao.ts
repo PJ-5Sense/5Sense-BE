@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TeacherEntity } from '../entities/teacher.entity';
 import { Repository } from 'typeorm';
 import { FindTeachersDto } from '../dto/request/find-teachers.dto';
+import { UpdateTeacherDto } from '../dto/request/update-teacher.dto';
 
 @Injectable()
 export class TeacherDaoImpl implements ITeacherDao {
@@ -50,5 +51,17 @@ export class TeacherDaoImpl implements ITeacherDao {
 
   async findOneByTeacherId(teacherId: number, centerId: number) {
     return await this.teacherRepository.findOneBy({ id: teacherId, centerId });
+  }
+
+  async updateTeacher(updateTeacher: UpdateTeacherDto, teacherId: number, centerId: number): Promise<boolean> {
+    const result = await this.teacherRepository
+      .createQueryBuilder()
+      .update()
+      .set({ ...updateTeacher })
+      .where('id = :id', { id: teacherId })
+      .andWhere('centerId = :centerId', { centerId })
+      .execute();
+
+    return result.affected === 0 ? false : true;
   }
 }

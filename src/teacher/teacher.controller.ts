@@ -1,9 +1,10 @@
-import { Controller, Post, Body, Inject, Get, Query, ParseIntPipe, Param } from '@nestjs/common';
+import { Controller, Post, Body, Inject, Get, Query, ParseIntPipe, Param, Put } from '@nestjs/common';
 import { TeacherServiceImpl } from './teacher.service';
 import { CreateTeacherDto } from './dto/request/create-teacher.dto';
 import { TEACHER_SERVICE } from './teacher.service.interface';
 import { User } from 'src/common/decorator/user.decorator';
 import { FindTeachersDto } from './dto/request/find-teachers.dto';
+import { UpdateTeacherDto } from './dto/request/update-teacher.dto';
 
 @Controller('teachers')
 export class TeacherController {
@@ -18,6 +19,15 @@ export class TeacherController {
     };
   }
 
+  @Get()
+  async findManyByCenterId(@Query() findTeachersDto: FindTeachersDto, @User('centerId') centerId: number) {
+    return {
+      success: true,
+      message: 'Successfully retrieved the Teacher list',
+      data: await this.teacherService.findManyByCenterId(findTeachersDto, centerId),
+    };
+  }
+
   @Get('/:teacherId')
   async findOne(@Param('teacherId', ParseIntPipe) teacherId: number, @User('centerId') centerId: number) {
     return {
@@ -27,12 +37,17 @@ export class TeacherController {
     };
   }
 
-  @Get()
-  async findManyByCenterId(@Query() findTeachersDto: FindTeachersDto, @User('centerId') centerId: number) {
+  @Put('/:teacherId')
+  async updateTeacher(
+    @Body() updateTeacher: UpdateTeacherDto,
+    @Param('teacherId', ParseIntPipe) teacherId: number,
+    @User('centerId') centerId: number,
+  ) {
+    await this.teacherService.updateTeacher(updateTeacher, teacherId, centerId);
+
     return {
       success: true,
-      message: 'Successfully retrieved the Teacher list',
-      data: await this.teacherService.findManyByCenterId(findTeachersDto, centerId),
+      message: 'Successfully modified your teacher information',
     };
   }
 }
