@@ -24,11 +24,26 @@ export class TeacherDaoImpl implements ITeacherDao {
 
     if (findTeachersDto.cursor) queryBuilder.andWhere('teacher.id < :id', { id: findTeachersDto.cursor });
 
-    if (findTeachersDto.searchBy === 'name')
-      queryBuilder.andWhere('teacher.name LIKE :name', { name: `%${findTeachersDto.name}%` });
+    if (findTeachersDto.searchBy === 'name') {
+      return await queryBuilder
+        .limit(findTeachersDto.getTake())
+        .andWhere('teacher.name LIKE :name', { name: `%${findTeachersDto.name}%` })
+        .orderBy(`CASE WHEN teacher.name LIKE '${findTeachersDto.name}%' THEN 1 ELSE 2 END`, 'ASC')
+        .addOrderBy('teacher.name', 'ASC')
+        .getManyAndCount();
+    }
 
-    if (findTeachersDto.searchBy === 'phone')
-      queryBuilder.andWhere('teacher.phone LIKE :phone', { phone: `%${findTeachersDto.phone}%` });
+    if (findTeachersDto.searchBy === 'phone') {
+      return await queryBuilder
+        .limit(findTeachersDto.getTake())
+        .andWhere('teacher.phone LIKE :phone', { phone: `%${findTeachersDto.phone}%` })
+        .orderBy(
+          `CASE WHEN teacher.phone LIKE '%${findTeachersDto.phone}%' THEN LOCATE('${findTeachersDto.phone}', teacher.phone) ELSE 2 END`,
+          'ASC',
+        )
+        .addOrderBy('teacher.phone', 'ASC')
+        .getManyAndCount();
+    }
 
     return await queryBuilder.limit(findTeachersDto.getTake()).orderBy('teacher.createdDate', 'DESC').getManyAndCount();
   }
