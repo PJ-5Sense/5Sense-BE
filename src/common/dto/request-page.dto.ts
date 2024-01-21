@@ -29,6 +29,6 @@ export class PaginationRequest {
   }
 
   hasNextPage(total: number): boolean {
-    return total / this.getSkip() > 1 ? true : false;
+    return total / (this.page * this.take) > 1 ? true : false;
   }
 }
