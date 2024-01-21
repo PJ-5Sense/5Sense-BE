@@ -26,17 +26,14 @@ export class StudentDaoImpl implements IStudentDao {
     if (findStudentsDto.searchBy === 'name') {
       queryBuilder
         .andWhere('student.name LIKE :name', { name: `%${findStudentsDto.name}%` })
-        .orderBy(`CASE WHEN student.name LIKE '${findStudentsDto.name}%' THEN 1 ELSE 2 END`, 'ASC')
+        .orderBy(`LOCATE('${findStudentsDto.name}', student.name)`, 'ASC')
         .addOrderBy('student.name', 'ASC');
     }
 
     if (findStudentsDto.searchBy === 'phone') {
       queryBuilder
         .andWhere('student.phone LIKE :phone', { phone: `%${findStudentsDto.phone}%` })
-        .orderBy(
-          `CASE WHEN student.phone LIKE '%${findStudentsDto.phone}%' THEN LOCATE('${findStudentsDto.phone}', student.phone) ELSE 2 END`,
-          'ASC',
-        )
+        .orderBy(`LOCATE('${findStudentsDto.phone}', student.phone)`, 'ASC')
         .addOrderBy('student.phone', 'ASC');
     }
 
