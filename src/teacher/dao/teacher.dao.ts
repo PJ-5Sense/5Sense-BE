@@ -19,34 +19,31 @@ export class TeacherDaoImpl implements ITeacherDao {
   }
 
   async findManyByCenterId(findTeachersDto: FindTeachersDto, centerId: number) {
+    const searchBy = findTeachersDto.searchBy === 'none' ? 'name' : findTeachersDto.searchBy;
     const queryBuilder = this.teacherRepository
       .createQueryBuilder('teacher')
       .where('teacher.centerId = :centerId', { centerId });
 
-    if (findTeachersDto.cursor) queryBuilder.andWhere('teacher.id < :id', { id: findTeachersDto.cursor });
-
     if (findTeachersDto.searchBy === 'name') {
-      return await queryBuilder
-        .limit(findTeachersDto.getTake())
+      queryBuilder
         .andWhere('teacher.name LIKE :name', { name: `%${findTeachersDto.name}%` })
-        .orderBy(`CASE WHEN teacher.name LIKE '${findTeachersDto.name}%' THEN 1 ELSE 2 END`, 'ASC')
-        .addOrderBy('teacher.name', 'ASC')
-        .getManyAndCount();
+        .orderBy(`CASE WHEN teacher.name LIKE '${findTeachersDto.name}%' THEN 1 ELSE 2 END`, 'ASC');
     }
 
     if (findTeachersDto.searchBy === 'phone') {
-      return await queryBuilder
-        .limit(findTeachersDto.getTake())
+      queryBuilder
         .andWhere('teacher.phone LIKE :phone', { phone: `%${findTeachersDto.phone}%` })
         .orderBy(
           `CASE WHEN teacher.phone LIKE '%${findTeachersDto.phone}%' THEN LOCATE('${findTeachersDto.phone}', teacher.phone) ELSE 2 END`,
           'ASC',
-        )
-        .addOrderBy('teacher.phone', 'ASC')
-        .getManyAndCount();
+        );
     }
 
-    return await queryBuilder.limit(findTeachersDto.getTake()).orderBy('teacher.name', 'ASC').getManyAndCount();
+    return await queryBuilder
+      .addOrderBy(`teacher.${searchBy}`, 'ASC')
+      .offset(findTeachersDto.getSkip())
+      .limit(findTeachersDto.getTake())
+      .getManyAndCount();
   }
 
   async findOneByTeacherId(teacherId: number, centerId: number) {

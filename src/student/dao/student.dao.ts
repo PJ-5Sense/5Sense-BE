@@ -23,29 +23,26 @@ export class StudentDaoImpl implements IStudentDao {
       .createQueryBuilder('student')
       .where('student.centerId = :centerId', { centerId });
 
-    if (findStudentsDto.cursor) queryBuilder.andWhere('student.id < :id', { id: findStudentsDto.cursor });
-
     if (findStudentsDto.searchBy === 'name') {
-      return await queryBuilder
-        .limit(findStudentsDto.getTake())
+      queryBuilder
         .andWhere('student.name LIKE :name', { name: `%${findStudentsDto.name}%` })
         .orderBy(`CASE WHEN student.name LIKE '${findStudentsDto.name}%' THEN 1 ELSE 2 END`, 'ASC')
-        .addOrderBy('student.name', 'ASC')
-        .getManyAndCount();
+        .addOrderBy('student.name', 'ASC');
     }
 
-    if (findStudentsDto.searchBy === 'phone')
-      return await queryBuilder
-        .limit(findStudentsDto.getTake())
+    if (findStudentsDto.searchBy === 'phone') {
+      queryBuilder
         .andWhere('student.phone LIKE :phone', { phone: `%${findStudentsDto.phone}%` })
         .orderBy(
           `CASE WHEN student.phone LIKE '%${findStudentsDto.phone}%' THEN LOCATE('${findStudentsDto.phone}', student.phone) ELSE 2 END`,
           'ASC',
         )
-        .addOrderBy('student.phone', 'ASC')
-        .getManyAndCount();
+        .addOrderBy('student.phone', 'ASC');
+    }
 
-    return await queryBuilder.limit(findStudentsDto.getTake()).orderBy('student.createdDate', 'DESC').getManyAndCount();
+    if (findStudentsDto.searchBy === 'none') queryBuilder.orderBy('student.createdDate', 'DESC');
+
+    return await queryBuilder.offset(findStudentsDto.getSkip()).limit(findStudentsDto.getTake()).getManyAndCount();
   }
 
   async findOneByStudentId(studentId: number, centerId: number) {

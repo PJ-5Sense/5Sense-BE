@@ -16,10 +16,6 @@ export class PaginationRequest {
   @IsOptional()
   take?: number = PaginationDefault.TAKE_DEFAULT;
 
-  @Type(() => Number)
-  @IsOptional()
-  cursor?: number = PaginationDefault.SKIP_DEFAULT;
-
   getSkip() {
     return (this.page - 1) * this.take || PaginationDefault.SKIP_DEFAULT;
   }
