@@ -1,3 +1,4 @@
+import { RoomEntity } from 'src/room/entities/room.entity';
 import { SoftDeleteBaseEntity } from 'src/database/base.entity';
 import { LessonEntity } from 'src/lesson/entities/lesson.entity';
 import { StudentEntity } from 'src/student/entities/student.entity';
@@ -30,6 +31,9 @@ export class CenterEntity extends SoftDeleteBaseEntity {
 
   @OneToMany(() => LessonEntity, lesson => lesson.center, { cascade: true })
   lessons: LessonEntity[];
+
+  @OneToMany(() => RoomEntity, room => room.center, { cascade: true })
+  room: RoomEntity[];
 
   @ManyToOne(() => UserEntity, user => user.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })

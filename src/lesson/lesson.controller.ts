@@ -1,34 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { LessonService } from './lesson.service';
-import { CreateLessonDto } from './dto/create-lesson.dto';
-import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { CreateLessonDTO } from './dto/create-lesson.dto';
+import { User } from 'src/common/decorator/user.decorator';
+import { JwtPayload } from 'src/auth/types/jwt-payload.type';
 
-@Controller('lesson')
+@Controller('lessons')
 export class LessonController {
   constructor(private readonly lessonService: LessonService) {}
 
   @Post()
-  create(@Body() createLessonDto: CreateLessonDto) {
-    return this.lessonService.create(createLessonDto);
+  async create(@Body() createLessonDto: CreateLessonDTO, @User('centerId') centerId: number) {
+    // return this.lessonService.create(createLessonDto);
+
+    return {
+      success: true,
+      message: `성공적으로 진행함`,
+      data: await this.lessonService.create(createLessonDto, centerId),
+    };
   }
 
   @Get()
-  findAll() {
-    return this.lessonService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.lessonService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLessonDto: UpdateLessonDto) {
-    return this.lessonService.update(+id, updateLessonDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.lessonService.remove(+id);
-  }
+  async findMany() {}
 }

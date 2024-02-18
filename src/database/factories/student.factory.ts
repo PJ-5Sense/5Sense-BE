@@ -8,7 +8,7 @@ export default setSeederFactory(StudentEntity, enFaker => {
   student.name = faker.person.lastName() + faker.person.firstName();
   student.phone = '010' + faker.string.numeric(8);
   student.particulars = faker.word.words(100);
-  student.centerId = 2;
+  student.centerId = 12;
   // 04월 28일은 내 생일!
 
   return student;

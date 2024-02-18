@@ -9,7 +9,7 @@ import {
   UseGuards,
   Headers,
 } from '@nestjs/common';
-import { socialLoginDto } from './dto/request/kakao-login.dto';
+import { socialLoginDto } from './dto/request/social-login.dto';
 import { SocialType } from './types/social.type';
 import { AUTH_SERVICE, IAuthService } from './auth.service.interface';
 import { Public } from 'src/common/decorator/public.decorator';

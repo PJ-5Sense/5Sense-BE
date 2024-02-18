@@ -3,7 +3,7 @@ import { UserEntity } from '../entities/user.entity';
 
 export interface IUserDao {
   create(user: CreateUser): Promise<UserEntity>;
-  findOneUserCenterByUserId(userId: number): Promise<UserEntity>;
+  findOne(userId: number): Promise<UserEntity | null>;
 }
 
 export const USER_DAO = Symbol('USER_DAO');

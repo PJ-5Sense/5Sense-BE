@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLessonDto } from './dto/create-lesson.dto';
-import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { CreateLessonDTO } from './dto/create-lesson.dto';
+import { LessonEntity, LessonType } from './entities/lesson.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { DurationLessonEntity } from './entities/duration-lesson.entity';
+import { LessonRegistrationEntity } from './lesson-registration/entities/lesson-registration.entity';
 
 @Injectable()
 export class LessonService {
-  create(createLessonDto: CreateLessonDto) {
-    return 'This action adds a new lesson';
-  }
+  constructor(
+    @InjectRepository(LessonEntity) private readonly lessonRepository: Repository<LessonEntity>,
+    @InjectRepository(DurationLessonEntity) private readonly durationLessonRepository: Repository<DurationLessonEntity>,
+    @InjectRepository(LessonRegistrationEntity)
+    private readonly lessonRegistrationRepository: Repository<LessonRegistrationEntity>,
+  ) {}
+  async create(createLessonDTO: CreateLessonDTO, centerId: number) {
+    const { durationLesson, category, ...commonLessonData } = createLessonDTO;
+    if (createLessonDTO.type === LessonType.DURATION) {
+      // 레슨 정보 저장, 레슨 카테고리 저장, 선생님 정보
 
-  findAll() {
-    return `This action returns all lesson`;
-  }
+      const newLessonData = this.lessonRepository.create({ ...commonLessonData, categoryId: category.id, centerId });
 
-  findOne(id: number) {
-    return `This action returns a #${id} lesson`;
-  }
+      const lesson = await this.lessonRepository.save({ ...newLessonData });
 
-  update(id: number, updateLessonDto: UpdateLessonDto) {
-    return `This action updates a #${id} lesson`;
-  }
+      return await this.durationLessonRepository.save(
+        this.durationLessonRepository.create({ ...durationLesson, lesson }),
+      );
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} lesson`;
+    if (createLessonDTO.type === LessonType.SESSION) {
+      const newLessonData = this.lessonRepository.create({ ...commonLessonData, categoryId: category.id, centerId });
+      return await this.lessonRepository.save(newLessonData);
+    }
   }
 }

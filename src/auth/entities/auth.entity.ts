@@ -1,22 +1,13 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { SocialType } from '../types/social.type';
 import { HardDeleteBaseEntity } from 'src/database/base.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 
+/**
+ * 유저 접속 정보
+ *
+ */
 @Entity({ name: 'auth' })
 export class AuthEntity extends HardDeleteBaseEntity {
-  @Column({ name: 'social_id' })
-  socialId: string;
-
-  @Column({ type: 'enum', enum: SocialType, name: 'social_type' })
-  socialType: SocialType;
-
-  @Column({ name: 'social_access_token', nullable: true })
-  socialAccessToken: string;
-
-  @Column({ name: 'social_refresh_token', nullable: true })
-  socialRefreshToken: string;
-
   @Column({ name: 'app_refresh_token', nullable: true })
   appRefreshToken: string;
 

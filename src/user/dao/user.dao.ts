@@ -3,9 +3,10 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUser } from '../types/create-user.type';
+import { IUserDao } from './user.dao.interface';
 
 @Injectable()
-export class UserDao {
+export class UserDAOImpl implements IUserDao {
   constructor(@InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>) {}
 
   async create(user: CreateUser): Promise<UserEntity> {
@@ -14,7 +15,7 @@ export class UserDao {
     return newUser;
   }
 
-  async findOneUserCenterByUserId(userId: number) {
-    return await this.userRepository.findOne({ where: { id: userId }, relations: { center: true } });
+  async findOne(userId: number) {
+    return await this.userRepository.findOne({ where: { id: userId }, relations: { social: true, center: true } });
   }
 }

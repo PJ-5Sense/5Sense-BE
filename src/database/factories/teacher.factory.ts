@@ -7,7 +7,7 @@ export default setSeederFactory(TeacherEntity, enFaker => {
   teacher.name = faker.person.lastName() + faker.person.firstName();
   teacher.phone = '010' + faker.string.numeric(8);
   // 원하는 센터 아이디
-  teacher.centerId = 2;
+  teacher.centerId = 12;
 
   return teacher;
 });

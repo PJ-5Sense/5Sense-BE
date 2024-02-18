@@ -1,5 +1,5 @@
 import { HardDeleteBaseEntity } from 'src/database/base.entity';
-import { LessonCategoryEntity } from 'src/lesson-category/entities/lesson-category.entity';
+import { LessonEntity } from 'src/lesson/entities/lesson.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity({ name: 'category' })
@@ -24,6 +24,9 @@ export class CategoryEntity extends HardDeleteBaseEntity {
   @JoinColumn({ name: 'parent_id' })
   category: CategoryEntity;
 
-  @OneToMany(() => LessonCategoryEntity, lessonCategory => lessonCategory.category)
-  lessonCategories: LessonCategoryEntity[];
+  @Column({ name: 'center_id', nullable: true, default: null })
+  centerId: number;
+
+  @OneToMany(() => LessonEntity, category => category.category)
+  categories: LessonEntity[];
 }

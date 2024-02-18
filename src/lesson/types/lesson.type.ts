@@ -1,4 +1,4 @@
 export enum LessonType {
-  DURATION = 'Duration Lesson',
-  SESSION = 'Session Lesson',
+  DURATION = 'duration',
+  SESSION = 'session',
 }

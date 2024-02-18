@@ -1,10 +1,16 @@
 import { CenterEntity } from 'src/center/entities/center.entity';
 import { SoftDeleteBaseEntity } from 'src/database/base.entity';
-import { LessonCategoryEntity } from 'src/lesson-category/entities/lesson-category.entity';
-import { LessonRegistration } from 'src/lesson-registration/entities/lesson-registration.entity';
+import { LessonRegistrationEntity } from 'src/lesson/lesson-registration/entities/lesson-registration.entity';
+import { RoomReservationEntity } from 'src/room/room-reservation/entities/room-reservation.entity';
 import { TeacherEntity } from 'src/teacher/entities/teacher.entity';
-import { LessonType } from 'src/lesson/types/lesson.type';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { DurationLessonEntity } from './duration-lesson.entity';
+import { CategoryEntity } from '../lesson-category/entities/category.entity';
+
+export enum LessonType {
+  DURATION = 'duration',
+  SESSION = 'session',
+}
 
 @Entity({ name: 'lesson' })
 export class LessonEntity extends SoftDeleteBaseEntity {
@@ -14,37 +20,46 @@ export class LessonEntity extends SoftDeleteBaseEntity {
   @Column({ type: 'enum', enum: LessonType, comment: 'Duration Class / Session Class' })
   type: LessonType;
 
-  // 기간반 시작일
-  @Column({ type: 'datetime', precision: 6, name: 'start_date', comment: '클래스 시작일' })
-  startDate: Date;
-
-  // 기간반 종료일
-  @Column({ type: 'datetime', precision: 6, name: 'end_date', comment: '클래스 종료일' })
-  endDate: Date;
-
-  // 기간반일 경우
-  @Column({ name: 'repeat_date', comment: '반복 요일 ex) 월, 화, 수' })
-  repeatDate: string;
-
-  // 회차반 수강생 입력 제한 - 기간반도 있어야함
-
   @Column({ type: 'varchar', length: 300, comment: '클래스 메모' })
   memo: string;
 
-  @Column({ name: 'tuition_fee', comment: '클래스 수강료, 숫자로만 값을 받고 문자열로 저장' })
-  tuitionFee: string;
+  @Column({ name: 'tuition_fee', comment: '클래스 수강료' })
+  tuitionFee: number;
+
+  @Column({ type: 'tinyint', comment: '클래스 수강 가능 최대 인원', unsigned: true })
+  capacity: number;
+
+  @Column({ name: 'center_id', type: 'bigint', unsigned: true })
+  centerId: number;
+
+  @Column({ name: 'teacher_id', type: 'bigint', unsigned: true })
+  teacherId: number;
+
+  @Column({ name: 'duration_lesson_id', type: 'bigint', unsigned: true, nullable: true, default: null })
+  durationLessonId: number;
 
   @ManyToOne(() => CenterEntity, center => center.id, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'center_id' })
-  center: number;
+  center: CenterEntity;
 
   @ManyToOne(() => TeacherEntity, teacher => teacher.id, { nullable: false })
   @JoinColumn({ name: 'teacher_id' })
-  teacher: number;
+  teacher: TeacherEntity;
 
-  @OneToMany(() => LessonRegistration, lessonRegistration => lessonRegistration.lesson, { cascade: true })
-  lessonRegistrations: LessonRegistration[];
+  @Column({ name: 'category_id', type: 'bigint', unsigned: true })
+  categoryId: number;
 
-  @OneToMany(() => LessonCategoryEntity, lessonCategory => lessonCategory.lesson, { cascade: true })
-  lessonCategories: LessonCategoryEntity[];
+  @ManyToOne(() => CategoryEntity, category => category.id, { nullable: false })
+  @JoinColumn({ name: 'category_id' })
+  category: CategoryEntity;
+
+  @OneToMany(() => LessonRegistrationEntity, lessonRegistration => lessonRegistration.lesson, { cascade: true })
+  lessonRegistrations: LessonRegistrationEntity[];
+
+  @OneToMany(() => RoomReservationEntity, roomReservation => roomReservation.lesson, { nullable: false, cascade: true })
+  roomReservations: RoomReservationEntity[];
+
+  @OneToMany(() => DurationLessonEntity, durationLesson => durationLesson.id, { nullable: true })
+  @JoinColumn({ name: 'duration_lesson_id' })
+  durationLesson: DurationLessonEntity[];
 }

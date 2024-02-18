@@ -1,6 +1,6 @@
 import { CenterEntity } from 'src/center/entities/center.entity';
 import { HardDeleteBaseEntity } from 'src/database/base.entity';
-import { LessonRegistration } from 'src/lesson-registration/entities/lesson-registration.entity';
+import { LessonRegistrationEntity } from 'src/lesson/lesson-registration/entities/lesson-registration.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity({ name: 'student' })
@@ -21,7 +21,6 @@ export class StudentEntity extends HardDeleteBaseEntity {
   @JoinColumn({ name: 'center_id' })
   center: CenterEntity;
 
-  // 클래스 등록 관련되서 수정이 필요함
-  @OneToMany(() => LessonRegistration, lessonRegistration => lessonRegistration.student)
-  lessonRegistrations: LessonRegistration[];
+  @OneToMany(() => LessonRegistrationEntity, lessonRegistration => lessonRegistration.student)
+  lessonRegistrations: LessonRegistrationEntity[];
 }

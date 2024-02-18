@@ -1,11 +1,7 @@
 import { CreateAuthDto } from '../types/create-auth.dto';
 import { AuthEntity } from '../entities/auth.entity';
-import { SocialType } from '../types/social.type';
 
 export interface IAuthDao {
-  findOnSocialId(socialId: string, socialType: SocialType): Promise<AuthEntity | null>;
-  findOneByUserAgent(socialId: string, socialType: SocialType, userAgent: string): Promise<AuthEntity | null>;
-
   /**
    * 인증 정보를 생성하거나 업데이트하는 함수
    *
@@ -21,6 +17,8 @@ export interface IAuthDao {
    * @returns A Promise of the AuthEntity
    */
   createOrUpdate(socialData: CreateAuthDto): Promise<AuthEntity>;
+
+  findOneByUserAgent(userId: number, userAgent: string): Promise<AuthEntity>;
 }
 
 export const AUTH_DAO = Symbol('AUTH_DAO');

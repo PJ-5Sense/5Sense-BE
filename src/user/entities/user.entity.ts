@@ -2,6 +2,7 @@ import { AuthEntity } from 'src/auth/entities/auth.entity';
 import { CenterEntity } from 'src/center/entities/center.entity';
 import { SoftDeleteBaseEntity } from 'src/database/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
+import { SocialEntity } from '../social/entities/social.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity extends SoftDeleteBaseEntity {
@@ -20,6 +21,9 @@ export class UserEntity extends SoftDeleteBaseEntity {
   @OneToMany(() => CenterEntity, center => center.user, { cascade: true })
   center: CenterEntity[];
 
+  @OneToMany(() => SocialEntity, social => social.user, { cascade: true })
+  social: SocialEntity[];
+
   @OneToMany(() => AuthEntity, auth => auth.user, { cascade: true })
-  social: AuthEntity[];
+  auth: AuthEntity[];
 }
