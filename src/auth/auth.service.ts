@@ -163,7 +163,6 @@ export class AuthServiceImpl implements IAuthService {
     // 유저와 소셜정보가 존재할 경우에는 인증 정보만 추가하면 됨
     // 유저정보를 확인
     // 센터는 하나만 등록되도록 되어있던가, 여러개의 센터일 경우 센터를 선택해서 로그인 하도록 해야함 ( 12/24 )
-    console.log(user);
     // auth 인증 데이터 생성하기 직전에 졸려서 잠
     //auth에 저장할 리프레쉬 토큰이고, userAgent와 userId로 인증정보가 존재하는지 먼저확인할거임(0215)
     const centerId = user.center[0]?.id ?? null;
@@ -175,13 +174,13 @@ export class AuthServiceImpl implements IAuthService {
     });
 
     const social: CreateAuthDto = {
-      id: authInfo.id,
       userId: user.id,
       appRefreshToken: refreshToken,
       userAgent: userAgent,
     };
-    if (authInfo.userAgent !== userAgent) {
-      delete social.id;
+
+    if (authInfo?.userAgent === userAgent) {
+      social['id'] = authInfo.id;
     }
 
     await this.authDao.createOrUpdate(social);
