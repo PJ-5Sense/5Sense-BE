@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { CreateLessonDTO } from './dto/create-lesson.dto';
 import { User } from 'src/common/decorator/user.decorator';
-import { JwtPayload } from 'src/auth/types/jwt-payload.type';
+import { FindManyByDateDTO } from './dto/find-many-lesson.dto';
 
 @Controller('lessons')
 export class LessonController {
@@ -19,6 +19,11 @@ export class LessonController {
     };
   }
 
-  @Get()
-  async findMany() {}
+  @Get('date')
+  async getLessonsByDate(@Query() findManyLessonDTO: FindManyByDateDTO) {
+    return await this.lessonService.getFilteredLessons(findManyLessonDTO);
+  }
+
+  @Get('filter')
+  async getLessonsByFilter() {}
 }

@@ -23,6 +23,9 @@ export class LessonEntity extends SoftDeleteBaseEntity {
   @Column({ type: 'varchar', length: 300, comment: '클래스 메모' })
   memo: string;
 
+  @Column({ comment: '클래스 수강 시간(30분 단위), ex) 90 -> 90분' })
+  lessonTime: number;
+
   @Column({ name: 'tuition_fee', comment: '클래스 수강료' })
   tuitionFee: number;
 

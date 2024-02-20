@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DurationLessonEntity } from './entities/duration-lesson.entity';
 import { LessonRegistrationEntity } from './lesson-registration/entities/lesson-registration.entity';
+import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/find-many-lesson.dto';
 
 @Injectable()
 export class LessonService {
@@ -33,4 +34,31 @@ export class LessonService {
       return await this.lessonRepository.save(newLessonData);
     }
   }
+
+  async getFilteredLessons(findManyLessonDTO: FindManyByDateDTO) {
+    const startDate = new Date(findManyLessonDTO.year, findManyLessonDTO.month - 1, 1);
+    const endDate = new Date(findManyLessonDTO.year, findManyLessonDTO.month, 0);
+    console.log(startDate);
+    console.log(endDate);
+    // 기간반 레슨 정보 가져오기
+    const durationLessons = await this.durationLessonRepository
+      .createQueryBuilder('durationLesson')
+      .where('durationLesson.startDate <= :endDate AND durationLesson.endDate >= :startDate', { startDate, endDate })
+      .getMany();
+
+    const sessionLessons = await this.lessonRepository
+      .createQueryBuilder('lesson')
+      .leftJoinAndSelect('lesson.lessonRegistrations', 'lessonRegistration')
+      .where('lesson.type = :type', { type: LessonType.SESSION })
+      .andWhere('lessonRegistration.startDate <= :endDate AND lessonRegistration.endDate >= :startDate', {
+        startDate,
+        endDate,
+      })
+      .andWhere('lessonRegistration.id IS NOT NULL')
+      .getMany();
+    console.log(durationLessons, sessionLessons);
+    return [...durationLessons, ...sessionLessons];
+  }
+
+  async getLessonsByDate(findManyLessonDTO: FindManyByFilterDTO) {}
 }
