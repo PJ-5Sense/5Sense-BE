@@ -62,7 +62,7 @@ export class LessonEntity extends SoftDeleteBaseEntity {
   @OneToMany(() => RoomReservationEntity, roomReservation => roomReservation.lesson, { nullable: false, cascade: true })
   roomReservations: RoomReservationEntity[];
 
-  @OneToMany(() => DurationLessonEntity, durationLesson => durationLesson.id, { nullable: true })
+  @OneToMany(() => DurationLessonEntity, durationLesson => durationLesson.lesson, { nullable: true })
   @JoinColumn({ name: 'duration_lesson_id' })
-  durationLesson: DurationLessonEntity[];
+  durationLessons: DurationLessonEntity[];
 }

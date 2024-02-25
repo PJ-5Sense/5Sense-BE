@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { CreateLessonDTO } from './dto/create-lesson.dto';
 import { User } from 'src/common/decorator/user.decorator';
-import { FindManyByDateDTO } from './dto/find-many-lesson.dto';
+import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/find-many-lesson.dto';
 
 @Controller('lessons')
 export class LessonController {
@@ -14,16 +14,20 @@ export class LessonController {
 
     return {
       success: true,
-      message: `성공적으로 진행함`,
+      message: `The Lesson has been successfully registered`,
       data: await this.lessonService.create(createLessonDto, centerId),
     };
   }
 
-  @Get('date')
-  async getLessonsByDate(@Query() findManyLessonDTO: FindManyByDateDTO) {
-    return await this.lessonService.getFilteredLessons(findManyLessonDTO);
+  @Get('/:year/:month')
+  async getLessonsByDate(@Param() findManyLessonDTO: FindManyByDateDTO, @User('centerId') centerId: number) {
+    return {
+      success: true,
+      message: `Successfully retrieved the Lesson list by date`,
+      data: await this.lessonService.getLessonsByDate(findManyLessonDTO, centerId),
+    };
   }
 
-  @Get('filter')
-  async getLessonsByFilter() {}
+  @Get('filters')
+  async getLessonsByFilter(@Query() findManyByFilterDTO: FindManyByFilterDTO, @User('centerId') centerId: number) {}
 }

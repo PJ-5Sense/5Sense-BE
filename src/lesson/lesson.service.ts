@@ -35,30 +35,130 @@ export class LessonService {
     }
   }
 
-  async getFilteredLessons(findManyLessonDTO: FindManyByDateDTO) {
-    const startDate = new Date(findManyLessonDTO.year, findManyLessonDTO.month - 1, 1);
-    const endDate = new Date(findManyLessonDTO.year, findManyLessonDTO.month, 0);
-    console.log(startDate);
-    console.log(endDate);
-    // 기간반 레슨 정보 가져오기
-    const durationLessons = await this.durationLessonRepository
-      .createQueryBuilder('durationLesson')
-      .where('durationLesson.startDate <= :endDate AND durationLesson.endDate >= :startDate', { startDate, endDate })
+  async getLessonsByDate(findManyByDateDTO: FindManyByDateDTO, centerId: number) {
+    const startDate = new Date(findManyByDateDTO.year, findManyByDateDTO.month - 1, 1);
+    const endDate = new Date(findManyByDateDTO.year, findManyByDateDTO.month, 0);
+    const startDayOfMonth = Number(startDate.toString().slice(8, 10));
+    const lastDayOfMonth = Number(endDate.toString().slice(8, 10));
+    const monthArray = Array(lastDayOfMonth)
+      .fill(null)
+      .map(() => []);
+    const weeks = ['일', '월', '화', '수', '목', '금', '토'];
+    const firstWeekDayDates = this.getDatesOfFirstWeekByDay(findManyByDateDTO.year, findManyByDateDTO.month);
+
+    const durationLessons = await this.lessonRepository
+      .createQueryBuilder('lesson')
+      .select(['lesson.id', 'lesson.name', 'lesson.type', 'lesson.lessonTime', 'lesson.tuitionFee'])
+      .leftJoin('lesson.durationLessons', 'durationLesson')
+      .addSelect([
+        'durationLesson.startDate',
+        'durationLesson.endDate',
+        'durationLesson.startTime',
+        'durationLesson.endTime',
+        'durationLesson.repeatDate',
+      ])
+      .leftJoin('lesson.teacher', 'teacher')
+      .addSelect(['teacher.name'])
+      .where('lesson.type = :type', { type: LessonType.DURATION })
+      .andWhere('lesson.centerId = :centerId', { centerId })
+      .andWhere('durationLesson.startDate <= :endDate AND durationLesson.endDate >= :startDate', { startDate, endDate })
       .getMany();
 
     const sessionLessons = await this.lessonRepository
       .createQueryBuilder('lesson')
-      .leftJoinAndSelect('lesson.lessonRegistrations', 'lessonRegistration')
+      .select(['lesson.id', 'lesson.name', 'lesson.type', 'lesson.lessonTime', 'lesson.tuitionFee'])
+      .leftJoin('lesson.lessonRegistrations', 'lessonRegistration')
+      .addSelect([
+        'lessonRegistration.startDate',
+        'lessonRegistration.endDate',
+        'lessonRegistration.startTime',
+        'lessonRegistration.endTime',
+      ])
+      .leftJoin('lesson.teacher', 'teacher')
+      .addSelect(['teacher.name'])
       .where('lesson.type = :type', { type: LessonType.SESSION })
+      .andWhere('lesson.centerId = :centerId', { centerId })
       .andWhere('lessonRegistration.startDate <= :endDate AND lessonRegistration.endDate >= :startDate', {
         startDate,
         endDate,
       })
       .andWhere('lessonRegistration.id IS NOT NULL')
       .getMany();
-    console.log(durationLessons, sessionLessons);
-    return [...durationLessons, ...sessionLessons];
+
+    const lessons = [...durationLessons, ...sessionLessons];
+    for (let i = 0; i < lessons.length; i++) {
+      if (lessons[i].durationLessons) {
+        for (const durationLesson of lessons[i].durationLessons) {
+          const startDay =
+            startDate < durationLesson.startDate
+              ? Number(durationLesson.startDate.toString().slice(8, 10))
+              : startDayOfMonth;
+
+          for (const day of durationLesson.repeatDate.split(',')) {
+            const index = weeks.indexOf(day);
+            let startDayDate = this.getStartDayDate(firstWeekDayDates[index], startDay);
+
+            while (startDayDate < lastDayOfMonth) {
+              const lessonData = {
+                id: lessons[i].id,
+                type: lessons[i].type,
+                name: lessons[i].name,
+                startTime: durationLesson.startTime,
+                lessonTime: lessons[i].lessonTime,
+                teacher: lessons[i].teacher.name,
+              };
+
+              monthArray[startDayDate].push(lessonData);
+
+              startDayDate += 7;
+            }
+          }
+        }
+      } else {
+        for (const sessionLesson of lessons[i].lessonRegistrations) {
+          const lessonData = {
+            id: lessons[i].id,
+            type: lessons[i].type,
+            name: lessons[i].name,
+            startTime: sessionLesson.startTime,
+            lessonTime: lessons[i].lessonTime,
+            teacher: lessons[i].teacher.name,
+          };
+
+          monthArray[Number(sessionLesson.startDate.toString().slice(8, 10)) - 1].push(lessonData);
+        }
+      }
+    }
+    return monthArray;
   }
 
-  async getLessonsByDate(findManyLessonDTO: FindManyByFilterDTO) {}
+  async getFilteredLessons(findManyLessonDTO: FindManyByFilterDTO) {}
+
+  /**
+   * 요일 별 첫 주 날짜 가져오기 함수
+   *
+   * @param {number} year 2024
+   * @param {number} month 2
+   * @returns {number[]} [4, 5, 6, 7, 1, 2, 3] = [일, 월, 화, 수, 목, 금, 토]
+   */
+  getDatesOfFirstWeekByDay(year: number, month: number) {
+    const result = new Array(7).fill(null); // 일주일 배열 생성
+    const firstDayOfMonth = new Date(year, month - 1, 1).getDay(); // 1일의 요일을 가져오기
+
+    for (let i = 0; i < 7; i++) {
+      result[(firstDayOfMonth + i) % 7] = i + 1; // 해당 요일에 날짜를 할당
+    }
+
+    return result;
+  }
+
+  getStartDayDate(firstDayDateOfMonth: number, startDayDate: number) {
+    console.log('첫 시작 날짜를 계산하기', firstDayDateOfMonth, startDayDate);
+    while (firstDayDateOfMonth < startDayDate) {
+      firstDayDateOfMonth += 7;
+    }
+
+    // 배열 0번째는 1일을 의미하여 첫 시작날에 -1을 계산해서 리턴하도록 함
+    return firstDayDateOfMonth - 1;
+  }
 }
