@@ -132,7 +132,50 @@ export class LessonService {
     return monthArray;
   }
 
-  async getFilteredLessons(findManyLessonDTO: FindManyByFilterDTO) {}
+  async getFilteredLessons(findManyLessonDTO: FindManyByFilterDTO, centerId: number) {
+    const lessonQuery = this.lessonRepository
+      .createQueryBuilder('lesson')
+      .select(['lesson.id', 'lesson.name', 'lesson.type'])
+      .leftJoin('lesson.teacher', 'teacher')
+      .addSelect(['teacher.name'])
+      .leftJoin('lesson.category', 'category')
+      .addSelect(['category.name'])
+      .where('lesson.centerId = :centerId', { centerId });
+
+    if (findManyLessonDTO.teachers.length > 0 && findManyLessonDTO.categories.length > 0) {
+      lessonQuery.andWhere('(teacher.name IN (:teacher) OR lesson.categoryId IN (:category))', {
+        teacher: findManyLessonDTO.teachers,
+        category: findManyLessonDTO.categories,
+      });
+    } else if (findManyLessonDTO.teachers.length > 0) {
+      lessonQuery.andWhere('teacher.name IN (:teacher)', { teacher: findManyLessonDTO.teachers });
+    } else if (findManyLessonDTO.categories.length > 0) {
+      lessonQuery.andWhere('lesson.categoryId IN (:category)', { category: findManyLessonDTO.categories });
+    }
+
+    const [lessons, total] = await lessonQuery
+      .orderBy(`lesson.createdDate`, 'DESC')
+      .offset(findManyLessonDTO.getSkip())
+      .limit(findManyLessonDTO.getTake())
+      .getManyAndCount();
+
+    return {
+      lessons: lessons.map(lesson => {
+        return {
+          id: lesson.id,
+          name: lesson.name,
+          type: lesson.type,
+          teacher: lesson.teacher.name,
+          category: lesson.category.name,
+        };
+      }),
+      meta: {
+        page: findManyLessonDTO.getPage(),
+        take: findManyLessonDTO.getTake(),
+        hasNextPage: findManyLessonDTO.hasNextPage(total),
+      },
+    };
+  }
 
   /**
    * 요일 별 첫 주 날짜 가져오기 함수
@@ -153,7 +196,6 @@ export class LessonService {
   }
 
   getStartDayDate(firstDayDateOfMonth: number, startDayDate: number) {
-    console.log('첫 시작 날짜를 계산하기', firstDayDateOfMonth, startDayDate);
     while (firstDayDateOfMonth < startDayDate) {
       firstDayDateOfMonth += 7;
     }

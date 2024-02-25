@@ -1,5 +1,7 @@
-import { Type } from 'class-transformer';
-import { IsInt } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsArray, IsIn, IsInt, IsString } from 'class-validator';
+import { PaginationRequest } from 'src/common/dto/request-page.dto';
+
 export class FindManyByDateDTO {
   @IsInt()
   @Type(() => Number)
@@ -10,10 +12,19 @@ export class FindManyByDateDTO {
   month: number;
 }
 
-export class FindManyByFilterDTO {
-  lessonType: string;
-  teacherName: string;
-  category: number;
-  offset: number;
-  limit: number;
+export class FindManyByFilterDTO extends PaginationRequest {
+  @IsIn(['duration', 'session', 'all'])
+  type: 'duration' | 'session' | 'all';
+
+  @IsArray()
+  @Transform((o: any) => {
+    return !o.value ? [] : o.value.split(',').filter(String);
+  })
+  teachers: string[];
+
+  @IsArray()
+  @Transform((o: any) => {
+    return !o.value ? [] : o.value.split(',').filter(Number);
+  })
+  categories: number[];
 }

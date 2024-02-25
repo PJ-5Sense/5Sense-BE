@@ -10,8 +10,6 @@ export class LessonController {
 
   @Post()
   async create(@Body() createLessonDto: CreateLessonDTO, @User('centerId') centerId: number) {
-    // return this.lessonService.create(createLessonDto);
-
     return {
       success: true,
       message: `The Lesson has been successfully registered`,
@@ -29,5 +27,11 @@ export class LessonController {
   }
 
   @Get('filters')
-  async getLessonsByFilter(@Query() findManyByFilterDTO: FindManyByFilterDTO, @User('centerId') centerId: number) {}
+  async getLessonsByFilter(@Query() findManyByFilterDTO: FindManyByFilterDTO, @User('centerId') centerId: number) {
+    return {
+      success: true,
+      message: `Successfully retrieved the Lesson list by applying filter`,
+      data: await this.lessonService.getFilteredLessons(findManyByFilterDTO, centerId),
+    };
+  }
 }
