@@ -8,7 +8,7 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { LessonType } from '../entities/lesson.entity';
+import { LessonType } from '../entities/duration-lesson.entity';
 import { Type } from 'class-transformer';
 
 export class DurationLessonDTO {
@@ -26,6 +26,9 @@ export class DurationLessonDTO {
 
   @IsString()
   repeatDate: string;
+
+  @IsNumber()
+  capacity: number;
 }
 
 export class CreateLessonDTO {
@@ -41,9 +44,6 @@ export class CreateLessonDTO {
 
   @IsNumber()
   tuitionFee: number;
-
-  @IsNumber()
-  capacity: number;
 
   // 기타 카테고리, 학원에서 직접 추가하는 기능은 개발중
   @IsObject()

@@ -16,6 +16,6 @@ export class UserDAOImpl implements IUserDao {
   }
 
   async findOne(userId: number) {
-    return await this.userRepository.findOne({ where: { id: userId }, relations: { social: true, center: true } });
+    return await this.userRepository.findOne({ where: { id: userId }, relations: { socials: true, centers: true } });
   }
 }

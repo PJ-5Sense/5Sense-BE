@@ -1,10 +1,13 @@
 import { CenterEntity } from 'src/center/entities/center.entity';
-import { HardDeleteBaseEntity } from 'src/database/base.entity';
-import { LessonRegistrationEntity } from 'src/lesson/lesson-registration/entities/lesson-registration.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { DurationLessonRegistrationEntity } from 'src/lesson-registration/entities/duration-registration.entity';
+import { SessionLessonRegistrationEntity } from 'src/lesson-registration/entities/session-registration.entity';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'student' })
-export class StudentEntity extends HardDeleteBaseEntity {
+export class StudentEntity {
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
+  id: number;
+
   @Column({ comment: '학생 이름', length: 20 })
   name: string;
 
@@ -14,13 +17,21 @@ export class StudentEntity extends HardDeleteBaseEntity {
   @Column({ comment: '특이사항', length: 300 })
   particulars: string;
 
-  @Column({ name: 'center_id', type: 'bigint', unsigned: true, nullable: false })
+  @CreateDateColumn({ name: 'created_date' })
+  createdDate: Date;
+
+  // Relation columns
+  @Column({ name: 'center_id', type: 'int', unsigned: true, nullable: false })
   centerId: number;
 
+  // Relations
   @ManyToOne(() => CenterEntity, center => center.id, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'center_id' })
   center: CenterEntity;
 
-  @OneToMany(() => LessonRegistrationEntity, lessonRegistration => lessonRegistration.student)
-  lessonRegistrations: LessonRegistrationEntity[];
+  @OneToMany(() => SessionLessonRegistrationEntity, sessionRegistrations => sessionRegistrations.student)
+  sessionRegistrations: SessionLessonRegistrationEntity[];
+
+  @OneToMany(() => DurationLessonRegistrationEntity, durationRegistrations => durationRegistrations.student)
+  durationRegistrations: DurationLessonRegistrationEntity[];
 }

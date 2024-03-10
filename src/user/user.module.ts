@@ -5,7 +5,7 @@ import { UserEntity } from './entities/user.entity';
 import { UserDAOImpl } from './dao/user.dao';
 import { USER_SERVICE } from './user.service.interface';
 import { USER_DAO } from './dao/user.dao.interface';
-import { SocialModule } from './social/social.module';
+import { SocialModule } from '../social/social.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity]), SocialModule],

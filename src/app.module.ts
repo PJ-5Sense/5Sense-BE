@@ -9,12 +9,12 @@ import { TeacherModule } from './teacher/teacher.module';
 import { StudentModule } from './student/student.module';
 import { LessonModule } from './lesson/lesson.module';
 import { AuthModule } from './auth/auth.module';
-import { CategoryModule } from './lesson/lesson-category/category.module';
 import { AuthGuard } from './common/guards/auth-jwt.guard';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/exception.filter';
 import { LoggerMiddleware } from './common/middleware/http-log.middleware';
-import { RoomModule } from './room/room.module';
+import { RoomModule } from './lesson-room/lesson-room.module';
+import { CategoryModule } from './lesson-category/category.module';
 
 @Module({
   imports: [

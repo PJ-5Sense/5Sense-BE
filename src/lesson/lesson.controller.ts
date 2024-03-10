@@ -3,6 +3,7 @@ import { LessonService } from './lesson.service';
 import { CreateLessonDTO } from './dto/create-lesson.dto';
 import { User } from 'src/common/decorator/user.decorator';
 import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/find-many-lesson.dto';
+import { FindOneLessonDTO } from './dto/find-one-lesson.dto';
 
 @Controller('lessons')
 export class LessonController {
@@ -17,21 +18,34 @@ export class LessonController {
     };
   }
 
-  @Get('/:year/:month')
-  async getLessonsByDate(@Param() findManyLessonDTO: FindManyByDateDTO, @User('centerId') centerId: number) {
-    return {
-      success: true,
-      message: `Successfully retrieved the Lesson list by date`,
-      data: await this.lessonService.getLessonsByDate(findManyLessonDTO, centerId),
-    };
-  }
-
   @Get('filters')
   async getLessonsByFilter(@Query() findManyByFilterDTO: FindManyByFilterDTO, @User('centerId') centerId: number) {
     return {
       success: true,
       message: `Successfully retrieved the Lesson list by applying filter`,
       data: await this.lessonService.getFilteredLessons(findManyByFilterDTO, centerId),
+    };
+  }
+
+  @Get(':lessonId')
+  async getLesson(
+    @User('centerId') centerId: number,
+    @Param('lessonId') lessonId: number,
+    @Query() findOneLessonDTO: FindOneLessonDTO,
+  ) {
+    return {
+      success: true,
+      message: `Successfully retrieved the Lesson information`,
+      data: await this.lessonService.getLesson(lessonId, centerId, findOneLessonDTO),
+    };
+  }
+
+  @Get('/:year/:month')
+  async getLessonsByDate(@Param() findManyLessonDTO: FindManyByDateDTO, @User('centerId') centerId: number) {
+    return {
+      success: true,
+      message: `Successfully retrieved the Lesson list by date`,
+      data: await this.lessonService.getLessonsByDate(findManyLessonDTO, centerId),
     };
   }
 }

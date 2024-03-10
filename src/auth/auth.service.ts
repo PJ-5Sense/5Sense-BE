@@ -165,7 +165,7 @@ export class AuthServiceImpl implements IAuthService {
     // 센터는 하나만 등록되도록 되어있던가, 여러개의 센터일 경우 센터를 선택해서 로그인 하도록 해야함 ( 12/24 )
     // auth 인증 데이터 생성하기 직전에 졸려서 잠
     //auth에 저장할 리프레쉬 토큰이고, userAgent와 userId로 인증정보가 존재하는지 먼저확인할거임(0215)
-    const centerId = user.center[0]?.id ?? null;
+    const centerId = user.centers[0]?.id ?? null;
     const authInfo = await this.authDao.findOneByUserAgent(user.id, userAgent);
 
     const refreshToken = await this.generateRefreshToken({
@@ -209,7 +209,7 @@ export class AuthServiceImpl implements IAuthService {
 
     const accessToken = await this.generateAccessToken({
       userId: userSocialData.userId,
-      centerId: (await this.userService.findOne(userSocialData.userId)).center[0]?.id ?? null,
+      centerId: (await this.userService.findOne(userSocialData.userId)).centers[0]?.id ?? null,
     });
 
     return {

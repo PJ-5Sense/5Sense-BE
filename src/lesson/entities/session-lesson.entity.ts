@@ -1,7 +1,6 @@
 import { CenterEntity } from 'src/center/entities/center.entity';
 import { CategoryEntity } from 'src/lesson-category/entities/category.entity';
-import { DurationLessonRegistrationEntity } from 'src/lesson-registration/entities/duration-registration.entity';
-import { DurationLessonScheduleEntity } from 'src/lesson-schedule/entities/duration-lesson-schedule.entity';
+import { SessionLessonRegistrationEntity } from 'src/lesson-registration/entities/session-registration.entity';
 import { TeacherEntity } from 'src/teacher/entities/teacher.entity';
 import {
   Column,
@@ -14,13 +13,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-export enum LessonType {
-  DURATION = 'duration',
-  SESSION = 'session',
-}
-
-@Entity({ name: 'duration_lesson' })
-export class DurationLessonEntity {
+@Entity({ name: 'session_lesson' })
+export class SessionLessonEntity {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
@@ -35,6 +29,12 @@ export class DurationLessonEntity {
 
   @Column({ name: 'tuition_fee', comment: '클래스 수강료' })
   tuitionFee: number;
+
+  @Column({ type: 'tinyint', comment: '클래스 수강 가능 최대 인원', unsigned: true, default: 0 })
+  capacity: number;
+
+  @Column({ name: 'total_sessions', type: 'tinyint', comment: '클래스 총 회차 수', nullable: false, unsigned: true })
+  totalSessions: number;
 
   @CreateDateColumn({ name: 'created_date' })
   createdDate: Date;
@@ -55,20 +55,14 @@ export class DurationLessonEntity {
   // Relations
   @ManyToOne(() => CenterEntity, center => center.id, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'center_id' })
-  // 센터가 지워지면 삭제가 되는지 확인 ( 하드 딜리트 시 삭제되는지 확인해야함, 소프트는 남는거를 봐야하고)
   center: CenterEntity;
-
-  @OneToMany(() => DurationLessonRegistrationEntity, durationRegistration => durationRegistration.durationLesson, {
-    nullable: false,
-  })
-  durationRegistrations: DurationLessonRegistrationEntity[];
-
-  @OneToMany(() => DurationLessonScheduleEntity, durationSchedule => durationSchedule.durationLesson)
-  durationSchedules: DurationLessonScheduleEntity[];
 
   @ManyToOne(() => TeacherEntity, teacher => teacher.id, { nullable: false })
   @JoinColumn({ name: 'teacher_id' })
   teacher: TeacherEntity;
+
+  @OneToMany(() => SessionLessonRegistrationEntity, sessionRegistration => sessionRegistration.sessionLesson)
+  sessionRegistration: SessionLessonRegistrationEntity[];
 
   @ManyToOne(() => CategoryEntity, category => category.id, { nullable: false })
   @JoinColumn({ name: 'category_id' })
