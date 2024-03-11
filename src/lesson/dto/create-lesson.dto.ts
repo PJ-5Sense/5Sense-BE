@@ -8,10 +8,36 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { LessonType } from '../entities/duration-lesson.entity';
 import { Type } from 'class-transformer';
+import { LessonType } from '../types/lesson.type';
 
 export class DurationLessonDTO {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  memo: string;
+
+  @IsNumber()
+  lessonTime: number;
+
+  @IsNumber()
+  tuitionFee: number;
+
+  @IsNumber()
+  category: { id: number; name: string; parentId: number };
+
+  @IsNumber()
+  teacherId: number;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => DurationScheduleDTO)
+  schedules: DurationScheduleDTO[];
+}
+
+export class DurationScheduleDTO {
   @IsDateString()
   startDate: Date;
 
@@ -28,32 +54,47 @@ export class DurationLessonDTO {
   repeatDate: string;
 
   @IsNumber()
-  capacity: number;
+  LessonRoomId: number;
 }
 
-export class CreateLessonDTO {
+export class SessionLessonDTO {
   @IsString()
   @IsNotEmpty()
   name: string;
-
-  @IsEnum(LessonType)
-  type: LessonType;
 
   @IsString()
   memo: string;
 
   @IsNumber()
+  lessonTime: number;
+
+  @IsNumber()
   tuitionFee: number;
 
-  // 기타 카테고리, 학원에서 직접 추가하는 기능은 개발중
-  @IsObject()
-  category: { id: number; name: string };
+  @IsNumber()
+  capacity: number;
+
+  @IsNumber()
+  totalSessions: number;
+
+  @IsNumber()
+  category: { id: number; name: string; parentId: number };
 
   @IsNumber()
   teacherId: number;
+}
+
+export class CreateLessonDTO {
+  @IsEnum(LessonType)
+  type: LessonType;
 
   @ValidateIf((o: CreateLessonDTO) => o.type === LessonType.DURATION)
   @ValidateNested()
   @Type(() => DurationLessonDTO)
   durationLesson: DurationLessonDTO;
+
+  @ValidateIf((o: CreateLessonDTO) => o.type === LessonType.DURATION)
+  @ValidateNested()
+  @Type(() => SessionLessonDTO)
+  sessionLesson: SessionLessonDTO;
 }

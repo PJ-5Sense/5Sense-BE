@@ -14,11 +14,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-export enum LessonType {
-  DURATION = 'duration',
-  SESSION = 'session',
-}
-
 @Entity({ name: 'duration_lesson' })
 export class DurationLessonEntity {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })

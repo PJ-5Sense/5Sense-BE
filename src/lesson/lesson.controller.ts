@@ -10,11 +10,12 @@ export class LessonController {
   constructor(private readonly lessonService: LessonService) {}
 
   @Post()
-  async create(@Body() createLessonDto: CreateLessonDTO, @User('centerId') centerId: number) {
+  async createLesson(@Body() createLessonDto: CreateLessonDTO, @User('centerId') centerId: number) {
+    await this.lessonService.createLesson(createLessonDto, centerId);
+
     return {
       success: true,
       message: `The Lesson has been successfully registered`,
-      data: await this.lessonService.create(createLessonDto, centerId),
     };
   }
 

@@ -37,7 +37,6 @@ export class DurationLessonScheduleEntity extends HardDeleteBaseEntity {
   @JoinColumn({ name: 'lesson_id' })
   durationLesson: DurationLessonEntity;
 
-  // 룸 설정도 필요함
   @ManyToOne(() => LessonRoomEntity, lessonRoom => lessonRoom.id, {
     nullable: false,
     onDelete: 'CASCADE',

@@ -6,7 +6,7 @@ import { DurationLessonScheduleEntity } from './entities/duration-lesson-schedul
 import { SessionLessonScheduleEntity } from './entities/session-lesson-schedule.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([DurationLessonScheduleEntity, SessionLessonScheduleEntity])],
+  imports: [TypeOrmModule.forFeature([])],
   controllers: [LessonScheduleController],
   providers: [LessonScheduleService],
 })

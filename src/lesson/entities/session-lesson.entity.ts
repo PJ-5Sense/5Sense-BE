@@ -62,7 +62,7 @@ export class SessionLessonEntity {
   teacher: TeacherEntity;
 
   @OneToMany(() => SessionLessonRegistrationEntity, sessionRegistration => sessionRegistration.sessionLesson)
-  sessionRegistration: SessionLessonRegistrationEntity[];
+  sessionRegistrations: SessionLessonRegistrationEntity[];
 
   @ManyToOne(() => CategoryEntity, category => category.id, { nullable: false })
   @JoinColumn({ name: 'category_id' })

@@ -1,30 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLessonDTO } from './dto/create-lesson.dto';
-import { DurationLessonEntity, LessonType } from './entities/duration-lesson.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/find-many-lesson.dto';
 import { FindOneLessonDTO } from './dto/find-one-lesson.dto';
+import { LessonType } from './types/lesson.type';
+import { LessonRepository } from './lesson.repository';
 
 @Injectable()
 export class LessonService {
-  constructor(
-    @InjectRepository(DurationLessonEntity) private readonly durationLessonRepository: Repository<DurationLessonEntity>, // @InjectRepository(LessonRegistrationEntity) // private readonly lessonRegistrationRepository: Repository<LessonRegistrationEntity>,
-  ) {}
-  async create(createLessonDTO: CreateLessonDTO, centerId: number) {
-    const { durationLesson, category, ...commonLessonData } = createLessonDTO;
+  constructor(private readonly lessonRepository: LessonRepository) {}
+  async createLesson(createLessonDTO: CreateLessonDTO, centerId: number) {
     if (createLessonDTO.type === LessonType.DURATION) {
-      // 레슨 정보 저장, 레슨 카테고리 저장, 선생님 정보
-      // const newLessonData = this.lessonRepository.create({ ...commonLessonData, categoryId: category.id, centerId });
-      // const lesson = await this.lessonRepository.save({ ...newLessonData });
-      // return await this.durationLessonRepository.save(
-      // this.durationLessonRepository.create({ ...durationLesson, lesson }),
-      // );
+      return await this.lessonRepository.createDurationLesson(createLessonDTO.durationLesson, centerId);
     }
 
     if (createLessonDTO.type === LessonType.SESSION) {
-      // const newLessonData = this.lessonRepository.create({ ...commonLessonData, categoryId: category.id, centerId });
-      // return await this.lessonRepository.save(newLessonData);
+      return await this.lessonRepository.createSessionLesson(createLessonDTO.sessionLesson, centerId);
     }
   }
 
@@ -38,91 +28,63 @@ export class LessonService {
       .map(() => []);
     const weeks = ['일', '월', '화', '수', '목', '금', '토'];
     const firstWeekDayDates = this.getDatesOfFirstWeekByDay(findManyByDateDTO.year, findManyByDateDTO.month);
+    const [durationLessons, sessionLessons] = await this.lessonRepository.findManyLessonByDate(
+      startDate,
+      endDate,
+      centerId,
+    );
 
-    // const durationLessons = await this.lessonRepository
-    //   .createQueryBuilder('lesson')
-    //   .select(['lesson.id', 'lesson.name', 'lesson.type', 'lesson.lessonTime', 'lesson.tuitionFee'])
-    //   .leftJoin('lesson.durationLessons', 'durationLesson')
-    //   .addSelect([
-    //     'durationLesson.startDate',
-    //     'durationLesson.endDate',
-    //     'durationLesson.startTime',
-    //     'durationLesson.endTime',
-    //     'durationLesson.repeatDate',
-    //   ])
-    //   .leftJoin('lesson.teacher', 'teacher')
-    //   .addSelect(['teacher.name'])
-    //   .where('lesson.type = :type', { type: LessonType.DURATION })
-    //   .andWhere('lesson.centerId = :centerId', { centerId })
-    //   .andWhere('durationLesson.startDate <= :endDate AND durationLesson.endDate >= :startDate', { startDate, endDate })
-    //   .getMany();
+    for (const durationLesson of durationLessons) {
+      for (const schedule of durationLesson.durationSchedules) {
+        const startDay =
+          startDate < schedule.startDate ? Number(schedule.startDate.toString().slice(8, 10)) : startDayOfMonth;
 
-    // const sessionLessons = await this.lessonRepository
-    //   .createQueryBuilder('lesson')
-    //   .select(['lesson.id', 'lesson.name', 'lesson.type', 'lesson.lessonTime', 'lesson.tuitionFee'])
-    //   .leftJoin('lesson.lessonRegistrations', 'lessonRegistration')
-    //   .addSelect([
-    //     'lessonRegistration.startDate',
-    //     'lessonRegistration.endDate',
-    //     'lessonRegistration.startTime',
-    //     'lessonRegistration.endTime',
-    //   ])
-    //   .leftJoin('lesson.teacher', 'teacher')
-    //   .addSelect(['teacher.name'])
-    //   .where('lesson.type = :type', { type: LessonType.SESSION })
-    //   .andWhere('lesson.centerId = :centerId', { centerId })
-    //   .andWhere('lessonRegistration.startDate <= :endDate AND lessonRegistration.endDate >= :startDate', {
-    //     startDate,
-    //     endDate,
-    //   })
-    //   .andWhere('lessonRegistration.id IS NOT NULL')
-    //   .getMany();
+        const lessonData = {
+          id: durationLesson.id,
+          type: LessonType.DURATION,
+          name: durationLesson.name,
+          lessonTime: durationLesson.lessonTime,
+          memo: durationLesson.memo,
+          startTime: schedule.startTime,
+          teacher: durationLesson.teacher.name,
+          numberOfStudents: durationLesson.durationRegistrations.length,
+          room: schedule.lessonRoom.name,
+        };
 
-    // const lessons = [...durationLessons, ...sessionLessons];
-    // for (let i = 0; i < lessons.length; i++) {
-    //   if (lessons[i].durationLessons) {
-    //     for (const durationLesson of lessons[i].durationLessons) {
-    //       const startDay =
-    //         startDate < durationLesson.startDate
-    //           ? Number(durationLesson.startDate.toString().slice(8, 10))
-    //           : startDayOfMonth;
+        for (const day of schedule.repeatDate.split(',')) {
+          const index = weeks.indexOf(day);
+          let startDayDate = this.getStartDayDate(firstWeekDayDates[index], startDay);
 
-    //       for (const day of durationLesson.repeatDate.split(',')) {
-    //         const index = weeks.indexOf(day);
-    //         let startDayDate = this.getStartDayDate(firstWeekDayDates[index], startDay);
+          while (startDayDate < lastDayOfMonth) {
+            monthArray[startDayDate].push(lessonData);
 
-    //         while (startDayDate < lastDayOfMonth) {
-    //           const lessonData = {
-    //             id: lessons[i].id,
-    //             type: lessons[i].type,
-    //             name: lessons[i].name,
-    //             startTime: durationLesson.startTime,
-    //             lessonTime: lessons[i].lessonTime,
-    //             teacher: lessons[i].teacher.name,
-    //           };
+            startDayDate += 7;
+          }
+        }
+      }
+    }
 
-    //           monthArray[startDayDate].push(lessonData);
+    for (const sessionLesson of sessionLessons) {
+      for (const sessionRegistration of sessionLesson.sessionRegistrations) {
+        for (const schedule of sessionRegistration.sessionSchedules) {
+          const lessonData = {
+            id: sessionLesson.id,
+            type: LessonType.SESSION,
+            name: sessionLesson.name,
+            lessonTime: sessionLesson.lessonTime,
+            memo: sessionLesson.memo,
+            startTime: schedule.startTime,
+            teacher: sessionLesson.teacher.name,
+            numberOfStudents: sessionLesson.sessionRegistrations.length,
+            room: schedule.lessonRoom.name,
+          };
 
-    //           startDayDate += 7;
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //     for (const sessionLesson of lessons[i].lessonRegistrations) {
-    //       const lessonData = {
-    //         id: lessons[i].id,
-    //         type: lessons[i].type,
-    //         name: lessons[i].name,
-    //         startTime: sessionLesson.startTime,
-    //         lessonTime: lessons[i].lessonTime,
-    //         teacher: lessons[i].teacher.name,
-    //       };
+          monthArray[Number(schedule.SessionDate.toString().slice(8, 10)) - 1].push(lessonData);
+        }
+      }
+    }
 
-    //       monthArray[Number(sessionLesson.startDate.toString().slice(8, 10)) - 1].push(lessonData);
-    //     }
-    //   }
-    // }
-    // return monthArray;
+    return monthArray;
   }
 
   async getFilteredLessons(findManyLessonDTO: FindManyByFilterDTO, centerId: number) {

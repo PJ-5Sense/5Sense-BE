@@ -32,6 +32,8 @@ export class CenterEntity {
   @Column({ comment: '프로필 이미지, 없을 시 기본 이미지 배정', nullable: true })
   profile: string;
 
+  // 오픈시간과 종료시간 컬럼 필요함
+
   @CreateDateColumn({ name: 'created_date' })
   createdDate: Date;
 

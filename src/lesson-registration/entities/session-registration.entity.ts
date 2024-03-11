@@ -36,5 +36,5 @@ export class SessionLessonRegistrationEntity {
   student: StudentEntity;
 
   @OneToMany(() => SessionLessonScheduleEntity, sessionLessonSchedule => sessionLessonSchedule.sessionRegistration)
-  sessionLessonSchedules: SessionLessonScheduleEntity[];
+  sessionSchedules: SessionLessonScheduleEntity[];
 }

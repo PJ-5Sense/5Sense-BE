@@ -5,7 +5,7 @@ import { DurationLessonRegistrationEntity } from './entities/duration-registrati
 import { SessionLessonRegistrationEntity } from './entities/session-registration.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([DurationLessonRegistrationEntity, SessionLessonRegistrationEntity])],
+  imports: [TypeOrmModule.forFeature([])],
   providers: [LessonRegistrationService],
   exports: [LessonRegistrationService],
 })
