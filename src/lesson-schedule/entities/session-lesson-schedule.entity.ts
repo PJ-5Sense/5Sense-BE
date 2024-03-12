@@ -7,8 +7,8 @@ export class SessionLessonScheduleEntity {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
 
-  @Column({ type: 'datetime', precision: 6, name: 'start_date', comment: '회차반 수업날' })
-  SessionDate: Date;
+  @Column({ type: 'datetime', precision: 6, name: 'session_date', comment: '회차반 수업날' })
+  sessionDate: Date;
 
   @Column({ type: 'time', name: 'start_time', comment: '클래스 시작시간' })
   startTime: string;

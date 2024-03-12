@@ -79,7 +79,7 @@ export class LessonService {
             room: schedule.lessonRoom.name,
           };
 
-          monthArray[Number(schedule.SessionDate.toString().slice(8, 10)) - 1].push(lessonData);
+          monthArray[Number(schedule.sessionDate.toString().slice(8, 10)) - 1].push(lessonData);
         }
       }
     }
@@ -209,6 +209,10 @@ export class LessonService {
     //       teacher: { id: lesson.teacher.id, name: lesson.teacher.name },
     //     };
     //   }
+  }
+
+  async lessonview() {
+    return await this.lessonRepository.test();
   }
 }
 // include student = false

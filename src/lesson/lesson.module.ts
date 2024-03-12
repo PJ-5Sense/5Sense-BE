@@ -10,6 +10,7 @@ import { DurationLessonRegistrationEntity } from 'src/lesson-registration/entiti
 import { SessionLessonScheduleEntity } from 'src/lesson-schedule/entities/session-lesson-schedule.entity';
 import { DurationLessonScheduleEntity } from 'src/lesson-schedule/entities/duration-lesson-schedule.entity';
 import { LessonRepository } from './lesson.repository';
+import { LessonViewEntity } from './entities/lesson-view.entity';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { LessonRepository } from './lesson.repository';
       SessionLessonRegistrationEntity,
       DurationLessonScheduleEntity,
       SessionLessonScheduleEntity,
+      LessonViewEntity,
     ]),
     CategoryModule,
   ],

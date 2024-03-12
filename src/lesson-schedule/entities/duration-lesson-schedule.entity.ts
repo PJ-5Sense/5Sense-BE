@@ -1,11 +1,13 @@
-import { HardDeleteBaseEntity } from 'src/database/base.entity';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { DurationLessonEntity } from '../../lesson/entities/duration-lesson.entity';
 import { LessonRoomEntity } from 'src/lesson-room/entities/lesson-room.entity';
 
 // 1:N으로 데이터 설계 변경해야함
 @Entity({ name: 'duration_lesson_schedule' })
-export class DurationLessonScheduleEntity extends HardDeleteBaseEntity {
+export class DurationLessonScheduleEntity {
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
+  id: number;
+
   @Column({ type: 'datetime', precision: 6, name: 'start_date', comment: '클래스 시작일' })
   startDate: Date;
 
@@ -20,6 +22,9 @@ export class DurationLessonScheduleEntity extends HardDeleteBaseEntity {
 
   @Column({ name: 'repeat_date', comment: '반복 요일 ex) 월, 화, 수' })
   repeatDate: string;
+
+  @CreateDateColumn({ name: 'created_date' })
+  createdDate: Date;
 
   // Relation columns
   @Column({ name: 'lesson_id', nullable: false, unsigned: true })

@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DurationLessonScheduleEntity } from 'src/lesson-schedule/entities/duration-lesson-schedule.entity';
 import { SessionLessonEntity } from './entities/session-lesson.entity';
+import { LessonViewEntity } from './entities/lesson-view.entity';
 
 @Injectable()
 export class LessonRepository {
@@ -13,6 +14,7 @@ export class LessonRepository {
     @InjectRepository(DurationLessonScheduleEntity)
     private readonly durationScheduleDAO: Repository<DurationLessonScheduleEntity>,
     @InjectRepository(SessionLessonEntity) private readonly sessionLessonDAO: Repository<SessionLessonEntity>,
+    @InjectRepository(LessonViewEntity) private readonly lessonViewDAO: Repository<LessonViewEntity>,
   ) {}
 
   /**
@@ -95,4 +97,8 @@ export class LessonRepository {
   }
 
   async findManyLessonByFilter(startDate: Date, endDate: Date, centerId: number) {}
+
+  async test() {
+    return await this.lessonViewDAO.find();
+  }
 }
