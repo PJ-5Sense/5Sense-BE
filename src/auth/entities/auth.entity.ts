@@ -1,22 +1,25 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { HardDeleteBaseEntity } from 'src/database/base.entity';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 
-/**
- * 유저 접속 정보
- *
- */
 @Entity({ name: 'auth' })
-export class AuthEntity extends HardDeleteBaseEntity {
+export class AuthEntity {
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
+  id: number;
+
   @Column({ name: 'app_refresh_token', nullable: true })
   appRefreshToken: string;
 
   @Column({ name: 'user_agent', nullable: true })
   userAgent: string;
 
-  @Column({ name: 'user_id', type: 'bigint', unsigned: true, nullable: false })
+  @CreateDateColumn({ name: 'created_date' })
+  createdDate: Date;
+
+  // Relation columns
+  @Column({ name: 'user_id', type: 'int', unsigned: true, nullable: false })
   userId: number;
 
+  // Relations
   @ManyToOne(() => UserEntity, user => user.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;

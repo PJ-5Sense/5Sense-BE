@@ -2,17 +2,30 @@ import { Module } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { LessonController } from './lesson.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LessonEntity } from './entities/lesson.entity';
-import { LessonRegistrationModule } from 'src/lesson/lesson-registration/lesson-registration.module';
 import { DurationLessonEntity } from './entities/duration-lesson.entity';
-import { LessonRegistrationEntity } from './lesson-registration/entities/lesson-registration.entity';
+import { SessionLessonEntity } from './entities/session-lesson.entity';
+import { CategoryModule } from 'src/lesson-category/category.module';
+import { SessionLessonRegistrationEntity } from 'src/lesson-registration/entities/session-registration.entity';
+import { DurationLessonRegistrationEntity } from 'src/lesson-registration/entities/duration-registration.entity';
+import { SessionLessonScheduleEntity } from 'src/lesson-schedule/entities/session-lesson-schedule.entity';
+import { DurationLessonScheduleEntity } from 'src/lesson-schedule/entities/duration-lesson-schedule.entity';
+import { LessonRepository } from './lesson.repository';
+import { LessonViewEntity } from './entities/lesson-view.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([LessonEntity, DurationLessonEntity, LessonRegistrationEntity]),
-    LessonRegistrationModule,
+    TypeOrmModule.forFeature([
+      DurationLessonEntity,
+      SessionLessonEntity,
+      DurationLessonRegistrationEntity,
+      SessionLessonRegistrationEntity,
+      DurationLessonScheduleEntity,
+      SessionLessonScheduleEntity,
+      LessonViewEntity,
+    ]),
+    CategoryModule,
   ],
   controllers: [LessonController],
-  providers: [LessonService],
+  providers: [LessonService, LessonRepository],
 })
 export class LessonModule {}

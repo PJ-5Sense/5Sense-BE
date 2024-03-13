@@ -1,4 +1,4 @@
-import { CategoryEntity } from 'src/lesson/lesson-category/entities/category.entity';
+import { CategoryEntity } from 'src/lesson-category/entities/category.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 
@@ -6,7 +6,7 @@ export default class Category1702021555297 implements Seeder {
   track = false;
 
   public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<any> {
-    const major = ['미술', '보컬', '댄스', '악기 연주', '체육', '작곡 프로듀싱', '공연', '연기'];
+    const major = ['미술', '보컬', '댄스', '악기 연주', '체육', '작곡 프로듀싱', '공연', '연기', '기타']; // 대분류의 기타는 9번으로 고정
     const sub = [
       ['아크릴화', '수채화', '유화', '디지털 드로잉', '이색 드로잉', '캘리그라피'],
       ['재즈', '실용음악', '뮤지컬'],

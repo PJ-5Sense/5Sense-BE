@@ -3,7 +3,7 @@ import { CreateSocial, CreateUser } from './types/create-user.type';
 import { UserEntity } from './entities/user.entity';
 import { IUserService } from './user.service.interface';
 import { IUserDao, USER_DAO } from './dao/user.dao.interface';
-import { SocialService } from './social/social.service';
+import { SocialService } from '../social/social.service';
 import { SocialType } from 'src/auth/types/social.type';
 
 @Injectable()
