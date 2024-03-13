@@ -56,17 +56,18 @@ export default class LessonSeed1702051029391 implements Seeder {
       // 레슨 정보 저장
       const savedLesson = await durationLessonFactory.save(lesson);
       // 레슨의 등록생 저장하기 열명정도?
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 5; i++) {
         await durationRegistrationFactory.save({
           durationLesson: savedLesson,
           studentId: studentIds[faker.number.int({ min: 4, max: 28 }) % studentIds.length],
           paymentStatus: PaymentStatus.UNPAID,
         });
       }
+
       // 일정 저장하기 하나의 스케쥴에 한개씩 넣어보자
       await durationScheduleFactory.save({
         durationLesson: savedLesson,
-        repeatDays: repeatDays,
+        repeatDate: repeatDays.join(','),
         startDate: startDate,
         endDate: endDate,
         startTime: startTime,

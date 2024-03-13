@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DurationLessonScheduleEntity } from 'src/lesson-schedule/entities/duration-lesson-schedule.entity';
 import { SessionLessonEntity } from './entities/session-lesson.entity';
 import { LessonViewEntity } from './entities/lesson-view.entity';
+import { FindManyByFilterDTO } from './dto/find-many-lesson.dto';
 
 @Injectable()
 export class LessonRepository {
@@ -73,7 +74,7 @@ export class LessonRepository {
       .innerJoin('L.durationRegistrations', 'D_R') // D_R = duration lesson registration, 학생 수 계산하기 위해서 가져오기
       .addSelect(['D_R.id'])
       .where('L.centerId = :centerId', { centerId })
-      .andWhere('S.startDate <= :endDate AND S.endDate >= :startDate', { startDate, endDate })
+      .andWhere('D_S.startDate <= :endDate AND D_S.endDate >= :startDate', { startDate, endDate })
       .getMany();
 
     const sessionLessons = await this.sessionLessonDAO
@@ -83,11 +84,11 @@ export class LessonRepository {
       .addSelect(['T.id', 'T.name'])
       .innerJoin('L.sessionRegistrations', 'S_R') // S_R = session registration
       .addSelect(['S_R.id'])
-      .innerJoin('R.sessionSchedules', 'S_S') // S_S = session schedule
-      .addSelect(['S_S.SessionDate', 'S_S.startTime'])
+      .innerJoin('S_R.sessionSchedules', 'S_S') // S_S = session schedule
+      .addSelect(['S_S.sessionDate', 'S_S.startTime'])
       .innerJoin('S_S.lessonRoom', 'L_R') // L_R = lesson room
-      .where('lesson.centerId = :centerId', { centerId })
-      .andWhere('S_S.SessionDate <= :endDate AND S_S.SessionDate >= :startDate', {
+      .where('L.centerId = :centerId', { centerId })
+      .andWhere('S_S.sessionDate <= :endDate AND S_S.sessionDate >= :startDate', {
         startDate,
         endDate,
       })
@@ -96,9 +97,30 @@ export class LessonRepository {
     return [durationLessons, sessionLessons];
   }
 
-  async findManyLessonByFilter(startDate: Date, endDate: Date, centerId: number) {}
+  async findManyLessonByFilter(findManyByFilterDTO: FindManyByFilterDTO, centerId: number) {
+    const { type, teachers, categories } = findManyByFilterDTO;
 
-  async test() {
-    return await this.lessonViewDAO.find();
+    const queryBuilder = this.lessonViewDAO
+      .createQueryBuilder('L')
+      .where('L.centerId = :centerId', { centerId })
+      .select(['L.id', 'L.name', 'L.type', 'L.name', 'L.teacher', 'L.category', 'L.numberOfStudents', 'L.createdDate']);
+
+    if (type !== 'all') {
+      queryBuilder.andWhere('L.type = :type', { type });
+    }
+
+    if (teachers.length > 0) {
+      queryBuilder.andWhere('L.teacherId IN (:teachers)', { teachers });
+    }
+
+    if (categories.length > 0) {
+      queryBuilder.andWhere('L.categoryId IN (:categories)', { categories });
+    }
+
+    return await queryBuilder
+      .offset(findManyByFilterDTO.getSkip())
+      .limit(findManyByFilterDTO.getTake())
+      .orderBy(`L.createdDate`, 'DESC')
+      .getManyAndCount();
   }
 }

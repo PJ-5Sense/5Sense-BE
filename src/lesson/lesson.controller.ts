@@ -49,11 +49,4 @@ export class LessonController {
       data: await this.lessonService.getLessonsByDate(findManyLessonDTO, centerId),
     };
   }
-
-  @Get('test/le/qqq')
-  async viewTest() {
-    return {
-      data: await this.lessonService.lessonview(),
-    };
-  }
 }
