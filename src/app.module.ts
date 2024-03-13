@@ -13,7 +13,7 @@ import { AuthGuard } from './common/guards/auth-jwt.guard';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/exception.filter';
 import { LoggerMiddleware } from './common/middleware/http-log.middleware';
-import { RoomModule } from './lesson-room/lesson-room.module';
+import { LessonRoomModule } from './lesson-room/lesson-room.module';
 import { CategoryModule } from './lesson-category/category.module';
 
 @Module({
@@ -28,7 +28,7 @@ import { CategoryModule } from './lesson-category/category.module';
     TeacherModule,
     CategoryModule,
     CenterModule,
-    RoomModule,
+    LessonRoomModule,
   ],
   controllers: [AppController],
   providers: [

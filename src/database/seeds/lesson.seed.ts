@@ -8,7 +8,6 @@ import { SessionLessonScheduleEntity } from 'src/lesson-schedule/entities/sessio
 import { DurationLessonEntity } from 'src/lesson/entities/duration-lesson.entity';
 import { SessionLessonEntity } from 'src/lesson/entities/session-lesson.entity';
 import { PaymentStatus } from 'src/lesson/types/lesson-payment-status.type';
-import { LessonType } from 'src/lesson/types/lesson.type';
 import { StudentEntity } from 'src/student/entities/student.entity';
 import { TeacherEntity } from 'src/teacher/entities/teacher.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
