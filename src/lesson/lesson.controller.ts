@@ -36,8 +36,8 @@ export class LessonController {
   ) {
     return {
       success: true,
-      message: `Successfully retrieved the Lesson information`,
-      data: await this.lessonService.getLesson(lessonId, centerId, findOneLessonDTO),
+      message: `Successfully retrieved the details of the Lesson information`,
+      data: await this.lessonService.getLessonDetails(lessonId, centerId, findOneLessonDTO),
     };
   }
 
@@ -49,8 +49,8 @@ export class LessonController {
   ) {
     return {
       success: true,
-      message: `Successfully retrieved the Lesson information`,
-      data: await this.lessonService.getLesson(lessonId, centerId, findOneLessonDTO),
+      message: `Successfully retrieved the Lesson information for editing`,
+      data: await this.lessonService.getLessonForEdit(lessonId, centerId, findOneLessonDTO),
     };
   }
 

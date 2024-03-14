@@ -164,4 +164,36 @@ export class LessonRepository {
         .getOne();
     }
   }
+
+  async getLessonForEdit(id: number, centerId: number, type: LessonType) {
+    if (type === LessonType.DURATION) {
+      return await this.durationLessonDAO
+        .createQueryBuilder('L')
+        .select(['L.id', 'L.name', 'L.memo, L.tuitionFee'])
+        .innerJoin('L.durationSchedules', 'D_S')
+        .addSelect(['D_S.startDate', 'D_S.endDate', 'D_S.startTime', 'D_S.endTime', 'D_S.repeatDate'])
+        .innerJoin('D_S.lessonRoom', 'R')
+        .addSelect(['R.name'])
+        .innerJoin('L.teacher', 'T')
+        .addSelect(['T.name'])
+        .innerJoin('L.category', 'C')
+        .addSelect(['C.name'])
+        .where('L.id = :id', { id })
+        .andWhere('L.centerId = :centerId', { centerId })
+        .getOne();
+    }
+
+    if (type === LessonType.SESSION) {
+      return await this.sessionLessonDAO
+        .createQueryBuilder('L')
+        .select(['L.id', 'L.name', 'L.memo', 'L.lessonTime', 'L.tuitionFee', 'L.capacity', 'L.totalSessions'])
+        .innerJoin('L.teacher', 'T')
+        .addSelect(['T.name'])
+        .innerJoin('L.category', 'C')
+        .addSelect(['C.name'])
+        .where('L.id = :id', { id })
+        .andWhere('L.centerId = :centerId', { centerId })
+        .getOne();
+    }
+  }
 }

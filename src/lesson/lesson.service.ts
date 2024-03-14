@@ -102,7 +102,7 @@ export class LessonService {
     };
   }
 
-  async getLesson(id: number, centerId: number, findOneLessonDTO: FindOneLessonDTO) {
+  async getLessonDetails(id: number, centerId: number, findOneLessonDTO: FindOneLessonDTO) {
     const lesson = await this.lessonRepository.findOneDetails(id, centerId, findOneLessonDTO.type);
 
     if (lesson instanceof DurationLessonEntity) {
@@ -148,6 +148,47 @@ export class LessonService {
             sessionCount: `${registration.sessionSchedules.length}/${lesson.totalSessions}`,
           };
         }),
+      };
+    }
+  }
+
+  async getLessonForEdit(id: number, centerId: number, findOneLessonDTO: FindOneLessonDTO) {
+    const lesson = await this.lessonRepository.getLessonForEdit(id, centerId, findOneLessonDTO.type);
+
+    if (lesson instanceof DurationLessonEntity) {
+      return {
+        id: lesson.id,
+        name: lesson.name,
+        memo: lesson.memo,
+        type: LessonType.DURATION,
+        tuitionFee: lesson.tuitionFee,
+        teacher: lesson.teacher.name,
+        category: lesson.category.name,
+        durationSchedules: lesson.durationSchedules.map(schedule => {
+          return {
+            startDate: schedule.startDate,
+            endDate: schedule.endDate,
+            startTime: schedule.startTime,
+            endTime: schedule.endTime,
+            repeatDate: schedule.repeatDate,
+            room: schedule.lessonRoom.name,
+          };
+        }),
+      };
+    }
+
+    if (lesson instanceof SessionLessonEntity) {
+      return {
+        id: lesson.id,
+        name: lesson.name,
+        memo: lesson.memo,
+        type: LessonType.SESSION,
+        lessonTime: lesson.lessonTime,
+        tuitionFee: lesson.tuitionFee,
+        capacity: lesson.capacity,
+        totalSessions: lesson.totalSessions,
+        teacher: lesson.teacher.name,
+        category: lesson.category.name,
       };
     }
   }
