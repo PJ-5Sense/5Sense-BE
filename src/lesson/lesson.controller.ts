@@ -20,7 +20,7 @@ export class LessonController {
   }
 
   @Get('filters')
-  async getLessonsByFilter(@Query() findManyByFilterDTO: FindManyByFilterDTO, @User('centerId') centerId: number) {
+  async findLessonsByFilter(@Query() findManyByFilterDTO: FindManyByFilterDTO, @User('centerId') centerId: number) {
     return {
       success: true,
       message: `Successfully retrieved the Lesson list by applying filter`,
@@ -28,8 +28,21 @@ export class LessonController {
     };
   }
 
-  @Get(':lessonId')
-  async getLesson(
+  @Get(':lessonId/details')
+  async findLessonDetails(
+    @User('centerId') centerId: number,
+    @Param('lessonId') lessonId: number,
+    @Query() findOneLessonDTO: FindOneLessonDTO,
+  ) {
+    return {
+      success: true,
+      message: `Successfully retrieved the Lesson information`,
+      data: await this.lessonService.getLesson(lessonId, centerId, findOneLessonDTO),
+    };
+  }
+
+  @Get(':lessonId/edit')
+  async findLessonInfoForEdit(
     @User('centerId') centerId: number,
     @Param('lessonId') lessonId: number,
     @Query() findOneLessonDTO: FindOneLessonDTO,

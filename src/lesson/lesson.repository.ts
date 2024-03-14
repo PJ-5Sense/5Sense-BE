@@ -7,14 +7,15 @@ import { DurationLessonScheduleEntity } from 'src/lesson-schedule/entities/durat
 import { SessionLessonEntity } from './entities/session-lesson.entity';
 import { LessonViewEntity } from './entities/lesson-view.entity';
 import { FindManyByFilterDTO } from './dto/find-many-lesson.dto';
+import { LessonType } from './types/lesson.type';
 
 @Injectable()
 export class LessonRepository {
   constructor(
     @InjectRepository(DurationLessonEntity) private readonly durationLessonDAO: Repository<DurationLessonEntity>,
+    @InjectRepository(SessionLessonEntity) private readonly sessionLessonDAO: Repository<SessionLessonEntity>,
     @InjectRepository(DurationLessonScheduleEntity)
     private readonly durationScheduleDAO: Repository<DurationLessonScheduleEntity>,
-    @InjectRepository(SessionLessonEntity) private readonly sessionLessonDAO: Repository<SessionLessonEntity>,
     @InjectRepository(LessonViewEntity) private readonly lessonViewDAO: Repository<LessonViewEntity>,
   ) {}
 
@@ -122,5 +123,45 @@ export class LessonRepository {
       .limit(findManyByFilterDTO.getTake())
       .orderBy(`L.createdDate`, 'DESC')
       .getManyAndCount();
+  }
+
+  async findOneDetails(id: number, centerId: number, type: LessonType) {
+    if (type === LessonType.DURATION) {
+      return await this.durationLessonDAO
+        .createQueryBuilder('L')
+        .select(['L.id', 'L.name', 'L.memo'])
+        .innerJoin('L.durationRegistrations', 'D_R')
+        .addSelect(['D_R.id', 'D_R.student'])
+        .innerJoin('D_R.student', 'S')
+        .addSelect(['S.name', 'S.phone'])
+        .innerJoin('L.durationSchedules', 'D_S')
+        .addSelect(['D_S.startDate', 'D_S.endDate', 'D_S.startTime', 'D_S.endTime', 'D_S.repeatDate'])
+        .innerJoin('L.teacher', 'T')
+        .addSelect(['T.name'])
+        .innerJoin('L.category', 'C')
+        .addSelect(['C.name'])
+        .where('L.id = :id', { id })
+        .andWhere('L.centerId = :centerId', { centerId })
+        .getOne();
+    }
+
+    if (type === LessonType.SESSION) {
+      return await this.sessionLessonDAO
+        .createQueryBuilder('L')
+        .select(['L.id', 'L.name', 'L.memo', 'L.totalSessions'])
+        .innerJoin('L.sessionRegistrations', 'S_R')
+        .addSelect(['S_R.id', 'S_R.student'])
+        .innerJoin('S_R.student', 'S')
+        .addSelect(['S.name', 'S.phone'])
+        .innerJoin('S_R.sessionSchedules', 'S_S')
+        .addSelect(['S_S.id'])
+        .innerJoin('L.teacher', 'T')
+        .addSelect(['T.name'])
+        .innerJoin('L.category', 'C')
+        .addSelect(['C.name'])
+        .where('L.id = :id', { id })
+        .andWhere('L.centerId = :centerId', { centerId })
+        .getOne();
+    }
   }
 }

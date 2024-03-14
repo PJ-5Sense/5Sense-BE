@@ -4,6 +4,8 @@ import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/find-many-lesson.d
 import { FindOneLessonDTO } from './dto/find-one-lesson.dto';
 import { LessonType } from './types/lesson.type';
 import { LessonRepository } from './lesson.repository';
+import { DurationLessonEntity } from './entities/duration-lesson.entity';
+import { SessionLessonEntity } from './entities/session-lesson.entity';
 
 @Injectable()
 export class LessonService {
@@ -100,6 +102,60 @@ export class LessonService {
     };
   }
 
+  async getLesson(id: number, centerId: number, findOneLessonDTO: FindOneLessonDTO) {
+    const lesson = await this.lessonRepository.findOneDetails(id, centerId, findOneLessonDTO.type);
+
+    if (lesson instanceof DurationLessonEntity) {
+      return {
+        id: lesson.id,
+        name: lesson.name,
+        memo: lesson.memo,
+        type: LessonType.DURATION,
+        teacher: lesson.teacher.name,
+        category: lesson.category.name,
+        numberOfStudents: lesson.durationRegistrations.length,
+        registeredStudent: lesson.durationRegistrations.map(registration => {
+          return {
+            name: registration.student.name,
+            phone: registration.student.phone,
+            lessonDuration: lesson.durationSchedules.map(schedule => {
+              return {
+                startDate: schedule.startDate,
+                endDate: schedule.endDate,
+                startTime: schedule.startTime,
+                endTime: schedule.endTime,
+                repeatDate: schedule.repeatDate,
+              };
+            }),
+          };
+        }),
+      };
+    }
+
+    if (lesson instanceof SessionLessonEntity) {
+      return {
+        id: lesson.id,
+        name: lesson.name,
+        memo: lesson.memo,
+        type: LessonType.SESSION,
+        teacher: lesson.teacher.name,
+        category: lesson.category.name,
+        numberOfStudents: lesson.sessionRegistrations.length,
+        registeredStudent: lesson.sessionRegistrations.map(registration => {
+          return {
+            name: registration.student.name,
+            phone: registration.student.phone,
+            sessionCount: `${registration.sessionSchedules.length}/${lesson.totalSessions}`,
+          };
+        }),
+      };
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////                                Private Section                             ////
+  ////////////////////////////////////////////////////////////////////////////////////
+
   /**
    * 요일 별 첫 주 날짜 가져오기 함수
    *
@@ -107,7 +163,7 @@ export class LessonService {
    * @param {number} month 2
    * @returns {number[]} [4, 5, 6, 7, 1, 2, 3] = [일, 월, 화, 수, 목, 금, 토]
    */
-  getDatesOfFirstWeekByDay(year: number, month: number) {
+  private getDatesOfFirstWeekByDay(year: number, month: number) {
     const result = new Array(7).fill(null); // 일주일 배열 생성
     const firstDayOfMonth = new Date(year, month - 1, 1).getDay(); // 1일의 요일을 가져오기
 
@@ -118,7 +174,7 @@ export class LessonService {
     return result;
   }
 
-  getStartDayDate(firstDayDateOfMonth: number, startDayDate: number) {
+  private getStartDayDate(firstDayDateOfMonth: number, startDayDate: number) {
     while (firstDayDateOfMonth < startDayDate) {
       firstDayDateOfMonth += 7;
     }
@@ -126,6 +182,4 @@ export class LessonService {
     // 배열 0번째는 1일을 의미하여 첫 시작날에 -1을 계산해서 리턴하도록 함
     return firstDayDateOfMonth - 1;
   }
-
-  async getLesson(id: number, centerId: number, findOneLessonDTO: FindOneLessonDTO) {}
 }

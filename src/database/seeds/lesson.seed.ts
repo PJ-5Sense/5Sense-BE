@@ -66,7 +66,7 @@ export default class LessonSeed1702051029391 implements Seeder {
       // 일정 저장하기 하나의 스케쥴에 한개씩 넣어보자
       await durationScheduleFactory.save({
         durationLesson: savedLesson,
-        repeatDate: repeatDays.join(','),
+        repeatDate: [...new Set(repeatDays)].join(','),
         startDate: startDate,
         endDate: endDate,
         startTime: startTime,

@@ -1,8 +1,7 @@
-import { Type } from 'class-transformer';
-import { IsBoolean } from 'class-validator';
+import { IsEnum } from 'class-validator';
+import { LessonType } from '../types/lesson.type';
 
 export class FindOneLessonDTO {
-  @IsBoolean()
-  @Type(() => Boolean)
-  includeStudents: boolean;
+  @IsEnum(LessonType)
+  type: LessonType;
 }
