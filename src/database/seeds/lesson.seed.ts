@@ -23,7 +23,7 @@ export default class LessonSeed1702051029391 implements Seeder {
     const centerId = (await dataSource.getRepository(CenterEntity).findOneBy({ userId })).id;
     const teacherIds = (await dataSource.getRepository(TeacherEntity).find({ where: { centerId } })).map(t => t.id);
     const studentIds = (await dataSource.getRepository(StudentEntity).find({ where: { centerId } })).map(s => s.id);
-    const categories = (await dataSource.getRepository(CategoryEntity).find()).map(c => c.id);
+    const categories = (await dataSource.getRepository(CategoryEntity).find()).filter(c => c.parentId).map(c => c.id);
     const durationLessonFactory = dataSource.getRepository(DurationLessonEntity);
     const durationRegistrationFactory = dataSource.getRepository(DurationLessonRegistrationEntity);
     const durationScheduleFactory = dataSource.getRepository(DurationLessonScheduleEntity);
