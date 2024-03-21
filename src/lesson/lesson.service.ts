@@ -6,16 +6,31 @@ import { LessonType } from './types/lesson.type';
 import { LessonRepository } from './lesson.repository';
 import { DurationLessonEntity } from './entities/duration-lesson.entity';
 import { SessionLessonEntity } from './entities/session-lesson.entity';
+import { LessonCategoryService } from 'src/lesson-category/category.service';
 
 @Injectable()
 export class LessonService {
-  constructor(private readonly lessonRepository: LessonRepository) {}
+  constructor(
+    private readonly lessonRepository: LessonRepository,
+    private readonly lessonCategoryService: LessonCategoryService,
+  ) {}
   async createLesson(createLessonDTO: CreateLessonDTO, centerId: number) {
     if (createLessonDTO.type === LessonType.DURATION) {
+      // 카테고리가 대분류 기타라면 존재하는지 확인 하는 처리
+      if (!createLessonDTO.durationLesson.category.id && createLessonDTO.durationLesson.category.parentId === 9) {
+        createLessonDTO.durationLesson.category.id = await this.lessonCategoryService.processEtceteraCategory(
+          createLessonDTO.durationLesson.category.name,
+        );
+      }
       return await this.lessonRepository.createDurationLesson(createLessonDTO.durationLesson, centerId);
     }
 
     if (createLessonDTO.type === LessonType.SESSION) {
+      if (!createLessonDTO.durationLesson.category.id && createLessonDTO.durationLesson.category.parentId === 9) {
+        createLessonDTO.durationLesson.category.id = await this.lessonCategoryService.processEtceteraCategory(
+          createLessonDTO.durationLesson.category.name,
+        );
+      }
       return await this.lessonRepository.createSessionLesson(createLessonDTO.sessionLesson, centerId);
     }
   }
@@ -112,21 +127,22 @@ export class LessonService {
         memo: lesson.memo,
         type: LessonType.DURATION,
         teacher: lesson.teacher.name,
-        category: lesson.category.name,
+        mainCategory: lesson.category.parentId ? lesson.category.parentName : lesson.category.name,
+        subCategory: lesson.category.parentId ? lesson.category.name : null,
+        duration: `${lesson.durationSchedules[0].startDate} ~ ${lesson.durationSchedules[0].endDate}`,
+        lessonDurations: lesson.durationSchedules.map(schedule => {
+          return {
+            startTime: schedule.startTime,
+            endTime: schedule.endTime,
+            repeatDate: schedule.repeatDate,
+            room: schedule.lessonRoom.name,
+          };
+        }),
         numberOfStudents: lesson.durationRegistrations.length,
-        registeredStudent: lesson.durationRegistrations.map(registration => {
+        registeredStudents: lesson.durationRegistrations.map(registration => {
           return {
             name: registration.student.name,
             phone: registration.student.phone,
-            lessonDuration: lesson.durationSchedules.map(schedule => {
-              return {
-                startDate: schedule.startDate,
-                endDate: schedule.endDate,
-                startTime: schedule.startTime,
-                endTime: schedule.endTime,
-                repeatDate: schedule.repeatDate,
-              };
-            }),
           };
         }),
       };
@@ -139,7 +155,12 @@ export class LessonService {
         memo: lesson.memo,
         type: LessonType.SESSION,
         teacher: lesson.teacher.name,
-        category: lesson.category.name,
+        mainCategory: lesson.category.parentId ? lesson.category.parentName : lesson.category.name,
+        subCategory: lesson.category.parentId ? lesson.category.name : null,
+        lessonTime: lesson.lessonTime,
+        tuitionFee: lesson.tuitionFee,
+        totalSessions: lesson.totalSessions,
+        capacity: lesson.capacity,
         numberOfStudents: lesson.sessionRegistrations.length,
         registeredStudent: lesson.sessionRegistrations.map(registration => {
           return {

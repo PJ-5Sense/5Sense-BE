@@ -23,7 +23,7 @@ export class LessonController {
   async findLessonsByFilter(@Query() findManyByFilterDTO: FindManyByFilterDTO, @User('centerId') centerId: number) {
     return {
       success: true,
-      message: `Successfully retrieved the Lesson list by applying filter`,
+      message: `Successfully retrieved the lesson list by applying filter`,
       data: await this.lessonService.getFilteredLessons(findManyByFilterDTO, centerId),
     };
   }
@@ -36,21 +36,8 @@ export class LessonController {
   ) {
     return {
       success: true,
-      message: `Successfully retrieved the details of the Lesson information`,
+      message: `Successfully retrieved the details of the ${findOneLessonDTO.type} lesson information`,
       data: await this.lessonService.getLessonDetails(lessonId, centerId, findOneLessonDTO),
-    };
-  }
-
-  @Get(':lessonId/edit')
-  async findLessonInfoForEdit(
-    @User('centerId') centerId: number,
-    @Param('lessonId') lessonId: number,
-    @Query() findOneLessonDTO: FindOneLessonDTO,
-  ) {
-    return {
-      success: true,
-      message: `Successfully retrieved the Lesson information for editing`,
-      data: await this.lessonService.getLessonForEdit(lessonId, centerId, findOneLessonDTO),
     };
   }
 
@@ -58,7 +45,7 @@ export class LessonController {
   async getLessonsByDate(@Param() findManyLessonDTO: FindManyByDateDTO, @User('centerId') centerId: number) {
     return {
       success: true,
-      message: `Successfully retrieved the Lesson list by date`,
+      message: `Successfully retrieved the lesson list by date`,
       data: await this.lessonService.getLessonsByDate(findManyLessonDTO, centerId),
     };
   }

@@ -50,7 +50,7 @@ export class DurationLessonEntity {
   // Relations
   @ManyToOne(() => CenterEntity, center => center.id, { nullable: false, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'center_id' })
-  // 센터가 지워지면 삭제가 되는지 확인 ( 하드 딜리트 시 삭제되는지 확인해야함, 소프트는 남는거를 봐야하고)
+  // TODO : 센터가 지워지면 삭제가 되는지 확인 ( 하드 딜리트 시 삭제되는지 확인해야함, 소프트는 남는거를 봐야하고)
   center: CenterEntity;
 
   @OneToMany(() => DurationLessonRegistrationEntity, durationRegistration => durationRegistration.durationLesson, {

@@ -4,7 +4,7 @@ import { LessonController } from './lesson.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DurationLessonEntity } from './entities/duration-lesson.entity';
 import { SessionLessonEntity } from './entities/session-lesson.entity';
-import { CategoryModule } from 'src/lesson-category/category.module';
+import { LessonCategoryModule } from 'src/lesson-category/category.module';
 import { SessionLessonRegistrationEntity } from 'src/lesson-registration/entities/session-registration.entity';
 import { DurationLessonRegistrationEntity } from 'src/lesson-registration/entities/duration-registration.entity';
 import { SessionLessonScheduleEntity } from 'src/lesson-schedule/entities/session-lesson-schedule.entity';
@@ -23,7 +23,7 @@ import { LessonViewEntity } from './entities/lesson-view.entity';
       SessionLessonScheduleEntity,
       LessonViewEntity,
     ]),
-    CategoryModule,
+    LessonCategoryModule,
   ],
   controllers: [LessonController],
   providers: [LessonService, LessonRepository],

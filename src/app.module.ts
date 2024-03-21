@@ -14,7 +14,6 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/exception.filter';
 import { LoggerMiddleware } from './common/middleware/http-log.middleware';
 import { LessonRoomModule } from './lesson-room/lesson-room.module';
-import { CategoryModule } from './lesson-category/category.module';
 
 @Module({
   imports: [
@@ -26,7 +25,6 @@ import { CategoryModule } from './lesson-category/category.module';
     LessonModule,
     StudentModule,
     TeacherModule,
-    CategoryModule,
     CenterModule,
     LessonRoomModule,
   ],

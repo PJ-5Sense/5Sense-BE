@@ -25,12 +25,13 @@ export class LessonRepository {
    * @param {number} centerId
    */
   async createDurationLesson(durationLesson: DurationLessonDTO, centerId: number) {
-    const { schedules, ...lessonData } = durationLesson;
+    const { schedules, category, ...lessonData } = durationLesson;
 
     const newLesson = await this.durationLessonDAO.save(
       this.durationLessonDAO.create({
         ...lessonData,
         centerId,
+        categoryId: category.id,
       }),
     );
 
@@ -50,10 +51,13 @@ export class LessonRepository {
    * @param {number} centerId
    */
   async createSessionLesson(sessionLesson: SessionLessonDTO, centerId: number) {
+    const { category, ...lessonData } = sessionLesson;
+
     await this.sessionLessonDAO.save(
       this.sessionLessonDAO.create({
-        ...sessionLesson,
+        ...lessonData,
         centerId,
+        categoryId: category.id,
       }),
     );
   }
@@ -136,10 +140,12 @@ export class LessonRepository {
         .addSelect(['S.name', 'S.phone'])
         .innerJoin('L.durationSchedules', 'D_S')
         .addSelect(['D_S.startDate', 'D_S.endDate', 'D_S.startTime', 'D_S.endTime', 'D_S.repeatDate'])
+        .innerJoin('D_S.lessonRoom', 'L_R')
+        .addSelect(['L_R.id', 'L_R.name'])
         .innerJoin('L.teacher', 'T')
         .addSelect(['T.name'])
         .innerJoin('L.category', 'C')
-        .addSelect(['C.name'])
+        .addSelect(['C.id', 'C.name', 'C.parentId', 'C.parentName'])
         .where('L.id = :id', { id })
         .andWhere('L.centerId = :centerId', { centerId })
         .getOne();
@@ -148,7 +154,7 @@ export class LessonRepository {
     if (type === LessonType.SESSION) {
       return await this.sessionLessonDAO
         .createQueryBuilder('L')
-        .select(['L.id', 'L.name', 'L.memo', 'L.totalSessions'])
+        .select(['L.id', 'L.name', 'L.memo', 'L.totalSessions', 'L.lessonTime', 'L.tuitionFee', 'L.capacity'])
         .innerJoin('L.sessionRegistrations', 'S_R')
         .addSelect(['S_R.id', 'S_R.student'])
         .innerJoin('S_R.student', 'S')
@@ -158,7 +164,7 @@ export class LessonRepository {
         .innerJoin('L.teacher', 'T')
         .addSelect(['T.name'])
         .innerJoin('L.category', 'C')
-        .addSelect(['C.name'])
+        .addSelect(['C.id', 'C.name', 'C.parentId', 'C.parentName'])
         .where('L.id = :id', { id })
         .andWhere('L.centerId = :centerId', { centerId })
         .getOne();

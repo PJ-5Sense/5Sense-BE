@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { CategoryType } from './category.type';
 
 @Injectable()
-export class CategoryService {
+export class LessonCategoryService {
   constructor(@InjectRepository(CategoryEntity) private readonly categoryRepository: Repository<CategoryEntity>) {}
 
   async getCategories(centerId: number) {
@@ -43,5 +43,22 @@ export class CategoryService {
     });
 
     return { mainCategory, subCategory };
+  }
+
+  /**
+   * 대분류 기타 카테고리가 존재하면 그대로 ID를 사용하고, 존재하지 않을 경우 새로 테이블에 등록 후 ID 사용
+   */
+  async processEtceteraCategory(categoryName: string) {
+    const hasCategory = await this.categoryRepository.findOne({ where: { name: categoryName, parentId: 9 } });
+
+    if (hasCategory) return hasCategory.id;
+
+    return (
+      await this.categoryRepository.save({
+        name: categoryName,
+        parentId: 9,
+        parentName: '기타',
+      })
+    ).id;
   }
 }
