@@ -1,6 +1,7 @@
 import {
   IsDateString,
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsObject,
@@ -11,6 +12,17 @@ import {
 import { Type } from 'class-transformer';
 import { LessonType } from '../types/lesson.type';
 
+export class CreateCategoryDTO {
+  // 기타 소분류 추가 시, 프론트 측에서 id는 0번을 사용
+  @IsInt()
+  id: number;
+
+  @IsString()
+  name: string;
+
+  @IsInt()
+  parentId: number;
+}
 export class DurationLessonDTO {
   @IsString()
   @IsNotEmpty()
@@ -25,8 +37,10 @@ export class DurationLessonDTO {
   @IsNumber()
   tuitionFee: number;
 
-  @IsNumber()
-  category: { id: number; name: string; parentId: number };
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CreateCategoryDTO)
+  category: CreateCategoryDTO;
 
   @IsNumber()
   teacherId: number;
@@ -77,9 +91,10 @@ export class SessionLessonDTO {
   @IsNumber()
   totalSessions: number;
 
-  @IsNumber()
-  category: { id: number; name: string; parentId: number };
-
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CreateCategoryDTO)
+  category: CreateCategoryDTO;
   @IsNumber()
   teacherId: number;
 }
