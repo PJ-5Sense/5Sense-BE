@@ -54,7 +54,7 @@ export class DurationScheduleDTO {
   repeatDate: string;
 
   @IsNumber()
-  LessonRoomId: number;
+  roomId: number;
 }
 
 export class SessionLessonDTO {
