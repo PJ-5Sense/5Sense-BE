@@ -58,10 +58,10 @@ export class DurationScheduleDTO {
   @IsDateString()
   endDate: Date;
 
-  @IsDateString()
+  @IsString()
   startTime: string;
 
-  @IsDateString()
+  @IsString()
   endTime: string;
 
   @IsString()
@@ -95,6 +95,7 @@ export class SessionLessonDTO {
   @ValidateNested()
   @Type(() => CreateCategoryDTO)
   category: CreateCategoryDTO;
+
   @IsNumber()
   teacherId: number;
 }
