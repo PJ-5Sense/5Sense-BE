@@ -20,10 +20,8 @@ export class CreateCategoryDTO {
 
   @IsString()
   name: string;
-
-  @IsInt()
-  parentId: number;
 }
+
 export class DurationLessonDTO {
   @IsString()
   @IsNotEmpty()

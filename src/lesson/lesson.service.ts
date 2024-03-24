@@ -4,9 +4,8 @@ import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/find-many-lesson.d
 import { FindOneLessonDTO } from './dto/find-one-lesson.dto';
 import { LessonType } from './types/lesson.type';
 import { LessonRepository } from './lesson.repository';
-import { DurationLessonEntity } from './entities/duration-lesson.entity';
-import { SessionLessonEntity } from './entities/session-lesson.entity';
 import { LessonCategoryService } from 'src/lesson-category/category.service';
+import { UpdateLessonDTO } from './dto/update-lesson.dto';
 
 @Injectable()
 export class LessonService {
@@ -17,7 +16,7 @@ export class LessonService {
   async createLesson(createLessonDTO: CreateLessonDTO, centerId: number) {
     if (createLessonDTO.type === LessonType.DURATION) {
       // 카테고리가 대분류 기타라면 존재하는지 확인 하는 처리
-      if (!createLessonDTO.durationLesson.category.id && createLessonDTO.durationLesson.category.parentId === 9) {
+      if (!createLessonDTO.durationLesson.category.id) {
         createLessonDTO.durationLesson.category.id = await this.lessonCategoryService.processEtceteraCategory(
           createLessonDTO.durationLesson.category.name,
         );
@@ -26,7 +25,7 @@ export class LessonService {
     }
 
     if (createLessonDTO.type === LessonType.SESSION) {
-      if (!createLessonDTO.durationLesson.category.id && createLessonDTO.durationLesson.category.parentId === 9) {
+      if (!createLessonDTO.durationLesson.category.id) {
         createLessonDTO.durationLesson.category.id = await this.lessonCategoryService.processEtceteraCategory(
           createLessonDTO.durationLesson.category.name,
         );
@@ -118,9 +117,18 @@ export class LessonService {
   }
 
   async getLessonDetails(id: number, centerId: number, findOneLessonDTO: FindOneLessonDTO) {
-    const lesson = await this.lessonRepository.findOneDetails(id, centerId, findOneLessonDTO.type);
+    // TODO : Typeorm의 날짜(Date)데이터 저장되고 사용되는 방식과 프론트 소통에서 사용되는 방식을 통일해야함
+    if (findOneLessonDTO.type === LessonType.DURATION) {
+      const lesson = await this.lessonRepository.findOneDurationDetails(id, centerId);
+      const startDate =
+        `${lesson.durationSchedules[0].startDate.getFullYear()}.` +
+        `${lesson.durationSchedules[0].startDate.getMonth() + 1}.` +
+        `${lesson.durationSchedules[0].startDate.getDate()}`;
+      const endDate =
+        `${lesson.durationSchedules[0].endDate.getFullYear()}.` +
+        `${lesson.durationSchedules[0].endDate.getMonth() + 1}.` +
+        `${lesson.durationSchedules[0].endDate.getDate()}`;
 
-    if (lesson instanceof DurationLessonEntity) {
       return {
         id: lesson.id,
         name: lesson.name,
@@ -129,7 +137,7 @@ export class LessonService {
         teacher: lesson.teacher.name,
         mainCategory: lesson.category.parentId ? lesson.category.parentName : lesson.category.name,
         subCategory: lesson.category.parentId ? lesson.category.name : null,
-        duration: `${lesson.durationSchedules[0].startDate} ~ ${lesson.durationSchedules[0].endDate}`,
+        duration: startDate + ' ~ ' + endDate,
         lessonDurations: lesson.durationSchedules.map(schedule => {
           return {
             startTime: schedule.startTime,
@@ -148,7 +156,8 @@ export class LessonService {
       };
     }
 
-    if (lesson instanceof SessionLessonEntity) {
+    if (findOneLessonDTO.type === LessonType.SESSION) {
+      const lesson = await this.lessonRepository.findOneSessionDetails(id, centerId);
       return {
         id: lesson.id,
         name: lesson.name,
@@ -173,44 +182,12 @@ export class LessonService {
     }
   }
 
-  async getLessonForEdit(id: number, centerId: number, findOneLessonDTO: FindOneLessonDTO) {
-    const lesson = await this.lessonRepository.getLessonForEdit(id, centerId, findOneLessonDTO.type);
-
-    if (lesson instanceof DurationLessonEntity) {
-      return {
-        id: lesson.id,
-        name: lesson.name,
-        memo: lesson.memo,
-        type: LessonType.DURATION,
-        tuitionFee: lesson.tuitionFee,
-        teacher: lesson.teacher.name,
-        category: lesson.category.name,
-        durationSchedules: lesson.durationSchedules.map(schedule => {
-          return {
-            startDate: schedule.startDate,
-            endDate: schedule.endDate,
-            startTime: schedule.startTime,
-            endTime: schedule.endTime,
-            repeatDate: schedule.repeatDate,
-            room: schedule.lessonRoom.name,
-          };
-        }),
-      };
+  async updateLesson(updateLessonDTO: UpdateLessonDTO, centerId: number) {
+    if (updateLessonDTO.type === LessonType.DURATION) {
+      return await this.lessonRepository.updateDurationLesson(updateLessonDTO.durationLesson, centerId);
     }
-
-    if (lesson instanceof SessionLessonEntity) {
-      return {
-        id: lesson.id,
-        name: lesson.name,
-        memo: lesson.memo,
-        type: LessonType.SESSION,
-        lessonTime: lesson.lessonTime,
-        tuitionFee: lesson.tuitionFee,
-        capacity: lesson.capacity,
-        totalSessions: lesson.totalSessions,
-        teacher: lesson.teacher.name,
-        category: lesson.category.name,
-      };
+    if (updateLessonDTO.type === LessonType.SESSION) {
+      return await this.lessonRepository.updateSessionLesson(updateLessonDTO.sessionLesson, centerId);
     }
   }
 

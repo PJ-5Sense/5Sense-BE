@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Query, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, Put } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { CreateLessonDTO } from './dto/create-lesson.dto';
 import { User } from 'src/common/decorator/user.decorator';
 import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/find-many-lesson.dto';
 import { FindOneLessonDTO } from './dto/find-one-lesson.dto';
+import { UpdateLessonDTO } from './dto/update-lesson.dto';
 
 @Controller('lessons')
 export class LessonController {
@@ -49,4 +50,18 @@ export class LessonController {
       data: await this.lessonService.getLessonsByDate(findManyLessonDTO, centerId),
     };
   }
+
+  @Put('/:lessonId')
+  async updateLesson(@Body() updateLessonDTO: UpdateLessonDTO, @User('centerId') centerId: number) {
+    await this.lessonService.updateLesson(updateLessonDTO, centerId);
+
+    return {
+      success: true,
+      message: `The ${updateLessonDTO.type} lesson has been successfully updated`,
+    };
+  }
+
+  // 종료기능 주말에 작업
+
+  // 제너럴하게 작성하기
 }

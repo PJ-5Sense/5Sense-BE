@@ -7,7 +7,7 @@ import { DurationLessonScheduleEntity } from 'src/lesson-schedule/entities/durat
 import { SessionLessonEntity } from './entities/session-lesson.entity';
 import { LessonViewEntity } from './entities/lesson-view.entity';
 import { FindManyByFilterDTO } from './dto/find-many-lesson.dto';
-import { LessonType } from './types/lesson.type';
+import { UpdateDurationLessonDTO, UpdateSessionLessonDTO } from './dto/update-lesson.dto';
 
 @Injectable()
 export class LessonRepository {
@@ -18,6 +18,10 @@ export class LessonRepository {
     private readonly durationScheduleDAO: Repository<DurationLessonScheduleEntity>,
     @InjectRepository(LessonViewEntity) private readonly lessonViewDAO: Repository<LessonViewEntity>,
   ) {}
+
+  ////////////////////////////////////////////////////////////////////
+  //                      Duration Lesson                           //
+  ////////////////////////////////////////////////////////////////////
 
   /**
    * 기간반의 경우, 신규 기간반(레슨) 등록과 기간반 일정을 등록을 진행함
@@ -45,7 +49,57 @@ export class LessonRepository {
     }
   }
 
+  async findOneDurationDetails(id: number, centerId: number) {
+    return await this.durationLessonDAO
+      .createQueryBuilder('L')
+      .select(['L.id', 'L.name', 'L.memo', 'L.createdDate'])
+      .leftJoin('L.durationRegistrations', 'D_R')
+      .addSelect(['D_R.id', 'D_R.student'])
+      .leftJoin('D_R.student', 'S', 'S.id = D_R.studentId')
+      .addSelect(['S.id', 'S.name', 'S.phone'])
+      .innerJoin('L.durationSchedules', 'D_S')
+      .addSelect(['D_S.startDate', 'D_S.endDate', 'D_S.startTime', 'D_S.endTime', 'D_S.repeatDate'])
+      .innerJoin('D_S.lessonRoom', 'L_R')
+      .addSelect(['L_R.id', 'L_R.name'])
+      .innerJoin('L.teacher', 'T')
+      .addSelect(['T.name'])
+      .innerJoin('L.category', 'C')
+      .addSelect(['C.id', 'C.name', 'C.parentId', 'C.parentName'])
+      .where('L.id = :id', { id })
+      .andWhere('L.centerId = :centerId', { centerId })
+      .getOne();
+  }
+
+  async updateDurationLesson(updateDurationLessonDTO: UpdateDurationLessonDTO, centerId: number) {
+    // TODO : 트랜잭션 이용하여 작업 처리하기, 성공 실패 여부 반환하기
+    const { schedules, ...durationLessonInfo } = updateDurationLessonDTO;
+    const { id, ...lessonData } = durationLessonInfo;
+
+    await this.durationLessonDAO
+      .createQueryBuilder('D_L')
+      .update(DurationLessonEntity)
+      .set({ ...lessonData })
+      .where('D_L.id = :id', { id })
+      .andWhere('D_L.centerId = :centerId', { centerId })
+      .execute();
+
+    schedules.forEach(async schedule => {
+      const { id, ...scheduleData } = schedule;
+      await this.durationScheduleDAO
+        .createQueryBuilder('D_S')
+        .update(DurationLessonScheduleEntity)
+        .set({ ...scheduleData })
+        .where('D_S.id = :id', { id })
+        .andWhere('D_S.lessonId = :lessonId', { lessonId: id })
+        .execute();
+    });
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  //                      Session Lesson                            //
+  ////////////////////////////////////////////////////////////////////
   /**
+   *
    * 회차반은 신규 회차반(레슨)만 등록함
    * @param {SessionLessonDTO} sessionLesson
    * @param {number} centerId
@@ -62,6 +116,41 @@ export class LessonRepository {
     );
   }
 
+  async findOneSessionDetails(id: number, centerId: number) {
+    return await this.sessionLessonDAO
+      .createQueryBuilder('L')
+      .select(['L.id', 'L.name', 'L.memo', 'L.totalSessions', 'L.lessonTime', 'L.tuitionFee', 'L.capacity'])
+      .innerJoin('L.sessionRegistrations', 'S_R')
+      .addSelect(['S_R.id', 'S_R.student'])
+      .innerJoin('S_R.student', 'S')
+      .addSelect(['S.name', 'S.phone'])
+      .innerJoin('S_R.sessionSchedules', 'S_S')
+      .addSelect(['S_S.id'])
+      .innerJoin('L.teacher', 'T')
+      .addSelect(['T.name'])
+      .innerJoin('L.category', 'C')
+      .addSelect(['C.id', 'C.name', 'C.parentId', 'C.parentName'])
+      .where('L.id = :id', { id })
+      .andWhere('L.centerId = :centerId', { centerId })
+      .getOne();
+  }
+
+  async updateSessionLesson(updateSessionLessonDTO: UpdateSessionLessonDTO, centerId: number) {
+    const { id, ...lessonData } = updateSessionLessonDTO;
+
+    // TODO : 성공 여부 리턴하기
+    await this.sessionLessonDAO
+      .createQueryBuilder('S_L')
+      .update(SessionLessonEntity)
+      .set({ ...lessonData })
+      .where('S_L.id = :id', { id })
+      .andWhere('S_L.centerId = :centerId', { centerId })
+      .execute();
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  //                      ALL Lesson                                //
+  ////////////////////////////////////////////////////////////////////
   async findManyLessonByDate(
     startDate: Date,
     endDate: Date,
@@ -127,79 +216,5 @@ export class LessonRepository {
       .limit(findManyByFilterDTO.getTake())
       .orderBy(`L.createdDate`, 'DESC')
       .getManyAndCount();
-  }
-
-  async findOneDetails(id: number, centerId: number, type: LessonType) {
-    if (type === LessonType.DURATION) {
-      return await this.durationLessonDAO
-        .createQueryBuilder('L')
-        .select(['L.id', 'L.name', 'L.memo'])
-        .innerJoin('L.durationRegistrations', 'D_R')
-        .addSelect(['D_R.id', 'D_R.student'])
-        .innerJoin('D_R.student', 'S')
-        .addSelect(['S.name', 'S.phone'])
-        .innerJoin('L.durationSchedules', 'D_S')
-        .addSelect(['D_S.startDate', 'D_S.endDate', 'D_S.startTime', 'D_S.endTime', 'D_S.repeatDate'])
-        .innerJoin('D_S.lessonRoom', 'L_R')
-        .addSelect(['L_R.id', 'L_R.name'])
-        .innerJoin('L.teacher', 'T')
-        .addSelect(['T.name'])
-        .innerJoin('L.category', 'C')
-        .addSelect(['C.id', 'C.name', 'C.parentId', 'C.parentName'])
-        .where('L.id = :id', { id })
-        .andWhere('L.centerId = :centerId', { centerId })
-        .getOne();
-    }
-
-    if (type === LessonType.SESSION) {
-      return await this.sessionLessonDAO
-        .createQueryBuilder('L')
-        .select(['L.id', 'L.name', 'L.memo', 'L.totalSessions', 'L.lessonTime', 'L.tuitionFee', 'L.capacity'])
-        .innerJoin('L.sessionRegistrations', 'S_R')
-        .addSelect(['S_R.id', 'S_R.student'])
-        .innerJoin('S_R.student', 'S')
-        .addSelect(['S.name', 'S.phone'])
-        .innerJoin('S_R.sessionSchedules', 'S_S')
-        .addSelect(['S_S.id'])
-        .innerJoin('L.teacher', 'T')
-        .addSelect(['T.name'])
-        .innerJoin('L.category', 'C')
-        .addSelect(['C.id', 'C.name', 'C.parentId', 'C.parentName'])
-        .where('L.id = :id', { id })
-        .andWhere('L.centerId = :centerId', { centerId })
-        .getOne();
-    }
-  }
-
-  async getLessonForEdit(id: number, centerId: number, type: LessonType) {
-    if (type === LessonType.DURATION) {
-      return await this.durationLessonDAO
-        .createQueryBuilder('L')
-        .select(['L.id', 'L.name', 'L.memo, L.tuitionFee'])
-        .innerJoin('L.durationSchedules', 'D_S')
-        .addSelect(['D_S.startDate', 'D_S.endDate', 'D_S.startTime', 'D_S.endTime', 'D_S.repeatDate'])
-        .innerJoin('D_S.lessonRoom', 'R')
-        .addSelect(['R.name'])
-        .innerJoin('L.teacher', 'T')
-        .addSelect(['T.name'])
-        .innerJoin('L.category', 'C')
-        .addSelect(['C.name'])
-        .where('L.id = :id', { id })
-        .andWhere('L.centerId = :centerId', { centerId })
-        .getOne();
-    }
-
-    if (type === LessonType.SESSION) {
-      return await this.sessionLessonDAO
-        .createQueryBuilder('L')
-        .select(['L.id', 'L.name', 'L.memo', 'L.lessonTime', 'L.tuitionFee', 'L.capacity', 'L.totalSessions'])
-        .innerJoin('L.teacher', 'T')
-        .addSelect(['T.name'])
-        .innerJoin('L.category', 'C')
-        .addSelect(['C.name'])
-        .where('L.id = :id', { id })
-        .andWhere('L.centerId = :centerId', { centerId })
-        .getOne();
-    }
   }
 }
