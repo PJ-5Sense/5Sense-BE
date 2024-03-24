@@ -93,7 +93,7 @@ export class CreateLessonDTO {
   @Type(() => DurationLessonDTO)
   durationLesson: DurationLessonDTO;
 
-  @ValidateIf((o: CreateLessonDTO) => o.type === LessonType.DURATION)
+  @ValidateIf((o: CreateLessonDTO) => o.type === LessonType.SESSION)
   @ValidateNested()
   @Type(() => SessionLessonDTO)
   sessionLesson: SessionLessonDTO;
