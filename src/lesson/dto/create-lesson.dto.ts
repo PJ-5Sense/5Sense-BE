@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsDateString,
   IsEnum,
   IsInt,
@@ -45,7 +46,7 @@ export class DurationLessonDTO {
   @IsNumber()
   teacherId: number;
 
-  @IsObject()
+  @IsArray()
   @ValidateNested()
   @Type(() => DurationScheduleDTO)
   schedules: DurationScheduleDTO[];
