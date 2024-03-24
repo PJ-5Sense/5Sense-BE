@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsDateString,
   IsEnum,
   IsInt,
@@ -19,10 +20,8 @@ export class CreateCategoryDTO {
 
   @IsString()
   name: string;
-
-  @IsInt()
-  parentId: number;
 }
+
 export class DurationLessonDTO {
   @IsString()
   @IsNotEmpty()
@@ -45,7 +44,7 @@ export class DurationLessonDTO {
   @IsNumber()
   teacherId: number;
 
-  @IsObject()
+  @IsArray()
   @ValidateNested()
   @Type(() => DurationScheduleDTO)
   schedules: DurationScheduleDTO[];
