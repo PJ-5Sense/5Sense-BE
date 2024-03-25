@@ -58,7 +58,7 @@ export class LessonRepository {
       .leftJoin('D_R.student', 'S', 'S.id = D_R.studentId')
       .addSelect(['S.id', 'S.name', 'S.phone'])
       .innerJoin('L.durationSchedules', 'D_S')
-      .addSelect(['D_S.startDate', 'D_S.endDate', 'D_S.startTime', 'D_S.endTime', 'D_S.repeatDate'])
+      .addSelect(['D_S.id', 'D_S.startDate', 'D_S.endDate', 'D_S.startTime', 'D_S.endTime', 'D_S.repeatDate'])
       .innerJoin('D_S.lessonRoom', 'L_R')
       .addSelect(['L_R.id', 'L_R.name'])
       .innerJoin('L.teacher', 'T')
@@ -70,27 +70,26 @@ export class LessonRepository {
       .getOne();
   }
 
-  async updateDurationLesson(updateDurationLessonDTO: UpdateDurationLessonDTO, centerId: number) {
-    // TODO : 트랜잭션 이용하여 작업 처리하기, 성공 실패 여부 반환하기
-    const { schedules, ...durationLessonInfo } = updateDurationLessonDTO;
-    const { id, ...lessonData } = durationLessonInfo;
+  async updateDurationLesson(lessonId: number, updateDurationLessonDTO: UpdateDurationLessonDTO, centerId: number) {
+    // TODO : 트랜잭션 이용하여 작업 처리하기, 성공 실패 여부 반환하기, 수정이 안되었을 경우 각 내용에 따른 에러 처리하기
+    const { schedules, category, ...lessonData } = updateDurationLessonDTO;
 
     await this.durationLessonDAO
-      .createQueryBuilder('D_L')
-      .update(DurationLessonEntity)
-      .set({ ...lessonData })
-      .where('D_L.id = :id', { id })
-      .andWhere('D_L.centerId = :centerId', { centerId })
+      .createQueryBuilder()
+      .update()
+      .set({ ...lessonData, categoryId: category.id })
+      .where('id = :lessonId', { lessonId })
+      .andWhere('centerId = :centerId', { centerId })
       .execute();
 
     schedules.forEach(async schedule => {
       const { id, ...scheduleData } = schedule;
       await this.durationScheduleDAO
-        .createQueryBuilder('D_S')
-        .update(DurationLessonScheduleEntity)
+        .createQueryBuilder()
+        .update()
         .set({ ...scheduleData })
-        .where('D_S.id = :id', { id })
-        .andWhere('D_S.lessonId = :lessonId', { lessonId: id })
+        .where('id = :id', { id })
+        .andWhere('lessonId = :lessonId', { lessonId })
         .execute();
     });
   }
@@ -120,11 +119,11 @@ export class LessonRepository {
     return await this.sessionLessonDAO
       .createQueryBuilder('L')
       .select(['L.id', 'L.name', 'L.memo', 'L.totalSessions', 'L.lessonTime', 'L.tuitionFee', 'L.capacity'])
-      .innerJoin('L.sessionRegistrations', 'S_R')
+      .leftJoin('L.sessionRegistrations', 'S_R')
       .addSelect(['S_R.id', 'S_R.student'])
-      .innerJoin('S_R.student', 'S')
+      .leftJoin('S_R.student', 'S')
       .addSelect(['S.name', 'S.phone'])
-      .innerJoin('S_R.sessionSchedules', 'S_S')
+      .leftJoin('S_R.sessionSchedules', 'S_S')
       .addSelect(['S_S.id'])
       .innerJoin('L.teacher', 'T')
       .addSelect(['T.name'])
@@ -135,16 +134,15 @@ export class LessonRepository {
       .getOne();
   }
 
-  async updateSessionLesson(updateSessionLessonDTO: UpdateSessionLessonDTO, centerId: number) {
-    const { id, ...lessonData } = updateSessionLessonDTO;
-
-    // TODO : 성공 여부 리턴하기
+  async updateSessionLesson(lessonId: number, updateSessionLessonDTO: UpdateSessionLessonDTO, centerId: number) {
+    // TODO : 성공 여부 리턴하기, 토탈 세션을 바꿀 수 있는지 없는지 확인하기(바뀌면 안됨)
+    // TODO : 회의에서 회차반  수정은 어디까지 인지 정해야함
     await this.sessionLessonDAO
-      .createQueryBuilder('S_L')
-      .update(SessionLessonEntity)
-      .set({ ...lessonData })
-      .where('S_L.id = :id', { id })
-      .andWhere('S_L.centerId = :centerId', { centerId })
+      .createQueryBuilder()
+      .update()
+      .set({ ...updateSessionLessonDTO })
+      .where('id = :lessonId', { lessonId })
+      .andWhere('centerId = :centerId', { centerId })
       .execute();
   }
 

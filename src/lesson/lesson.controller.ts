@@ -52,8 +52,12 @@ export class LessonController {
   }
 
   @Put('/:lessonId')
-  async updateLesson(@Body() updateLessonDTO: UpdateLessonDTO, @User('centerId') centerId: number) {
-    await this.lessonService.updateLesson(updateLessonDTO, centerId);
+  async updateLesson(
+    @Param('lessonId') lessonId: number,
+    @Body() updateLessonDTO: UpdateLessonDTO,
+    @User('centerId') centerId: number,
+  ) {
+    await this.lessonService.updateLesson(updateLessonDTO, lessonId, centerId);
 
     return {
       success: true,

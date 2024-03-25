@@ -1,51 +1,42 @@
 import {
+  ArrayNotEmpty,
   IsArray,
   IsDateString,
   IsEnum,
   IsInt,
-  IsNotEmpty,
-  IsNumber,
   IsObject,
-  IsString,
+  Matches,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { LessonType } from '../types/lesson.type';
-
-export class CreateCategoryDTO {
-  // 기타 소분류 추가 시, 프론트 측에서 id는 0번을 사용
-  @IsInt()
-  id: number;
-
-  @IsString()
-  name: string;
-}
+import { LessonCategory } from '../types/lesson-category.type';
 
 export class DurationLessonDTO {
-  @IsString()
-  @IsNotEmpty()
+  @Matches(`^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s.,!?-]{1,20}$`)
   name: string;
 
-  @IsString()
+  @Matches(`^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s.,!?-]{1,300}$`)
   memo: string;
 
-  @IsNumber()
+  @IsInt()
   lessonTime: number;
 
-  @IsNumber()
+  @IsInt()
   tuitionFee: number;
 
   @IsObject()
   @ValidateNested()
-  @Type(() => CreateCategoryDTO)
-  category: CreateCategoryDTO;
+  @Type(() => LessonCategory)
+  category: LessonCategory;
 
-  @IsNumber()
+  @IsInt()
   teacherId: number;
 
   @IsArray()
   @ValidateNested()
+  @ArrayNotEmpty()
   @Type(() => DurationScheduleDTO)
   schedules: DurationScheduleDTO[];
 }
@@ -57,45 +48,44 @@ export class DurationScheduleDTO {
   @IsDateString()
   endDate: Date;
 
-  @IsString()
+  @Matches(`^[0-9\\s:]{1,10}$`)
   startTime: string;
 
-  @IsString()
+  @Matches(`^[0-9\\s:]{1,10}$`)
   endTime: string;
 
-  @IsString()
+  @Matches(`^[가-힣,]{1,15}$`)
   repeatDate: string;
 
-  @IsNumber()
+  @IsInt()
   roomId: number;
 }
 
 export class SessionLessonDTO {
-  @IsString()
-  @IsNotEmpty()
+  @Matches(`^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s.,!?-]{1,20}$`)
   name: string;
 
-  @IsString()
+  @Matches(`^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s.,!?-]{1,300}$`)
   memo: string;
 
-  @IsNumber()
+  @IsInt()
   lessonTime: number;
 
-  @IsNumber()
+  @IsInt()
   tuitionFee: number;
 
-  @IsNumber()
+  @IsInt()
   capacity: number;
 
-  @IsNumber()
+  @IsInt()
   totalSessions: number;
 
   @IsObject()
   @ValidateNested()
-  @Type(() => CreateCategoryDTO)
-  category: CreateCategoryDTO;
+  @Type(() => LessonCategory)
+  category: LessonCategory;
 
-  @IsNumber()
+  @IsInt()
   teacherId: number;
 }
 

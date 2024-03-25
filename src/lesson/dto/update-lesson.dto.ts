@@ -1,30 +1,69 @@
-import { IsInt, IsObject, ValidateIf, ValidateNested } from 'class-validator';
-import { DurationLessonDTO, DurationScheduleDTO, SessionLessonDTO } from './create-lesson.dto';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsObject,
+  IsString,
+  ValidateIf,
+  ValidateNested,
+} from 'class-validator';
+import { SessionLessonDTO } from './create-lesson.dto';
 import { Type } from 'class-transformer';
 import { LessonType } from '../types/lesson.type';
+import { LessonCategory } from '../types/lesson-category.type';
 
-export class UpdateDurationScheduleDTO extends DurationScheduleDTO {
+export class UpdateDurationScheduleDTO {
   @IsInt()
   id: number;
+
+  @IsString()
+  startTime: string;
+
+  @IsString()
+  endTime: string;
+
+  @IsString()
+  repeatDate: string;
+
+  @IsInt()
+  roomId: number;
 }
 
-export class UpdateDurationLessonDTO extends DurationLessonDTO {
-  @IsInt()
-  id: number;
+export class UpdateDurationLessonDTO {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
-  // Override
+  @IsString()
+  memo: string;
+
+  @IsInt()
+  lessonTime: number;
+
+  @IsInt()
+  tuitionFee: number;
+
+  @IsInt()
+  teacherId: number;
+
   @IsObject()
+  @ValidateNested()
+  @Type(() => LessonCategory)
+  category: LessonCategory;
+
+  @IsArray()
+  @ArrayNotEmpty()
   @ValidateNested()
   @Type(() => UpdateDurationScheduleDTO)
   schedules: UpdateDurationScheduleDTO[];
 }
 
-export class UpdateSessionLessonDTO extends SessionLessonDTO {
-  @IsInt()
-  id: number;
-}
+export class UpdateSessionLessonDTO extends SessionLessonDTO {}
 
 export class UpdateLessonDTO {
+  @IsEnum(LessonType)
   type: LessonType;
 
   @ValidateIf((o: UpdateLessonDTO) => o.type === LessonType.DURATION)

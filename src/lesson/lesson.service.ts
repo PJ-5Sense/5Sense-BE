@@ -25,7 +25,7 @@ export class LessonService {
     }
 
     if (createLessonDTO.type === LessonType.SESSION) {
-      if (!createLessonDTO.durationLesson.category.id) {
+      if (!createLessonDTO.sessionLesson.category.id) {
         createLessonDTO.durationLesson.category.id = await this.lessonCategoryService.processEtceteraCategory(
           createLessonDTO.durationLesson.category.name,
         );
@@ -140,6 +140,7 @@ export class LessonService {
         duration: startDate + ' ~ ' + endDate,
         lessonDurations: lesson.durationSchedules.map(schedule => {
           return {
+            id: schedule.id,
             startTime: schedule.startTime,
             endTime: schedule.endTime,
             repeatDate: schedule.repeatDate,
@@ -158,6 +159,7 @@ export class LessonService {
 
     if (findOneLessonDTO.type === LessonType.SESSION) {
       const lesson = await this.lessonRepository.findOneSessionDetails(id, centerId);
+
       return {
         id: lesson.id,
         name: lesson.name,
@@ -182,12 +184,16 @@ export class LessonService {
     }
   }
 
-  async updateLesson(updateLessonDTO: UpdateLessonDTO, centerId: number) {
+  // update를 시키기 위해서 그러면 전체 데이터를 확인하고?
+  async updateLesson(updateLessonDTO: UpdateLessonDTO, lessonId: number, centerId: number) {
+    // 일정정보의 삭제와 수정은 API로 존재해야하지 않나?
+
+    // 기간만 수정못하게, 시간,요일 강의실 변경가능
     if (updateLessonDTO.type === LessonType.DURATION) {
-      return await this.lessonRepository.updateDurationLesson(updateLessonDTO.durationLesson, centerId);
+      return await this.lessonRepository.updateDurationLesson(lessonId, updateLessonDTO.durationLesson, centerId);
     }
     if (updateLessonDTO.type === LessonType.SESSION) {
-      return await this.lessonRepository.updateSessionLesson(updateLessonDTO.sessionLesson, centerId);
+      return await this.lessonRepository.updateSessionLesson(lessonId, updateLessonDTO.sessionLesson, centerId);
     }
   }
 
