@@ -37,7 +37,7 @@ export class LessonCategoryService {
           mainCategory.push({ id: category.parentId, name: category.parentName });
         }
         if (!subCategory.some(subCategory => subCategory.id === category.id)) {
-          subCategory.push({ id: category.id, name: category.name });
+          subCategory.push({ id: category.id, name: category.name, parentId: category.parentId });
         }
       }
     });
