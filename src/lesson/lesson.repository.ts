@@ -179,6 +179,7 @@ export class LessonRepository {
       .innerJoin('S_R.sessionSchedules', 'S_S') // S_S = session schedule
       .addSelect(['S_S.sessionDate', 'S_S.startTime'])
       .innerJoin('S_S.lessonRoom', 'L_R') // L_R = lesson room
+      .addSelect(['L_R.id', 'L_R.name'])
       .where('L.centerId = :centerId', { centerId })
       .andWhere('S_S.sessionDate <= :endDate AND S_S.sessionDate >= :startDate', {
         startDate,
