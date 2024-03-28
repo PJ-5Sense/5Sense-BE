@@ -173,7 +173,7 @@ export class LessonService {
         totalSessions: lesson.totalSessions,
         capacity: lesson.capacity,
         numberOfStudents: lesson.sessionRegistrations.length,
-        registeredStudent: lesson.sessionRegistrations.map(registration => {
+        registeredStudents: lesson.sessionRegistrations.map(registration => {
           return {
             name: registration.student.name,
             phone: registration.student.phone,
