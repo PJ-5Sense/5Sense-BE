@@ -1,14 +1,13 @@
-import { Controller, Post, Body, Inject, Get, Query, ParseIntPipe, Param, Put } from '@nestjs/common';
-import { TeacherServiceImpl } from './teacher.service';
+import { Controller, Post, Body, Get, Query, ParseIntPipe, Param, Put } from '@nestjs/common';
 import { CreateTeacherDto } from './dto/request/create-teacher.dto';
-import { TEACHER_SERVICE } from './teacher.service.interface';
 import { User } from 'src/common/decorator/user.decorator';
 import { FindTeachersDto } from './dto/request/find-teachers.dto';
 import { UpdateTeacherDto } from './dto/request/update-teacher.dto';
+import { TeacherService } from './teacher.service';
 
 @Controller('teachers')
 export class TeacherController {
-  constructor(@Inject(TEACHER_SERVICE) private readonly teacherService: TeacherServiceImpl) {}
+  constructor(private readonly teacherService: TeacherService) {}
 
   @Post()
   async create(@Body() createTeacherDto: CreateTeacherDto, @User('centerId') centerId: number) {

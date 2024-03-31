@@ -1,4 +1,4 @@
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from 'src/user/entity/user.entity';
 import { setSeederFactory } from 'typeorm-extension';
 import { faker } from '@faker-js/faker/locale/ko';
 

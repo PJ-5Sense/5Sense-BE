@@ -1,4 +1,4 @@
-import { CategoryEntity } from 'src/lesson-category/entities/category.entity';
+import { CategoryEntity } from 'src/lesson-category/entity/category.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 

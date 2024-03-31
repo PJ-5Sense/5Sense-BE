@@ -1,18 +1,18 @@
 import { faker } from '@faker-js/faker';
-import { CenterEntity } from 'src/center/entities/center.entity';
-import { CategoryEntity } from 'src/lesson-category/entities/category.entity';
-import { DurationLessonRegistrationEntity } from 'src/lesson-registration/entities/duration-registration.entity';
-import { SessionLessonRegistrationEntity } from 'src/lesson-registration/entities/session-registration.entity';
-import { DurationLessonScheduleEntity } from 'src/lesson-schedule/entities/duration-lesson-schedule.entity';
-import { SessionLessonScheduleEntity } from 'src/lesson-schedule/entities/session-lesson-schedule.entity';
-import { DurationLessonEntity } from 'src/lesson/entities/duration-lesson.entity';
-import { SessionLessonEntity } from 'src/lesson/entities/session-lesson.entity';
+import { CenterEntity } from 'src/center/entity/center.entity';
+import { CategoryEntity } from 'src/lesson-category/entity/category.entity';
+import { DurationLessonRegistrationEntity } from 'src/lesson/entity/duration/duration-registration.entity';
+import { SessionLessonRegistrationEntity } from 'src/lesson/entity/session/session-registration.entity';
+import { DurationLessonEntity } from 'src/lesson/entity/duration/duration-lesson.entity';
+import { SessionLessonEntity } from 'src/lesson/entity/session/session-lesson.entity';
 import { PaymentStatus } from 'src/lesson/types/lesson-payment-status.type';
-import { StudentEntity } from 'src/student/entities/student.entity';
-import { TeacherEntity } from 'src/teacher/entities/teacher.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { StudentEntity } from 'src/student/entity/student.entity';
+import { TeacherEntity } from 'src/teacher/entity/teacher.entity';
+import { UserEntity } from 'src/user/entity/user.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
+import { DurationLessonScheduleEntity } from 'src/lesson/entity/duration/duration-lesson-schedule.entity';
+import { SessionLessonScheduleEntity } from 'src/lesson/entity/session/session-lesson-schedule.entity';
 
 export default class LessonSeed1702051029391 implements Seeder {
   track = false;

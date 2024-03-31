@@ -1,4 +1,4 @@
-import { StudentEntity } from 'src/student/entities/student.entity';
+import { StudentEntity } from 'src/student/entity/student.entity';
 import { setSeederFactory } from 'typeorm-extension';
 import { faker } from '@faker-js/faker/locale/ko';
 

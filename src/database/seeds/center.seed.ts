@@ -1,4 +1,4 @@
-import { CenterEntity } from 'src/center/entities/center.entity';
+import { CenterEntity } from 'src/center/entity/center.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { faker } from '@faker-js/faker/locale/ko';

@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
-import { TeacherEntity } from 'src/teacher/entities/teacher.entity';
+import { TeacherEntity } from 'src/teacher/entity/teacher.entity';
 
 export default class Teacher1702050683984 implements Seeder {
   track = false;

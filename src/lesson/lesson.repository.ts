@@ -1,13 +1,13 @@
 import { DurationLessonDTO, SessionLessonDTO } from './dto/create-lesson.dto';
 import { Injectable } from '@nestjs/common';
-import { DurationLessonEntity } from './entities/duration-lesson.entity';
+import { DurationLessonEntity } from './entity/duration/duration-lesson.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DurationLessonScheduleEntity } from 'src/lesson-schedule/entities/duration-lesson-schedule.entity';
-import { SessionLessonEntity } from './entities/session-lesson.entity';
-import { LessonViewEntity } from './entities/lesson-view.entity';
+import { SessionLessonEntity } from './entity/session/session-lesson.entity';
+import { LessonViewEntity } from './entity/lesson-view.entity';
 import { FindManyByFilterDTO } from './dto/find-many-lesson.dto';
 import { UpdateDurationLessonDTO, UpdateSessionLessonDTO } from './dto/update-lesson.dto';
+import { DurationLessonScheduleEntity } from './entity/duration/duration-lesson-schedule.entity';
 
 @Injectable()
 export class LessonRepository {

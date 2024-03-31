@@ -1,12 +1,12 @@
-import { Controller, Post, Body, Inject, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { CreateCenterDto } from './dto/request/create-center.dto';
 import { User } from 'src/common/decorator/user.decorator';
-import { JwtPayload } from 'src/auth/types/jwt-payload.type';
-import { CENTER_SERVICE, ICenterService } from './center.service.interface';
+import { JwtPayload } from 'src/auth/type/jwt-payload.type';
+import { CenterService } from './center.service';
 
 @Controller('centers')
 export class CenterController {
-  constructor(@Inject(CENTER_SERVICE) private readonly centerService: ICenterService) {}
+  constructor(private readonly centerService: CenterService) {}
 
   @Post()
   async create(@Body() createCenterDto: CreateCenterDto, @User() userInfo: JwtPayload) {

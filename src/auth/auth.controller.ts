@@ -1,21 +1,11 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Inject,
-  Param,
-  ParseEnumPipe,
-  BadRequestException,
-  UseGuards,
-  Headers,
-} from '@nestjs/common';
+import { Controller, Post, Body, Param, ParseEnumPipe, BadRequestException, UseGuards, Headers } from '@nestjs/common';
 import { socialLoginDto } from './dto/request/social-login.dto';
-import { SocialType } from './types/social.type';
-import { AUTH_SERVICE, IAuthService } from './auth.service.interface';
+import { SocialType } from './type/social.type';
 import { Public } from 'src/common/decorator/public.decorator';
 import { RefreshTokenGuard } from 'src/common/guards/reissue-jwt.guard';
 import { User } from 'src/common/decorator/user.decorator';
-import { JwtPayload } from './types/jwt-payload.type';
+import { JwtPayload } from './type/jwt-payload.type';
+import { AuthService } from './auth.service';
 
 const customPipeErrorMessage = {
   exceptionFactory: () =>
@@ -27,7 +17,7 @@ const customPipeErrorMessage = {
 @Public()
 @Controller('auth')
 export class AuthController {
-  constructor(@Inject(AUTH_SERVICE) private readonly authService: IAuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post(':socialType/login')
   async kakaoLogin(

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SocialEntity } from './entities/social.entity';
+import { SocialEntity } from './entity/social.entity';
 import { Repository } from 'typeorm';
-import { SocialType } from 'src/auth/types/social.type';
-import { CreateSocial } from '../user/types/create-user.type';
-import { UserEntity } from '../user/entities/user.entity';
+import { SocialType } from 'src/auth/type/social.type';
+import { CreateSocial } from '../user/type/create-user.type';
+import { UserEntity } from '../user/entity/user.entity';
 
 @Injectable()
 export class SocialService {

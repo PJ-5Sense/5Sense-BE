@@ -1,0 +1,66 @@
+import { LessonRoomEntity } from 'src/lesson-room/entity/lesson-room.entity';
+import { DurationLessonEntity } from 'src/lesson/entity/duration/duration-lesson.entity';
+import { StudentEntity } from 'src/student/entity/student.entity';
+import { TeacherEntity } from 'src/teacher/entity/teacher.entity';
+import { UserEntity } from 'src/user/entity/user.entity';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { SessionLessonEntity } from 'src/lesson/entity/session/session-lesson.entity';
+
+@Entity({ name: 'center' })
+export class CenterEntity {
+  @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
+  id: number;
+
+  @Column({ comment: '센터명' })
+  name: string;
+
+  @Column({ comment: '센터 주소' })
+  address: string;
+
+  @Column({ name: 'main_phone', comment: '센터 대표 번호' })
+  mainPhone: string;
+
+  @Column({ comment: '프로필 이미지, 없을 시 기본 이미지 배정', nullable: true })
+  profile: string;
+
+  // 오픈시간과 종료시간 컬럼 필요함
+
+  @CreateDateColumn({ name: 'created_date' })
+  createdDate: Date;
+
+  @DeleteDateColumn({ name: 'deleted_date' })
+  deletedDate: Date;
+
+  // Relation columns
+  @Column({ name: 'user_id', type: 'int', unsigned: true, nullable: false })
+  userId: number;
+
+  // Relations
+  @OneToMany(() => DurationLessonEntity, lesson => lesson.center, { cascade: true })
+  durationLessons: DurationLessonEntity[];
+
+  @OneToMany(() => SessionLessonEntity, lesson => lesson.center, { cascade: true })
+  sessionLessons: SessionLessonEntity[];
+
+  @OneToMany(() => StudentEntity, student => student.center, { cascade: true })
+  students: StudentEntity[];
+
+  @OneToMany(() => TeacherEntity, teacher => teacher.center, { cascade: true })
+  teachers: TeacherEntity[];
+
+  @OneToMany(() => LessonRoomEntity, room => room.center, { cascade: true })
+  lessonRooms: LessonRoomEntity[];
+
+  @ManyToOne(() => UserEntity, user => user.id, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: UserEntity;
+}

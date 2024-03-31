@@ -1,17 +1,23 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { CreateSocial, CreateUser } from './types/create-user.type';
-import { UserEntity } from './entities/user.entity';
-import { IUserService } from './user.service.interface';
-import { IUserDao, USER_DAO } from './dao/user.dao.interface';
+import { UserRepository } from './user.repository';
+import { Injectable } from '@nestjs/common';
+import { CreateSocial, CreateUser } from './type/create-user.type';
+import { UserEntity } from './entity/user.entity';
 import { SocialService } from '../social/social.service';
-import { SocialType } from 'src/auth/types/social.type';
+import { SocialType } from 'src/auth/type/social.type';
 
 @Injectable()
-export class UserServiceImpl implements IUserService {
-  constructor(@Inject(USER_DAO) private readonly userDao: IUserDao, private readonly socialService: SocialService) {}
+export class UserService {
+  constructor(private readonly userRepository: UserRepository, private readonly socialService: SocialService) {}
 
+  /**
+   * 유저 정보(소셜 정보 포함) 저장
+   * (UserEntity를 Controller의 Response로 사용하지 않도록 주의 및 확인 필요)
+   *
+   * @param user
+   * @returns UserEntity
+   */
   async createUser(user: CreateUser, social: CreateSocial): Promise<UserEntity> {
-    const savedUser = await this.userDao.create(user);
+    const savedUser = await this.userRepository.create(user);
 
     await this.socialService.create(social, savedUser);
     return savedUser;
@@ -21,13 +27,13 @@ export class UserServiceImpl implements IUserService {
     const user = await this.socialService.findOneByUser(socialId, socialType);
 
     if (user) {
-      return await this.userDao.findOne(user.id);
+      return await this.userRepository.findOne(user.id);
     }
 
     return null;
   }
 
   async findOne(userId: number) {
-    return await this.userDao.findOne(userId);
+    return await this.userRepository.findOne(userId);
   }
 }

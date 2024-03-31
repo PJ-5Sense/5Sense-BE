@@ -1,28 +1,27 @@
-import { Inject, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
-import { SocialType } from './types/social.type';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { SocialType } from './type/social.type';
 import { JwtService } from '@nestjs/jwt';
-import { KakaoLoginStrategy } from './strategies/kakao-login.strategy';
-import { SocialLoginStrategy } from './strategies/social-login-strategy.interface';
-import { IUserService, USER_SERVICE } from 'src/user/user.service.interface';
-import { IAuthService } from './auth.service.interface';
-import { AUTH_DAO, IAuthDao } from './dao/auth.dao.interface';
-import { GoogleLoginStrategy } from './strategies/google-login.strategy';
-import { NaverLoginStrategy } from './strategies/naver-login.strategy';
-import { JwtPayload } from './types/jwt-payload.type';
+import { KakaoLoginStrategy } from './strategy/kakao-login.strategy';
+import { SocialLoginStrategy } from './strategy/social-login-strategy.interface';
+import { GoogleLoginStrategy } from './strategy/google-login.strategy';
+import { NaverLoginStrategy } from './strategy/naver-login.strategy';
+import { JwtPayload } from './type/jwt-payload.type';
 import { ConfigService } from '@nestjs/config';
 import { JwtOptions } from 'src/environment/values/jwt.config';
-import { SocialLogin } from './types/social-login.type';
-import { CreateAuthDto } from './types/create-auth.dto';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { SocialLogin } from './type/social-login.type';
+import { CreateAuthDto } from './type/create-auth.dto';
+import { UserEntity } from 'src/user/entity/user.entity';
+import { UserService } from 'src/user/user.service';
+import { AuthRepository } from './auth.repository';
 
 @Injectable()
-export class AuthServiceImpl implements IAuthService {
+export class AuthService {
   private strategies: Map<SocialType, SocialLoginStrategy>;
   private readonly jwtOptions: JwtOptions;
 
   constructor(
-    @Inject(USER_SERVICE) private readonly userService: IUserService,
-    @Inject(AUTH_DAO) private readonly authDao: IAuthDao,
+    private readonly userService: UserService,
+    private readonly authRepository: AuthRepository,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly kakaoStrategy: KakaoLoginStrategy,
@@ -97,7 +96,7 @@ export class AuthServiceImpl implements IAuthService {
       centerId: null,
     });
 
-    await this.authDao.createOrUpdate({
+    await this.authRepository.createOrUpdate({
       appRefreshToken: refreshToken,
       userId: newUser.id,
       userAgent,
@@ -127,7 +126,7 @@ export class AuthServiceImpl implements IAuthService {
    */
   private async processExistingUserAndGenerateTokens(user: UserEntity, userAgent: string) {
     const centerId = user.centers[0]?.id ?? null;
-    const authInfo = await this.authDao.findOneByUserAgent(user.id, userAgent);
+    const authInfo = await this.authRepository.findOneByUserAgent(user.id, userAgent);
 
     const refreshToken = await this.generateRefreshToken({
       userId: user.id,
@@ -144,7 +143,7 @@ export class AuthServiceImpl implements IAuthService {
       social['id'] = authInfo.id;
     }
 
-    await this.authDao.createOrUpdate(social);
+    await this.authRepository.createOrUpdate(social);
 
     const accessToken = await this.generateAccessToken({
       userId: user.id,
@@ -161,7 +160,7 @@ export class AuthServiceImpl implements IAuthService {
   }
 
   async reissueAccessToken(userAgent: string, refreshToken: string, jwtInfo: JwtPayload) {
-    const userSocialData = await this.authDao.findOneByUserAgent(jwtInfo.userId, userAgent);
+    const userSocialData = await this.authRepository.findOneByUserAgent(jwtInfo.userId, userAgent);
     const token = refreshToken.split(' ')[1];
 
     if (!userSocialData || userSocialData.appRefreshToken !== token) {

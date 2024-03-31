@@ -1,19 +1,14 @@
 import { Module } from '@nestjs/common';
-import { CenterServiceImpl } from './center.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CenterEntity } from './entities/center.entity';
+import { CenterEntity } from './entity/center.entity';
 import { CenterController } from './center.controller';
-import { CENTER_SERVICE } from './center.service.interface';
-import { CENTER_DAO } from './dao/center.dao.interface';
-import { CenterDaoImpl } from './dao/center.dao';
 import { LessonRoomModule } from 'src/lesson-room/lesson-room.module';
+import { CenterService } from './center.service';
+import { CenterRepository } from './center.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CenterEntity]), LessonRoomModule],
   controllers: [CenterController],
-  providers: [
-    { provide: CENTER_SERVICE, useClass: CenterServiceImpl },
-    { provide: CENTER_DAO, useClass: CenterDaoImpl },
-  ],
+  providers: [CenterService, CenterRepository],
 })
 export class CenterModule {}

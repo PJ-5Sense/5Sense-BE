@@ -1,6 +1,6 @@
 import { setSeederFactory } from 'typeorm-extension';
 import { faker } from '@faker-js/faker/locale/ko';
-import { TeacherEntity } from 'src/teacher/entities/teacher.entity';
+import { TeacherEntity } from 'src/teacher/entity/teacher.entity';
 
 export default setSeederFactory(TeacherEntity, enFaker => {
   const teacher = new TeacherEntity();

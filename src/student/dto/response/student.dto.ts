@@ -1,4 +1,4 @@
-import { StudentEntity } from 'src/student/entities/student.entity';
+import { StudentEntity } from 'src/student/entity/student.entity';
 
 export class ResponseStudentDto {
   id: number;
