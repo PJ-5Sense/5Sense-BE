@@ -1,5 +1,5 @@
 import { Transform, Type } from 'class-transformer';
-import { IsArray, IsIn, IsInt, IsOptional } from 'class-validator';
+import { IsArray, IsIn, IsInt } from 'class-validator';
 import { PaginationRequest } from 'src/common/dto/request-page.dto';
 
 export class FindManyByDateDTO {

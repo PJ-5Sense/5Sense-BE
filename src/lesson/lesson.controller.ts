@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Query, Param, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, Put, Delete, Patch } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { CreateLessonDTO } from './dto/create-lesson.dto';
 import { User } from 'src/common/decorator/user.decorator';
 import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/find-many-lesson.dto';
 import { FindOneLessonDTO } from './dto/find-one-lesson.dto';
 import { UpdateLessonDTO } from './dto/update-lesson.dto';
+import { CloseLessonDTO } from './dto/close-lesson.dto';
 
 @Controller('lessons')
 export class LessonController {
@@ -65,7 +66,17 @@ export class LessonController {
     };
   }
 
-  // 종료기능 주말에 작업
+  @Patch('/:lessonId/close')
+  async closeLesson(
+    @Param('lessonId') lessonId: number,
+    @Query() closeLessonDTO: CloseLessonDTO,
+    @User('centerId') centerId: number,
+  ) {
+    await this.lessonService.closeLesson(lessonId, centerId, closeLessonDTO.type);
 
-  // 제너럴하게 작성하기
+    return {
+      success: true,
+      message: `The lesson has been successfully closed`,
+    };
+  }
 }
