@@ -197,6 +197,16 @@ export class LessonService {
     }
   }
 
+  async closeLesson(lessonId: number, centerId: number, type: LessonType) {
+    if (type === LessonType.DURATION) {
+      return await this.lessonRepository.closeDurationLesson(lessonId, centerId);
+    }
+
+    if (type === LessonType.SESSION) {
+      return await this.lessonRepository.closeSessionLesson(lessonId, centerId);
+    }
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////
   ////                                Private Section                             ////
   ////////////////////////////////////////////////////////////////////////////////////

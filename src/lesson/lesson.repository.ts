@@ -94,6 +94,16 @@ export class LessonRepository {
     });
   }
 
+  async closeDurationLesson(lessonId: number, centerId: number) {
+    await this.durationLessonDAO
+      .createQueryBuilder()
+      .update()
+      .set({ isClosed: true })
+      .where('id = :lessonId', { lessonId })
+      .andWhere('centerId = :centerId', { centerId })
+      .execute();
+  }
+
   ////////////////////////////////////////////////////////////////////
   //                      Session Lesson                            //
   ////////////////////////////////////////////////////////////////////
@@ -141,6 +151,16 @@ export class LessonRepository {
       .createQueryBuilder()
       .update()
       .set({ ...updateSessionLessonDTO })
+      .where('id = :lessonId', { lessonId })
+      .andWhere('centerId = :centerId', { centerId })
+      .execute();
+  }
+
+  async closeSessionLesson(lessonId: number, centerId: number) {
+    await this.sessionLessonDAO
+      .createQueryBuilder()
+      .update()
+      .set({ isClosed: true })
       .where('id = :lessonId', { lessonId })
       .andWhere('centerId = :centerId', { centerId })
       .execute();
