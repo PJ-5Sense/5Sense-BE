@@ -1,4 +1,4 @@
-import { DurationLessonDTO, SessionLessonDTO } from './dto/create-lesson.dto';
+import { SessionLessonDTO } from './dto/create-lesson.dto';
 import { Injectable } from '@nestjs/common';
 import { DurationLessonEntity } from './entity/duration/duration-lesson.entity';
 import { Repository } from 'typeorm';
@@ -6,16 +6,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SessionLessonEntity } from './entity/session/session-lesson.entity';
 import { LessonViewEntity } from './entity/lesson-view.entity';
 import { FindManyByFilterDTO } from './dto/find-many-lesson.dto';
-import { UpdateDurationLessonDTO, UpdateSessionLessonDTO } from './dto/update-lesson.dto';
-import { DurationLessonScheduleEntity } from './entity/duration/duration-lesson-schedule.entity';
+import { UpdateSessionLessonDTO } from './dto/update-lesson.dto';
 
 @Injectable()
 export class LessonRepository {
   constructor(
     @InjectRepository(DurationLessonEntity) private readonly durationLessonDAO: Repository<DurationLessonEntity>,
     @InjectRepository(SessionLessonEntity) private readonly sessionLessonDAO: Repository<SessionLessonEntity>,
-    @InjectRepository(DurationLessonScheduleEntity)
-    private readonly durationScheduleDAO: Repository<DurationLessonScheduleEntity>,
+
     @InjectRepository(LessonViewEntity) private readonly lessonViewDAO: Repository<LessonViewEntity>,
   ) {}
 
@@ -24,29 +22,22 @@ export class LessonRepository {
   ////////////////////////////////////////////////////////////////////
 
   /**
-   * 기간반의 경우, 신규 기간반(레슨) 등록과 기간반 일정을 등록을 진행함
-   * @param {DurationLessonDTO} durationLesson
+   * 기간반 데이터를 생성하며 생성된 ID(PK)를 반환함
+   * @param {} durationLesson
    * @param {number} centerId
    */
-  async createDurationLesson(durationLesson: DurationLessonDTO, centerId: number) {
-    const { schedules, category, ...lessonData } = durationLesson;
+  async createDurationLesson(durationLesson: {
+    name: string;
+    memo: string;
+    lessonTime: number;
+    tuitionFee: number;
+    teacherId: number;
+    categoryId: number;
+    centerId: number;
+  }) {
+    const { id } = await this.durationLessonDAO.save(this.durationLessonDAO.create({ ...durationLesson }));
 
-    const newLesson = await this.durationLessonDAO.save(
-      this.durationLessonDAO.create({
-        ...lessonData,
-        centerId,
-        categoryId: category.id,
-      }),
-    );
-
-    for (const schedule of schedules) {
-      await this.durationScheduleDAO.save(
-        this.durationScheduleDAO.create({
-          ...schedule,
-          durationLesson: newLesson,
-        }),
-      );
-    }
+    return id;
   }
 
   async findOneDurationDetails(id: number, centerId: number) {
@@ -70,28 +61,27 @@ export class LessonRepository {
       .getOne();
   }
 
-  async updateDurationLesson(lessonId: number, updateDurationLessonDTO: UpdateDurationLessonDTO, centerId: number) {
+  async updateDurationLesson(
+    lessonId: number,
+    durationLesson: {
+      name: string;
+      memo: string;
+      lessonTime: number;
+      tuitionFee: number;
+      teacherId: number;
+      categoryId: number;
+      centerId: number;
+    },
+  ) {
     // TODO : 트랜잭션 이용하여 작업 처리하기, 성공 실패 여부 반환하기, 수정이 안되었을 경우 각 내용에 따른 에러 처리하기
-    const { schedules, category, ...lessonData } = updateDurationLessonDTO;
 
     await this.durationLessonDAO
       .createQueryBuilder()
       .update()
-      .set({ ...lessonData, categoryId: category.id })
+      .set({ ...durationLesson })
       .where('id = :lessonId', { lessonId })
-      .andWhere('centerId = :centerId', { centerId })
+      .andWhere('centerId = :centerId', { centerId: durationLesson.categoryId })
       .execute();
-
-    schedules.forEach(async schedule => {
-      const { id, ...scheduleData } = schedule;
-      await this.durationScheduleDAO
-        .createQueryBuilder()
-        .update()
-        .set({ ...scheduleData })
-        .where('id = :id', { id })
-        .andWhere('lessonId = :lessonId', { lessonId })
-        .execute();
-    });
   }
 
   async closeDurationLesson(lessonId: number, centerId: number) {
@@ -109,7 +99,7 @@ export class LessonRepository {
   ////////////////////////////////////////////////////////////////////
   /**
    *
-   * 회차반은 신규 회차반(레슨)만 등록함
+   * 회차반 데이터를 생성함
    * @param {SessionLessonDTO} sessionLesson
    * @param {number} centerId
    */

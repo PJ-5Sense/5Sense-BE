@@ -11,8 +11,8 @@ import { TeacherEntity } from 'src/teacher/entity/teacher.entity';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
-import { DurationLessonScheduleEntity } from 'src/lesson/entity/duration/duration-lesson-schedule.entity';
-import { SessionLessonScheduleEntity } from 'src/lesson/entity/session/session-lesson-schedule.entity';
+import { DurationLessonScheduleEntity } from 'src/lesson-schedule/entity/duration-lesson-schedule.entity';
+import { SessionLessonScheduleEntity } from 'src/lesson-schedule/entity/session-lesson-schedule.entity';
 
 export default class LessonSeed1702051029391 implements Seeder {
   track = false;

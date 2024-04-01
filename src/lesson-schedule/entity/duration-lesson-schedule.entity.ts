@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { DurationLessonEntity } from './duration-lesson.entity';
+import { DurationLessonEntity } from '../../lesson/entity/duration/duration-lesson.entity';
 import { LessonRoomEntity } from 'src/lesson-room/entity/lesson-room.entity';
 
 // 1:N으로 데이터 설계 변경해야함

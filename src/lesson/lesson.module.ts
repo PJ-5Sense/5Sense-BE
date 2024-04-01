@@ -9,8 +9,7 @@ import { SessionLessonRegistrationEntity } from 'src/lesson/entity/session/sessi
 import { DurationLessonRegistrationEntity } from 'src/lesson/entity/duration/duration-registration.entity';
 import { LessonRepository } from './lesson.repository';
 import { LessonViewEntity } from './entity/lesson-view.entity';
-import { DurationLessonScheduleEntity } from './entity/duration/duration-lesson-schedule.entity';
-import { SessionLessonScheduleEntity } from './entity/session/session-lesson-schedule.entity';
+import { LessonScheduleModule } from '../lesson-schedule/lesson-schedule.module';
 
 @Module({
   imports: [
@@ -19,10 +18,9 @@ import { SessionLessonScheduleEntity } from './entity/session/session-lesson-sch
       SessionLessonEntity,
       DurationLessonRegistrationEntity,
       SessionLessonRegistrationEntity,
-      DurationLessonScheduleEntity,
-      SessionLessonScheduleEntity,
       LessonViewEntity,
     ]),
+    LessonScheduleModule,
     LessonCategoryModule,
   ],
   controllers: [LessonController],

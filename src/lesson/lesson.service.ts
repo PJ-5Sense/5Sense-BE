@@ -1,3 +1,4 @@
+import { LessonScheduleService } from './../lesson-schedule/lesson-schedule.service';
 import { Injectable } from '@nestjs/common';
 import { CreateLessonDTO } from './dto/create-lesson.dto';
 import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/find-many-lesson.dto';
@@ -11,8 +12,10 @@ import { UpdateLessonDTO } from './dto/update-lesson.dto';
 export class LessonService {
   constructor(
     private readonly lessonRepository: LessonRepository,
+    private readonly lessonScheduleService: LessonScheduleService,
     private readonly lessonCategoryService: LessonCategoryService,
   ) {}
+  // TODO : 트랜잭션 처리 필요
   async createLesson(createLessonDTO: CreateLessonDTO, centerId: number) {
     if (createLessonDTO.type === LessonType.DURATION) {
       // 카테고리가 대분류 기타라면 존재하는지 확인 하는 처리
@@ -21,7 +24,15 @@ export class LessonService {
           createLessonDTO.durationLesson.category.name,
         );
       }
-      return await this.lessonRepository.createDurationLesson(createLessonDTO.durationLesson, centerId);
+
+      const { schedules, category, ...durationLesson } = createLessonDTO.durationLesson;
+      const lessonId = await this.lessonRepository.createDurationLesson({
+        ...durationLesson,
+        centerId,
+        categoryId: category.id,
+      });
+
+      await this.lessonScheduleService.createDurationSchedules(lessonId, schedules);
     }
 
     if (createLessonDTO.type === LessonType.SESSION) {
@@ -117,17 +128,12 @@ export class LessonService {
   }
 
   async getLessonDetails(id: number, centerId: number, findOneLessonDTO: FindOneLessonDTO) {
-    // TODO : Typeorm의 날짜(Date)데이터 저장되고 사용되는 방식과 프론트 소통에서 사용되는 방식을 통일해야함
     if (findOneLessonDTO.type === LessonType.DURATION) {
       const lesson = await this.lessonRepository.findOneDurationDetails(id, centerId);
-      const startDate =
-        `${lesson.durationSchedules[0].startDate.getFullYear()}.` +
-        `${lesson.durationSchedules[0].startDate.getMonth() + 1}.` +
-        `${lesson.durationSchedules[0].startDate.getDate()}`;
-      const endDate =
-        `${lesson.durationSchedules[0].endDate.getFullYear()}.` +
-        `${lesson.durationSchedules[0].endDate.getMonth() + 1}.` +
-        `${lesson.durationSchedules[0].endDate.getDate()}`;
+      const duration = this.formatLessonDurationDates(
+        lesson.durationSchedules[0].startDate,
+        lesson.durationSchedules[0].endDate,
+      );
 
       return {
         id: lesson.id,
@@ -137,7 +143,8 @@ export class LessonService {
         teacher: lesson.teacher.name,
         mainCategory: lesson.category.parentId ? lesson.category.parentName : lesson.category.name,
         subCategory: lesson.category.parentId ? lesson.category.name : null,
-        duration: startDate + ' ~ ' + endDate,
+        duration,
+        numberOfStudents: lesson.durationRegistrations.length,
         lessonDurations: lesson.durationSchedules.map(schedule => {
           return {
             id: schedule.id,
@@ -147,7 +154,6 @@ export class LessonService {
             room: schedule.lessonRoom.name,
           };
         }),
-        numberOfStudents: lesson.durationRegistrations.length,
         registeredStudents: lesson.durationRegistrations.map(registration => {
           return {
             name: registration.student.name,
@@ -184,16 +190,18 @@ export class LessonService {
     }
   }
 
-  // update를 시키기 위해서 그러면 전체 데이터를 확인하고?
   async updateLesson(updateLessonDTO: UpdateLessonDTO, lessonId: number, centerId: number) {
-    // 일정정보의 삭제와 수정은 API로 존재해야하지 않나?
-
-    // 기간만 수정못하게, 시간,요일 강의실 변경가능
+    // 기간반 레슨 수정에 스케쥴 수정은 기간을 제외한 나머지 수정 가능함
     if (updateLessonDTO.type === LessonType.DURATION) {
-      return await this.lessonRepository.updateDurationLesson(lessonId, updateLessonDTO.durationLesson, centerId);
+      const { schedules, category, ...duration } = updateLessonDTO.durationLesson;
+      await this.lessonRepository.updateDurationLesson(lessonId, { ...duration, categoryId: category.id, centerId });
+      await this.lessonScheduleService.updateDurationSchedules(lessonId, schedules);
+      return;
     }
+
     if (updateLessonDTO.type === LessonType.SESSION) {
-      return await this.lessonRepository.updateSessionLesson(lessonId, updateLessonDTO.sessionLesson, centerId);
+      await this.lessonRepository.updateSessionLesson(lessonId, updateLessonDTO.sessionLesson, centerId);
+      return;
     }
   }
 
@@ -236,5 +244,12 @@ export class LessonService {
 
     // 배열 0번째는 1일을 의미하여 첫 시작날에 -1을 계산해서 리턴하도록 함
     return firstDayDateOfMonth - 1;
+  }
+
+  private formatLessonDurationDates(start: Date, end: Date) {
+    const startDate = `${start.getFullYear()}.` + `${start.getMonth() + 1}.` + `${start.getDate()}`;
+    const endDate = `${end.getFullYear()}.` + `${end.getMonth() + 1}.` + `${end.getDate()}`;
+
+    return startDate + ' ~ ' + endDate;
   }
 }

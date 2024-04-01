@@ -2,7 +2,7 @@ import { StudentEntity } from 'src/student/entity/student.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { PaymentStatus } from 'src/lesson/types/lesson-payment-status.type';
 import { SessionLessonEntity } from 'src/lesson/entity/session/session-lesson.entity';
-import { SessionLessonScheduleEntity } from './session-lesson-schedule.entity';
+import { SessionLessonScheduleEntity } from '../../../lesson-schedule/entity/session-lesson-schedule.entity';
 
 @Entity({ name: 'session_lesson_registration' })
 export class SessionLessonRegistrationEntity {
