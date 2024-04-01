@@ -3,7 +3,7 @@ import { socialLoginDto } from './dto/request/social-login.dto';
 import { SocialType } from './type/social.type';
 import { Public } from 'src/common/decorator/public.decorator';
 import { RefreshTokenGuard } from 'src/common/guards/reissue-jwt.guard';
-import { User } from 'src/common/decorator/user.decorator';
+import { CurrentUser } from 'src/common/decorator/user.decorator';
 import { JwtPayload } from './type/jwt-payload.type';
 import { AuthService } from './auth.service';
 
@@ -40,7 +40,7 @@ export class AuthController {
   async reissueAccessToken(
     @Headers('user-agent') userAgent: string,
     @Headers('authorization') refreshToken: string,
-    @User() jwtInfo: JwtPayload,
+    @CurrentUser() jwtInfo: JwtPayload,
   ) {
     return {
       success: true,

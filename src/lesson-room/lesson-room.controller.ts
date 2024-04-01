@@ -1,8 +1,19 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { LessonRoomService } from './lesson-room.service';
+import { CreateCenterRoomDTO } from './dto/create-room.dto';
+import { CurrentUser } from '../common/decorator/user.decorator';
 
-@Controller('lesson-room')
+@Controller('lesson-rooms')
 export class LessonRoomController {
   constructor(private readonly lessonRoomService: LessonRoomService) {}
-  // 강의실의 예약 현황을 가져와야하는데...
+
+  @Post()
+  async createRoom(@Body() createCenterRoomDTO: CreateCenterRoomDTO, @CurrentUser('centerId') centerId: number) {
+    await this.lessonRoomService.crete(createCenterRoomDTO, centerId);
+
+    return {
+      success: true,
+      message: `The lesson room has been successfully registered`,
+    };
+  }
 }

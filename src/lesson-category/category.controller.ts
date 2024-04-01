@@ -1,13 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import { LessonCategoryService } from './category.service';
-import { User } from 'src/common/decorator/user.decorator';
+import { CurrentUser } from 'src/common/decorator/user.decorator';
 
 @Controller('lesson-categories')
 export class CategoryController {
   constructor(private readonly lessonCategoryService: LessonCategoryService) {}
 
   @Get()
-  async getCategories(@User('centerId') centerId: number) {
+  async getCategories(@CurrentUser('centerId') centerId: number) {
     return {
       success: true,
       message: 'Successfully retrieved the Category list',

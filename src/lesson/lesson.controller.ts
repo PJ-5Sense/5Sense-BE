@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Query, Param, Put, Delete, Patch } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { CreateLessonDTO } from './dto/create-lesson.dto';
-import { User } from 'src/common/decorator/user.decorator';
+import { CurrentUser } from 'src/common/decorator/user.decorator';
 import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/find-many-lesson.dto';
 import { FindOneLessonDTO } from './dto/find-one-lesson.dto';
 import { UpdateLessonDTO } from './dto/update-lesson.dto';
@@ -12,7 +12,7 @@ export class LessonController {
   constructor(private readonly lessonService: LessonService) {}
 
   @Post()
-  async createLesson(@Body() createLessonDto: CreateLessonDTO, @User('centerId') centerId: number) {
+  async createLesson(@Body() createLessonDto: CreateLessonDTO, @CurrentUser('centerId') centerId: number) {
     await this.lessonService.createLesson(createLessonDto, centerId);
 
     return {
@@ -22,7 +22,10 @@ export class LessonController {
   }
 
   @Get('filters')
-  async findLessonsByFilter(@Query() findManyByFilterDTO: FindManyByFilterDTO, @User('centerId') centerId: number) {
+  async findLessonsByFilter(
+    @Query() findManyByFilterDTO: FindManyByFilterDTO,
+    @CurrentUser('centerId') centerId: number,
+  ) {
     return {
       success: true,
       message: `Successfully retrieved the lesson list by applying filter`,
@@ -32,7 +35,7 @@ export class LessonController {
 
   @Get(':lessonId/details')
   async findLessonDetails(
-    @User('centerId') centerId: number,
+    @CurrentUser('centerId') centerId: number,
     @Param('lessonId') lessonId: number,
     @Query() findOneLessonDTO: FindOneLessonDTO,
   ) {
@@ -44,7 +47,7 @@ export class LessonController {
   }
 
   @Get('/:year/:month')
-  async getLessonsByDate(@Param() findManyLessonDTO: FindManyByDateDTO, @User('centerId') centerId: number) {
+  async getLessonsByDate(@Param() findManyLessonDTO: FindManyByDateDTO, @CurrentUser('centerId') centerId: number) {
     return {
       success: true,
       message: `Successfully retrieved the lesson list by date`,
@@ -56,7 +59,7 @@ export class LessonController {
   async updateLesson(
     @Param('lessonId') lessonId: number,
     @Body() updateLessonDTO: UpdateLessonDTO,
-    @User('centerId') centerId: number,
+    @CurrentUser('centerId') centerId: number,
   ) {
     await this.lessonService.updateLesson(updateLessonDTO, lessonId, centerId);
 
@@ -70,7 +73,7 @@ export class LessonController {
   async closeLesson(
     @Param('lessonId') lessonId: number,
     @Query() closeLessonDTO: CloseLessonDTO,
-    @User('centerId') centerId: number,
+    @CurrentUser('centerId') centerId: number,
   ) {
     await this.lessonService.closeLesson(lessonId, centerId, closeLessonDTO.type);
 
