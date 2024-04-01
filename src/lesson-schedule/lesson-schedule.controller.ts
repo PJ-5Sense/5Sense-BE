@@ -1,8 +1,8 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Post, Query } from '@nestjs/common';
 import { LessonScheduleService } from './lesson-schedule.service';
 import { GetDailySchedulesDTO } from './dto/get-daily-schedules.dto';
 import { GetRangeSchedulesDTO } from './dto/get-range-schedule.dto';
-import { User } from '../common/decorator/user.decorator';
+import { CurrentUser } from '../common/decorator/user.decorator';
 
 @Controller('lesson-schedules')
 export class LessonScheduleController {
@@ -12,7 +12,7 @@ export class LessonScheduleController {
   // TODO : 학원의 장사 시간을 반영해야함
   async getSchedulesWithinRange(
     @Query() getRangeSchedulesDTO: GetRangeSchedulesDTO,
-    @User('centerId') centerId: number,
+    @CurrentUser('centerId') centerId: number,
   ) {
     // 기간, 시간, 요일 -> 기간반
     // 기간(하루 요일) -> 회차반
@@ -24,7 +24,10 @@ export class LessonScheduleController {
 
   @Get('daily')
   // TODO : 학원의 장사 시간을 반영해야함
-  async getDailySchedules(@Query() getDailySchedulesDTO: GetDailySchedulesDTO, @User('centerId') centerId: number) {
+  async getDailySchedules(
+    @Query() getDailySchedulesDTO: GetDailySchedulesDTO,
+    @CurrentUser('centerId') centerId: number,
+  ) {
     // 기간(하루 요일) -> 회차반
   }
 }
