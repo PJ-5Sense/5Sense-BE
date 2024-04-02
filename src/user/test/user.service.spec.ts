@@ -1,74 +1,40 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateUser } from '../type/create-user.type';
+import { SocialType } from 'src/auth/type/social.type';
+import { UserService } from '../user.service';
+import { UserRepository } from '../user.repository';
+import { SocialService } from '../../social/social.service';
+import { CreateSocial, CreateUser } from '../type/create-user.type';
 import { UserEntity } from '../entity/user.entity';
-import { CenterEntity } from 'src/center/entity/center.entity';
 
 describe('UserService', () => {
-  const mockDao = {
-    create: jest.fn(),
-    findOneUserCenterByUserId: jest.fn(),
-  };
+  let userService: UserService;
+  let userRepository: UserRepository;
+  let socialService: SocialService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [],
+      providers: [
+        UserService,
+        { provide: UserRepository, useValue: { create: jest.fn(), findOne: jest.fn() } },
+        { provide: SocialService, useValue: { create: jest.fn(), findOneByUser: jest.fn() } },
+      ],
     }).compile();
+
+    userService = module.get<UserService>(UserService);
+    userRepository = module.get<UserRepository>(UserRepository);
+    socialService = module.get<SocialService>(SocialService);
   });
 
-  it('should be defined', () => {
-    // expect(userService).toBeDefined();
-  });
+  it('should create a user and social link', async () => {
+    const createUserDto: any = {};
+    const createSocialDto: any = {};
+    const expectedUser: any = {};
 
-  describe('Create User - create()', () => {
-    it('should create a new user', async () => {
-      const createUser: CreateUser = {
-        name: '테스트',
-        profile: '테스트 프로필',
-        email: 'test@gmail.com',
-        phone: '01000001111',
-      };
-
-      const user = mockDao.create.mockReturnValue(createUser);
-
-      expect(await userService.create(createUser)).toEqual(user());
-    });
-  });
-
-  describe('Find User Center ID - findOneUserCenterByUserId()', () => {
-    it('if User Have Center, get it', async () => {
-      const mockUserId = 1;
-      const mockCenterId = 10;
-      const mockUser: UserEntity = {
-        id: mockUserId,
-        name: '테스트',
-        profile: '테스트 프로필',
-        email: 'test@gmail.com',
-        phone: '01000001111',
-        createdDate: new Date(),
-        deletedDate: null,
-        center: [],
-        social: [],
-      };
-      const mockCenter: CenterEntity = {
-        id: mockCenterId,
-        name: '센터 테스트 이름',
-        address: '센터 주소',
-        mainPhone: '센터 연락처',
-        profile: '센터프로필',
-        userId: mockUserId,
-        user: mockUser,
-        students: [],
-        teachers: [],
-        lessons: [],
-        createdDate: new Date(),
-        deletedDate: null,
-      };
-
-      mockUser.center.push(mockCenter);
-
-      mockDao.findOneUserCenterByUserId.mockReturnValue(mockUser);
-
-      expect(await userService.findOneUserCenterByUserId(mockUserId)).toEqual(mockCenterId);
-    });
+    jest.spyOn(userRepository, 'create').mockResolvedValueOnce(expectedUser);
+    jest.spyOn(socialService, 'create').mockResolvedValueOnce(undefined);
+    const result = await userService.createUser(createUserDto, createSocialDto);
+    expect(result).toEqual(expectedUser);
+    expect(userRepository.create).toHaveBeenCalledWith(createUserDto);
+    expect(socialService.create).toHaveBeenCalledWith(createSocialDto, expectedUser);
   });
 });
