@@ -2,7 +2,6 @@ import { IsIn, IsInt, Max, Min } from 'class-validator';
 import ValidateConfig from '../environment.validator';
 
 class AppConfig {
-
   @IsIn(['local', 'debug', 'test', 'development', 'production'])
   NODE_ENV: string;
 

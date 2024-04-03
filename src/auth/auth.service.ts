@@ -169,7 +169,7 @@ export class AuthService {
 
     const accessToken = await this.generateAccessToken({
       userId: userSocialData.userId,
-      centerId: (await this.userService.findOne(userSocialData.userId)).centers[0]?.id ?? null,
+      centerId: (await this.userService.findOneById(userSocialData.userId)).centers[0]?.id ?? null,
     });
 
     return {

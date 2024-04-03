@@ -24,16 +24,10 @@ export class UserService {
   }
 
   async findUserBySocialId(socialId: string, socialType: SocialType): Promise<UserEntity | null> {
-    const user = await this.socialService.findOneByUser(socialId, socialType);
-
-    if (user) {
-      return await this.userRepository.findOne(user.id);
-    }
-
-    return null;
+    return await this.socialService.findOneByUser(socialId, socialType);
   }
 
-  async findOne(userId: number) {
-    return await this.userRepository.findOne(userId);
+  async findOneById(userId: number) {
+    return await this.userRepository.findOneById(userId);
   }
 }

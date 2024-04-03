@@ -31,6 +31,7 @@
     "seed:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./src/database/configs/seeder.config.ts --name ./src/database/seeds/$npm_config_name.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-ssm": "^3.540.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^9.0.0",
