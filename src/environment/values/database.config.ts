@@ -1,5 +1,6 @@
 import { IsString, IsIn, IsNumber } from 'class-validator';
 import ValidateConfig from '../environment.validator';
+import { getValue } from '../aws-parameter-store';
 
 class DatabaseConfig {
   @IsString()
@@ -21,10 +22,8 @@ class DatabaseConfig {
   DATABASE_USER: string;
 }
 
-export default () => {
-  const isProduction = process.env.NODE_ENV === 'local' ? true : false;
-
-  const env = {
+export default async () => {
+  let env = {
     DATABASE_DB: process.env.DATABASE_DB,
     DATABASE_HOST: process.env.DATABASE_HOST,
     DATABASE_PASS: process.env.DATABASE_PASS,
@@ -32,6 +31,12 @@ export default () => {
     DATABASE_TYPE: process.env.DATABASE_TYPE,
     DATABASE_USER: process.env.DATABASE_USER,
   };
+
+  const isProduction = process.env.NODE_ENV === 'local' ? true : false;
+
+  if (process.env.NODE_ENV !== 'local') {
+    env = await getValue('mysql-database');
+  }
 
   ValidateConfig(env, DatabaseConfig);
 
@@ -48,3 +53,13 @@ export default () => {
     },
   };
 };
+console.log(
+  JSON.parse(`{
+    DATABASE_HOST: 'database-1.cxbpyqgfjozo.ap-northeast-2.rds.amazonaws.com',
+    DATABASE_USER: 'admin',
+    DATABASE_PASS: 'Louis17467*',
+    DATABASE_PORT: 3306,
+    DATABASE_DB: 'oh_sense',
+    DATABASE_TYPE: 'mysql',
+  }`),
+);

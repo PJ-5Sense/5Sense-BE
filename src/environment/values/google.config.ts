@@ -1,5 +1,6 @@
 import { IsString } from 'class-validator';
 import ValidateConfig from '../environment.validator';
+import { getValue } from '../aws-parameter-store';
 
 class GoogleConfig {
   @IsString()
@@ -12,12 +13,16 @@ class GoogleConfig {
   GOOGLE_CALLBACK_URL: string;
 }
 
-export default () => {
-  const env = {
+export default async () => {
+  let env = {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL,
   };
+
+  if (process.env.NODE_ENV !== 'local') {
+    env = await getValue('mysql-database');
+  }
 
   ValidateConfig(env, GoogleConfig);
 

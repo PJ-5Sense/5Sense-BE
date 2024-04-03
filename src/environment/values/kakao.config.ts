@@ -1,5 +1,6 @@
 import { IsString } from 'class-validator';
 import ValidateConfig from '../environment.validator';
+import { getValue } from '../aws-parameter-store';
 
 class KaKaoConfig {
   @IsString()
@@ -11,12 +12,16 @@ class KaKaoConfig {
   @IsString()
   KAKAO_CALLBACK_URL: string;
 }
-export default () => {
-  const env = {
+export default async () => {
+  let env = {
     KAKAO_CLIENT_ID: process.env.KAKAO_CLIENT_ID,
     KAKAO_CLIENT_SECRET: process.env.KAKAO_CLIENT_SECRET,
     KAKAO_CALLBACK_URL: process.env.KAKAO_CALLBACK_URL,
   };
+
+  if (process.env.NODE_ENV !== 'local') {
+    env = await getValue('social-kakao');
+  }
 
   ValidateConfig(env, KaKaoConfig);
 

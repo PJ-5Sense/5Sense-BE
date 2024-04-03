@@ -14,10 +14,15 @@ class AppConfig {
 export default () => {
   const env = {
     NODE_ENV: process.env.NODE_ENV,
-    PORT: process.env.APP_PORT,
+    PORT: process.env.APP_PORT || 3000,
   };
 
   ValidateConfig(env, AppConfig);
 
   return { APP: env };
 };
+`{"JWT_ACCESS_EXPIRE_TIME":"6h",
+"JWT_REFRESH_EXPIRE_TIME":"7d",
+"JWT_ACCESS_SECRET_KEY":"accesstokensecretkeytsworld",
+"JWT_REFRESH_SECRET_KEY":"refreshtokensecretkeytsworld"
+}`;

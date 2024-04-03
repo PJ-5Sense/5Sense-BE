@@ -7,7 +7,7 @@ import { LessonType } from './types/lesson.type';
 import { LessonRepository } from './lesson.repository';
 import { LessonCategoryService } from 'src/lesson-category/category.service';
 import { UpdateLessonDTO } from './dto/update-lesson.dto';
-
+// TODO : 트랜잭션 사용하는 방법 정의하기 - 단순 사용이 아닌 중복된 코드들을 개선하기 위한 작업이 필요함
 @Injectable()
 export class LessonService {
   constructor(
