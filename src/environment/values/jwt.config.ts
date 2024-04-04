@@ -32,7 +32,7 @@ export default async () => {
   };
 
   if (process.env.NODE_ENV !== 'local') {
-    env = await getValue('jwt-options');
+    env = await getValue('jwt');
   }
 
   ValidateConfig(env, JwtConfig);

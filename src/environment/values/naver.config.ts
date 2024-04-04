@@ -20,7 +20,7 @@ export default async () => {
   };
 
   if (process.env.NODE_ENV !== 'local') {
-    env = await getValue('social-kakao');
+    env = await getValue('social-naver');
   }
 
   ValidateConfig(env, NaverConfig);

@@ -21,7 +21,7 @@ export default async () => {
   };
 
   if (process.env.NODE_ENV !== 'local') {
-    env = await getValue('mysql-database');
+    env = await getValue('social-google');
   }
 
   ValidateConfig(env, GoogleConfig);

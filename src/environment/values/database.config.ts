@@ -53,13 +53,3 @@ export default async () => {
     },
   };
 };
-console.log(
-  JSON.parse(`{
-    DATABASE_HOST: 'database-1.cxbpyqgfjozo.ap-northeast-2.rds.amazonaws.com',
-    DATABASE_USER: 'admin',
-    DATABASE_PASS: 'Louis17467*',
-    DATABASE_PORT: 3306,
-    DATABASE_DB: 'oh_sense',
-    DATABASE_TYPE: 'mysql',
-  }`),
-);

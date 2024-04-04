@@ -2,18 +2,18 @@ import { GetParameterCommand, SSMClient, SSMClientConfig } from '@aws-sdk/client
 /**
  * AWS Parameter Store를 이용해 저장한 값을 가져옵니다
  * @param name 환경변수 저장 파일의 이름
- * @returns
+ * @returns env
  */
-export async function getValue(name: string): Promise<object> {
+export async function getValue(name: string): Promise<any> {
   const command = new GetParameterCommand({
-    Name: `/oh-sense/${name}`,
+    Name: `/${process.env.AWS_ENV_STORE_PATH}/${name}`,
     WithDecryption: true,
   });
   const ssmClientConfig: SSMClientConfig = {
-    region: 'ap-northeast-2',
+    region: process.env.AWS_REGION,
     credentials: {
-      accessKeyId: 'accesskey',
-      secretAccessKey: 'secretkey',
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     },
   };
   const ssmClient: SSMClient = new SSMClient(ssmClientConfig);

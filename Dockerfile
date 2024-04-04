@@ -22,7 +22,7 @@ WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
-ENV NODE_ENV local
+ENV NODE_ENV development
 
 # local, dev, prod 환경 분리 필요
 CMD [ "node", "./dist/main" ]
