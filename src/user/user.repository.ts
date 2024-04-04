@@ -14,7 +14,9 @@ export class UserRepository {
     return newUser;
   }
 
-  async findOne(userId: number) {
-    return await this.userDAO.findOne({ where: { id: userId }, relations: { socials: true, centers: true } });
+  async findOneById(userId: number) {
+    const user = await this.userDAO.findOne({ where: { id: userId }, relations: { socials: true, centers: true } });
+
+    return user ?? null;
   }
 }

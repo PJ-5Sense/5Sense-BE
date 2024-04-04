@@ -2,7 +2,6 @@ import { IsIn, IsInt, Max, Min } from 'class-validator';
 import ValidateConfig from '../environment.validator';
 
 class AppConfig {
-
   @IsIn(['local', 'debug', 'test', 'development', 'production'])
   NODE_ENV: string;
 
@@ -15,7 +14,7 @@ class AppConfig {
 export default () => {
   const env = {
     NODE_ENV: process.env.NODE_ENV,
-    PORT: process.env.APP_PORT,
+    PORT: process.env.APP_PORT || 3000,
   };
 
   ValidateConfig(env, AppConfig);

@@ -13,7 +13,7 @@ export class SocialService {
   async findOneByUser(socialId: string, socialType: SocialType) {
     const user = await this.socialRepository
       .createQueryBuilder('social')
-      .leftJoinAndSelect('social.user', 'user')
+      .innerJoinAndSelect('social.user', 'user')
       .where('social.socialId = :socialId', { socialId })
       .andWhere('social.socialType = :socialType', { socialType })
       .getOne();
@@ -27,6 +27,6 @@ export class SocialService {
       user: savedUser,
     });
 
-    await this.socialRepository.save(newSocial);
+    return await this.socialRepository.save(newSocial);
   }
 }
