@@ -25,11 +25,11 @@ export class LessonRoomEntity extends HardDeleteBaseEntity {
     nullable: false,
     cascade: true,
   })
-  durationSchedule: DurationLessonScheduleEntity[];
+  durationSchedules: DurationLessonScheduleEntity[];
 
   @OneToMany(() => SessionLessonScheduleEntity, sessionSchedule => sessionSchedule.lessonRoom, {
     nullable: false,
     cascade: true,
   })
-  sessionSchedule: SessionLessonScheduleEntity[];
+  sessionSchedules: SessionLessonScheduleEntity[];
 }

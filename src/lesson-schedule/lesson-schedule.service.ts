@@ -20,5 +20,8 @@ export class LessonScheduleService {
     await this.durationScheduleRepository.update(lessonId, schedules);
   }
 
-  async getSchedulesWithinRange(getRangeSchedulesDTO: GetRangeSchedulesDTO, centerId: number) {}
+  async getSchedulesWithinRange(getRangeSchedulesDTO: GetRangeSchedulesDTO, centerId: number) {
+    // 기간으로 가져오는건 기간반
+    return await this.durationScheduleRepository.getMany(getRangeSchedulesDTO, centerId);
+  }
 }
