@@ -2,7 +2,7 @@ version: '3.8'
 services:
   database:
     image: mysql:8.0
-    container_name: test-db
+    container_name: local-db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: testpassword
@@ -10,4 +10,4 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: testpassword
     ports:
-      - '3010:3306'
+      - '3333:3306'

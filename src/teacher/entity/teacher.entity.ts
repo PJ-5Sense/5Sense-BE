@@ -1,7 +1,7 @@
 import { CenterEntity } from 'src/center/entity/center.entity';
 import { HardDeleteBaseEntity } from 'src/database/base.entity';
-import { DurationLessonEntity } from 'src/lesson/entity/duration/duration-lesson.entity';
-import { SessionLessonEntity } from 'src/lesson/entity/session/session-lesson.entity';
+import { DurationLessonEntity } from 'src/lesson/entity/duration-lesson.entity';
+import { SessionLessonEntity } from 'src/lesson/entity/session-lesson.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity({ name: 'teacher' })

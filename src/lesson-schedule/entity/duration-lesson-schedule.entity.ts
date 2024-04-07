@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { DurationLessonEntity } from '../../lesson/entity/duration/duration-lesson.entity';
+import { DurationLessonEntity } from '../../lesson/entity/duration-lesson.entity';
 import { LessonRoomEntity } from 'src/lesson-room/entity/lesson-room.entity';
 
 @Entity({ name: 'duration_lesson_schedule' })
@@ -18,6 +18,9 @@ export class DurationLessonScheduleEntity {
 
   @Column({ type: 'time', name: 'end_time', comment: '클래스 종료시간' })
   endTime: string;
+
+  @Column({ name: 'lesson_time', comment: '클래스 수강 시간(30분 단위), ex) 90 -> 90분' })
+  lessonTime: number;
 
   @Column({ name: 'repeat_date', comment: '반복 요일 ex) 월, 화, 수' })
   repeatDate: string;

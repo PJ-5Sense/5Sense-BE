@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { CenterEntity } from 'src/center/entity/center.entity';
 import { CategoryEntity } from 'src/lesson-category/entity/category.entity';
-import { DurationLessonRegistrationEntity } from 'src/lesson/entity/duration/duration-registration.entity';
-import { SessionLessonRegistrationEntity } from 'src/lesson/entity/session/session-registration.entity';
-import { DurationLessonEntity } from 'src/lesson/entity/duration/duration-lesson.entity';
-import { SessionLessonEntity } from 'src/lesson/entity/session/session-lesson.entity';
+import { DurationLessonRegistrationEntity } from 'src/lesson-registration/entitiy/duration-registration.entity';
+import { SessionLessonRegistrationEntity } from 'src/lesson-registration/entitiy/session-registration.entity';
+import { DurationLessonEntity } from 'src/lesson/entity/duration-lesson.entity';
+import { SessionLessonEntity } from 'src/lesson/entity/session-lesson.entity';
 import { PaymentStatus } from 'src/lesson/types/lesson-payment-status.type';
 import { StudentEntity } from 'src/student/entity/student.entity';
 import { TeacherEntity } from 'src/teacher/entity/teacher.entity';
@@ -46,7 +46,7 @@ export default class LessonSeed1702051029391 implements Seeder {
       const lesson = new DurationLessonEntity();
       lesson.name = faker.word.words({ count: { min: 5, max: 10 } });
       lesson.memo = faker.word.words({ count: { min: 5, max: 10 } });
-      lesson.lessonTime = 60;
+
       lesson.tuitionFee = Number(faker.finance.accountNumber({ length: 8 }));
       lesson.centerId = centerId;
       lesson.teacherId = teacherIds[faker.number.int({ min: 4, max: 28 }) % teacherIds.length];
@@ -71,6 +71,7 @@ export default class LessonSeed1702051029391 implements Seeder {
         endDate: endDate,
         startTime: startTime,
         endTime: endTime,
+        lessonTime: 60,
         studentId: studentIds[faker.number.int({ min: 4, max: 28 }) % studentIds.length],
         roomId: 1,
       });

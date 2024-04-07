@@ -28,6 +28,9 @@ export class UpdateDurationScheduleDTO {
   repeatDate: string;
 
   @IsInt()
+  lessonTime: number;
+
+  @IsInt()
   roomId: number;
 }
 
@@ -38,9 +41,6 @@ export class UpdateDurationLessonDTO {
 
   @IsString()
   memo: string;
-
-  @IsInt()
-  lessonTime: number;
 
   @IsInt()
   tuitionFee: number;

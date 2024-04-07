@@ -21,9 +21,6 @@ export class DurationLessonDTO {
   memo: string;
 
   @IsInt()
-  lessonTime: number;
-
-  @IsInt()
   tuitionFee: number;
 
   @IsObject()
@@ -56,6 +53,9 @@ export class DurationScheduleDTO {
 
   @Matches(`^[가-힣,]{1,15}$`)
   repeatDate: string;
+
+  @IsInt()
+  lessonTime: number;
 
   @IsInt()
   roomId: number;
