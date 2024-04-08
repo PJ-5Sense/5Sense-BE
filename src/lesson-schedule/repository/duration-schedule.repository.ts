@@ -8,7 +8,7 @@ import { GetRangeSchedulesDTO } from '../dto/get-range-schedule.dto';
 import { LessonRoomEntity } from 'src/lesson-room/entity/lesson-room.entity';
 
 @Injectable()
-export class DurationScheduleRepository {
+export class ScheduleRepository {
   constructor(
     @InjectRepository(DurationLessonScheduleEntity)
     private readonly durationScheduleDAO: Repository<DurationLessonScheduleEntity>,
@@ -16,7 +16,7 @@ export class DurationScheduleRepository {
     private readonly lessonRoomDAO: Repository<LessonRoomEntity>,
   ) {}
 
-  async create(lessonId: number, schedules: DurationScheduleDTO[]) {
+  async createDurationSchedule(lessonId: number, schedules: DurationScheduleDTO[]) {
     for (const schedule of schedules) {
       await this.durationScheduleDAO.save(
         this.durationScheduleDAO.create({
@@ -27,7 +27,7 @@ export class DurationScheduleRepository {
     }
   }
 
-  async update(lessonId: number, schedules: UpdateDurationScheduleDTO[]) {
+  async updateDurationSchedule(lessonId: number, schedules: UpdateDurationScheduleDTO[]) {
     schedules.forEach(async schedule => {
       const { id, ...scheduleData } = schedule;
       await this.durationScheduleDAO

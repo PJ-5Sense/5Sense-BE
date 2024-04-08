@@ -48,7 +48,6 @@ export class AuthService {
     const socialLoginInfo = await strategy.login(code, state);
 
     const userSocialInfo = await this.userService.findUserBySocialId(socialLoginInfo.socialUserInfo.socialId, provider);
-    console.log(userSocialInfo);
 
     if (!userSocialInfo) {
       return await this.processNewUserAndGenerateTokens(socialLoginInfo, userAgent);
