@@ -3,6 +3,7 @@ import { CreateCenterDto } from './dto/request/create-center.dto';
 import { JwtPayload } from 'src/auth/type/jwt-payload.type';
 import { LessonRoomService } from 'src/lesson-room/lesson-room.service';
 import { CenterRepository } from './center.repository';
+import { unlinkSync } from 'fs';
 
 @Injectable()
 export class CenterService {
@@ -26,6 +27,7 @@ export class CenterService {
       name: center.name,
       address: center.address,
       mainPhone: center.mainPhone,
+      profile: center.profile,
       open: center.open,
       close: center.close,
     };
@@ -43,6 +45,18 @@ export class CenterService {
       name: myCenter.name,
       address: myCenter.address,
       mainPhone: myCenter.mainPhone,
+      profile: myCenter.profile,
+      open: myCenter.open,
+      close: myCenter.close,
     };
+  }
+
+  async deleteLocalFile(filePath: string): Promise<void> {
+    try {
+      // 업로드 파일 삭제 (use "fs" module)
+      unlinkSync(filePath);
+    } catch (error) {
+      console.error('Failed to delete local file', error);
+    }
   }
 }
