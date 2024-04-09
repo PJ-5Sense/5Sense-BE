@@ -12,4 +12,12 @@ export class CreateCenterDto {
   @IsString()
   @IsNotEmpty()
   mainPhone: string;
+
+  @IsString()
+  @IsNotEmpty()
+  open: string;
+
+  @IsString()
+  @IsNotEmpty()
+  close: string;
 }
