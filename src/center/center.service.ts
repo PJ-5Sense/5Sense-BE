@@ -26,6 +26,8 @@ export class CenterService {
       name: center.name,
       address: center.address,
       mainPhone: center.mainPhone,
+      open: center.open,
+      close: center.close,
     };
   }
 
