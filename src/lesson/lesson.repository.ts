@@ -1,9 +1,9 @@
 import { SessionLessonDTO } from './dto/create-lesson.dto';
 import { Injectable } from '@nestjs/common';
-import { DurationLessonEntity } from './entity/duration/duration-lesson.entity';
+import { DurationLessonEntity } from './entity/duration-lesson.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SessionLessonEntity } from './entity/session/session-lesson.entity';
+import { SessionLessonEntity } from './entity/session-lesson.entity';
 import { LessonViewEntity } from './entity/lesson-view.entity';
 import { FindManyByFilterDTO } from './dto/find-many-lesson.dto';
 import { UpdateSessionLessonDTO } from './dto/update-lesson.dto';
@@ -29,7 +29,6 @@ export class LessonRepository {
   async createDurationLesson(durationLesson: {
     name: string;
     memo: string;
-    lessonTime: number;
     tuitionFee: number;
     teacherId: number;
     categoryId: number;
@@ -66,7 +65,6 @@ export class LessonRepository {
     durationLesson: {
       name: string;
       memo: string;
-      lessonTime: number;
       tuitionFee: number;
       teacherId: number;
       categoryId: number;
@@ -166,9 +164,9 @@ export class LessonRepository {
   ): Promise<[DurationLessonEntity[], SessionLessonEntity[]]> {
     const durationLessons = await this.durationLessonDAO
       .createQueryBuilder('L') // L = duration lesson
-      .select(['L.id', 'L.name', 'L.memo', 'L.lessonTime'])
+      .select(['L.id', 'L.name', 'L.memo'])
       .innerJoin('L.durationSchedules', 'D_S') // D_S = schedule
-      .addSelect(['D_S.startDate', 'D_S.endDate', 'D_S.startTime', 'D_S.repeatDate'])
+      .addSelect(['D_S.startDate', 'D_S.endDate', 'D_S.startTime', 'D_S.repeatDate', 'D_S.lessonTime'])
       .innerJoin('D_S.lessonRoom', 'L_R') // L_R = lesson room
       .addSelect(['L_R.id', 'L_R.name'])
       .innerJoin('L.teacher', 'T') // T = teacher
