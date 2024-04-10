@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   IsObject,
   IsString,
+  Matches,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
@@ -60,7 +61,21 @@ export class UpdateDurationLessonDTO {
   schedules: UpdateDurationScheduleDTO[];
 }
 
-export class UpdateSessionLessonDTO extends SessionLessonDTO {}
+export class UpdateSessionLessonDTO {
+  @Matches(`^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s.,!?-]{1,20}$`)
+  name: string;
+
+  @Matches(`^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s.,!?-]{1,300}$`)
+  memo: string;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => LessonCategory)
+  category: LessonCategory;
+
+  @IsInt()
+  teacherId: number;
+}
 
 export class UpdateLessonDTO {
   @IsEnum(LessonType)
