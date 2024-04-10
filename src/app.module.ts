@@ -3,17 +3,17 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EnvironmentModule } from './environment/environment.module';
 import { DatabaseModule } from './database/database.module';
-import { UserModule } from './user/user.module';
-import { CenterModule } from './center/center.module';
-import { TeacherModule } from './teacher/teacher.module';
-import { StudentModule } from './student/student.module';
-import { LessonModule } from './lesson/lesson.module';
-import { AuthModule } from './auth/auth.module';
+import { UserModule } from './feature-modules/user/user.module';
+import { CenterModule } from './feature-modules/center/center.module';
+import { TeacherModule } from './feature-modules/teacher/teacher.module';
+import { StudentModule } from './feature-modules/student/student.module';
+import { LessonModule } from './feature-modules/lesson/lesson.module';
+import { AuthModule } from './feature-modules/auth/auth.module';
 import { AuthGuard } from './common/guards/auth-jwt.guard';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/exception.filter';
 import { LoggerMiddleware } from './common/middleware/http-log.middleware';
-import { LessonRoomModule } from './lesson-room/lesson-room.module';
+import { LessonRoomModule } from './feature-modules/lesson-room/lesson-room.module';
 
 @Module({
   imports: [
