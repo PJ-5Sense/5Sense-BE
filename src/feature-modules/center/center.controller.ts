@@ -5,6 +5,7 @@ import { JwtPayload } from 'src/feature-modules/auth/type/jwt-payload.type';
 import { CenterService } from './center.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SharpPipe } from '../../common/pipe/resize-image.pipe';
+import { UpdateCenterDTO } from './dto/request/update-center.dto';
 
 @Controller('centers')
 export class CenterController {
@@ -29,6 +30,16 @@ export class CenterController {
   }
 
   @Patch()
-  @UseInterceptors(FileInterceptor('image'))
-  async updateCenter(@UploadedFile(SharpPipe) image: string) {}
+  @UseInterceptors(FileInterceptor('profile'))
+  async updateCenter(
+    @UploadedFile(SharpPipe) profile: string | null,
+    @Body() updateCenterDto: Partial<UpdateCenterDTO>,
+    @CurrentUser() userInfo: JwtPayload,
+  ) {
+    return {
+      success: true,
+      message: 'Successfully updating center information',
+      data: await this.centerService.updateCenter(profile, updateCenterDto, userInfo),
+    };
+  }
 }

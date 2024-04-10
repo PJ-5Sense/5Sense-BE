@@ -7,7 +7,7 @@ import { GoogleLoginStrategy } from './strategy/google-login.strategy';
 import { NaverLoginStrategy } from './strategy/naver-login.strategy';
 import { JwtPayload } from './type/jwt-payload.type';
 import { ConfigService } from '@nestjs/config';
-import { JwtOptions } from 'src/environment/values/jwt.config';
+import { JwtOptions } from 'src/common/environment/values/jwt.config';
 import { SocialLogin } from './type/social-login.type';
 import { CreateAuthDto } from './type/create-auth.dto';
 import { UserEntity } from 'src/feature-modules/user/entity/user.entity';
