@@ -4,7 +4,7 @@ import { CurrentUser } from 'src/common/decorator/user.decorator';
 import { JwtPayload } from 'src/feature-modules/auth/type/jwt-payload.type';
 import { CenterService } from './center.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { SharpPipe } from '../../../common/resize-image.pipe';
+import { SharpPipe } from '../../common/pipe/resize-image.pipe';
 
 @Controller('centers')
 export class CenterController {
