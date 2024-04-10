@@ -30,4 +30,8 @@ export class UserService {
   async findOneById(userId: number) {
     return await this.userRepository.findOneById(userId);
   }
+
+  async deleteUser(userId: number) {
+    return await this.userRepository.delete(userId);
+  }
 }

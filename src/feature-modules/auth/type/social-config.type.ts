@@ -9,4 +9,5 @@ export type SocialConfig = {
   client_id: string;
   client_secret: string;
   redirect_uri: string;
+  admin_key: string;
 };

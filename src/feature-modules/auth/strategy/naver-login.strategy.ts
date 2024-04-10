@@ -87,4 +87,6 @@ export class NaverLoginStrategy implements SocialLoginStrategy {
       socialType: SocialType.Naver,
     };
   }
+
+  async disconnect(socialId: string): Promise<void> {}
 }

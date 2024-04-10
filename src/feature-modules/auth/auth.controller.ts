@@ -1,4 +1,14 @@
-import { Controller, Post, Body, Param, ParseEnumPipe, BadRequestException, UseGuards, Headers } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  ParseEnumPipe,
+  BadRequestException,
+  UseGuards,
+  Headers,
+  Delete,
+} from '@nestjs/common';
 import { socialLoginDto } from './dto/request/social-login.dto';
 import { SocialType } from './type/social.type';
 import { Public } from 'src/common/decorator/public.decorator';
@@ -6,6 +16,7 @@ import { RefreshTokenGuard } from 'src/common/guards/reissue-jwt.guard';
 import { CurrentUser } from 'src/common/decorator/user.decorator';
 import { JwtPayload } from './type/jwt-payload.type';
 import { AuthService } from './auth.service';
+import { CancelMembershipDTO } from './dto/request/cancelMembership.dto';
 
 const customPipeErrorMessage = {
   exceptionFactory: () =>
@@ -46,6 +57,17 @@ export class AuthController {
       success: true,
       message: 'Jwt token reissue is successful',
       data: await this.authService.reissueAccessToken(userAgent, refreshToken, jwtInfo),
+    };
+  }
+
+  @Delete('cancelMembership')
+  @UseGuards(RefreshTokenGuard)
+  async cancelMembership(@Body() cancelMembershipDTO: CancelMembershipDTO, @CurrentUser('userId') userId: number) {
+    await this.authService.cancelMembership(cancelMembershipDTO, userId);
+
+    return {
+      success: true,
+      message: 'Successfully canceled Membership',
     };
   }
 }
