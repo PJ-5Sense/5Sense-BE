@@ -1,7 +1,7 @@
 import { DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
 
-export const PROJECT_SRC_ROOT = `${__dirname}/../..`;
+export const PROJECT_SRC_ROOT = `${__dirname}/../../..`;
 
 dotenv.config({ path: `${PROJECT_SRC_ROOT}/../.env.local` });
 

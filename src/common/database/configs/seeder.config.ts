@@ -5,8 +5,8 @@ import { SeederOptions } from 'typeorm-extension';
 const seederConfig: DataSourceOptions & SeederOptions = {
   ...ormConfig,
   seedTableName: 'seed',
-  seeds: ['./src/database/seeds/*{.ts,.js}'],
-  factories: ['./src/database/factories/*{.ts,.js}'],
+  seeds: ['./src/common/database/seeds/*{.ts,.js}'],
+  factories: ['./src/common/database/factories/*{.ts,.js}'],
 };
 
 export const migrationDataSource = new DataSource(seederConfig);

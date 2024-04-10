@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Query, Param, Put, Delete, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, Put, Patch } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { CreateLessonDTO } from './dto/create-lesson.dto';
 import { CurrentUser } from 'src/common/decorator/user.decorator';
