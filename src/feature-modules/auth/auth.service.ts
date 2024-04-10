@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { SocialType } from './type/social.type';
 import { JwtService } from '@nestjs/jwt';
 import { KakaoLoginStrategy } from './strategy/kakao-login.strategy';
@@ -13,6 +18,7 @@ import { CreateAuthDto } from './type/create-auth.dto';
 import { UserEntity } from 'src/feature-modules/user/entity/user.entity';
 import { UserService } from 'src/feature-modules/user/user.service';
 import { AuthRepository } from './auth.repository';
+import { CancelMembershipDTO } from './dto/request/cancelMembership.dto';
 
 @Injectable()
 export class AuthService {
@@ -176,5 +182,25 @@ export class AuthService {
       accessToken,
       accessTokenExp: new Date((await this.jwtService.decode(accessToken)['exp']) * 1000),
     };
+  }
+
+  async cancelMembership(cancelMembershipDTO: CancelMembershipDTO, userId: number) {
+    const user = await this.userService.findOneById(userId);
+
+    if (user.email === cancelMembershipDTO.email || user.phone === cancelMembershipDTO.phone) {
+      const success = await this.userService.deleteUser(userId);
+
+      if (success) {
+        for (const social of user.socials) {
+          const strategy = this.strategies.get(social.socialType);
+
+          return await strategy.disconnect(social.socialId);
+        }
+      } else {
+        throw new InternalServerErrorException('유저 정보 삭제에 실패했습니다.');
+      }
+    }
+
+    throw new UnprocessableEntityException('삭제하기 위한 인증 정보가 일치하지 않습니다.');
   }
 }

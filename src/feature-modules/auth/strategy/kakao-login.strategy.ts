@@ -1,7 +1,7 @@
 import { SocialLogin } from '../type/social-login.type';
 import { ConfigService } from '@nestjs/config';
 import { SocialLoginStrategy } from './social-login-strategy.interface';
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { KakaoRequireData } from '../type/get-kakao-token.type';
 import axios from 'axios';
 import { SocialType } from '../type/social.type';
@@ -83,5 +83,26 @@ export class KakaoLoginStrategy implements SocialLoginStrategy {
       phone: null,
       socialType: SocialType.Kakao,
     };
+  }
+
+  async disconnect(socialId: string): Promise<void> {
+    const { admin_key }: SocialConfig = this.configService.get('KAKAO_CONFIG');
+    const unlink_res = await axios.post(
+      'https://kapi.kakao.com/v1/user/unlink',
+      {
+        target_id_type: 'user_id',
+        target_id: socialId,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: 'KakaoAK ' + admin_key,
+        },
+      },
+    );
+
+    const success = String(unlink_res.data.id) === String(socialId);
+
+    if (!success) throw new InternalServerErrorException('소셜 플랫폼에서 회원정보 삭제 실패');
   }
 }

@@ -19,4 +19,10 @@ export class UserRepository {
 
     return user ?? null;
   }
+
+  async delete(userId: number) {
+    const result = await this.userDAO.delete({ id: userId });
+
+    return result.affected;
+  }
 }
