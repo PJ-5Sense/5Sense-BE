@@ -20,7 +20,7 @@ export class CenterController {
   }
 
   @Get('my')
-  async findOneByUserId(@UploadedFile(SharpPipe) image: string, @CurrentUser() userInfo: JwtPayload) {
+  async findOneByUserId(@CurrentUser() userInfo: JwtPayload) {
     return {
       success: true,
       message: 'Successfully getting center information',
@@ -30,5 +30,5 @@ export class CenterController {
 
   @Patch()
   @UseInterceptors(FileInterceptor('image'))
-  async updateCenter() {}
+  async updateCenter(@UploadedFile(SharpPipe) image: string) {}
 }
