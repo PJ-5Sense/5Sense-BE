@@ -83,4 +83,6 @@ export class GoogleLoginStrategy implements SocialLoginStrategy {
       socialType: SocialType.Google,
     };
   }
+
+  async disconnect(socialId: string): Promise<void> {}
 }

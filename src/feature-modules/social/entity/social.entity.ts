@@ -1,3 +1,4 @@
+import { SocialType } from 'src/feature-modules/auth/type/social.type';
 import { UserEntity } from 'src/feature-modules/user/entity/user.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 
@@ -7,7 +8,7 @@ export class SocialEntity {
   socialId: string;
 
   @Column({ name: 'social_type' })
-  socialType: string;
+  socialType: SocialType;
 
   @Column({ name: 'social_access_token' })
   socialAccessToken: string;
