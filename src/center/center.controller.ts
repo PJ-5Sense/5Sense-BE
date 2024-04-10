@@ -1,15 +1,22 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { CreateCenterDto } from './dto/request/create-center.dto';
 import { CurrentUser } from 'src/common/decorator/user.decorator';
 import { JwtPayload } from 'src/auth/type/jwt-payload.type';
 import { CenterService } from './center.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { SharpPipe } from '../../common/resize-image.pipe';
 
 @Controller('centers')
 export class CenterController {
   constructor(private readonly centerService: CenterService) {}
 
   @Post()
-  async create(@Body() createCenterDto: CreateCenterDto, @CurrentUser() userInfo: JwtPayload) {
+  // @UseInterceptors(FileInterceptor('image'))
+  async create(
+    // @UploadedFile(SharpPipe) image: string,
+    @Body() createCenterDto: CreateCenterDto,
+    @CurrentUser() userInfo: JwtPayload,
+  ) {
     return {
       success: true,
       message: 'The center has been successfully registered',
