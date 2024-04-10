@@ -1,15 +1,18 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateCenterDto } from './dto/request/create-center.dto';
 import { JwtPayload } from 'src/feature-modules/auth/type/jwt-payload.type';
 import { LessonRoomService } from 'src/feature-modules/lesson-room/lesson-room.service';
 import { CenterRepository } from './center.repository';
 import { unlinkSync } from 'fs';
+import { UpdateCenterDTO } from './dto/request/update-center.dto';
+import { S3Helper } from 'src/common/helper/s3.helper';
 
 @Injectable()
 export class CenterService {
   constructor(
     private readonly centerRepository: CenterRepository,
     private readonly lessonRoomService: LessonRoomService,
+    private readonly awsS3Helper: S3Helper,
   ) {}
   async create(createCenterDto: CreateCenterDto, userInfo: JwtPayload) {
     const existCenter = await this.findOneByUserId(userInfo.userId);
@@ -51,7 +54,33 @@ export class CenterService {
     };
   }
 
-  async deleteLocalFile(filePath: string): Promise<void> {
+  async updateCenter(profile: string | null, updateCenterDto: UpdateCenterDTO, userInfo: JwtPayload) {
+    const updateData = { ...updateCenterDto, ...(profile && { profile: profile }) };
+    let s3URL = null;
+
+    if (Object.keys(updateData).length === 0) {
+      throw new BadRequestException('업데이트 할 데이터가 없습니다.');
+    }
+
+    if (profile) {
+      // TODO : 기존 S3에 존재하던 리소스를 삭제하는 작업이 필요함
+      s3URL = await this.awsS3Helper.uploadFile('profile', profile, './temp', 'image/webp', 'all');
+    }
+
+    const center = await this.centerRepository.updateCenter(s3URL, updateCenterDto, userInfo);
+
+    this.deleteLocalFile('./temp/' + profile);
+    return {
+      name: center.name,
+      address: center.address,
+      mainPhone: center.mainPhone,
+      profile: center.profile,
+      open: center.open,
+      close: center.close,
+    };
+  }
+
+  deleteLocalFile(filePath: string): void {
     try {
       // 업로드 파일 삭제 (use "fs" module)
       unlinkSync(filePath);

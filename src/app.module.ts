@@ -1,8 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EnvironmentModule } from './environment/environment.module';
-import { DatabaseModule } from './database/database.module';
+import { EnvironmentModule } from './common/environment/environment.module';
+import { DatabaseModule } from './common/database/database.module';
 import { UserModule } from './feature-modules/user/user.module';
 import { CenterModule } from './feature-modules/center/center.module';
 import { TeacherModule } from './feature-modules/teacher/teacher.module';

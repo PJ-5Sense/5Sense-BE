@@ -1,5 +1,5 @@
 import { CenterEntity } from 'src/feature-modules/center/entity/center.entity';
-import { HardDeleteBaseEntity } from 'src/database/base.entity';
+import { HardDeleteBaseEntity } from 'src/common/database/base.entity';
 import { DurationLessonScheduleEntity } from 'src/feature-modules/lesson-schedule/entity/duration-lesson-schedule.entity';
 import { SessionLessonScheduleEntity } from 'src/feature-modules/lesson-schedule/entity/session-lesson-schedule.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
