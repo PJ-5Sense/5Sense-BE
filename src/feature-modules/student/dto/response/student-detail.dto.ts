@@ -6,7 +6,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { SessionLessonRegistrationEntity } from '../../../lesson-registration/entity/session-registration.entity';
 import { SessionLesson } from '../../type/session-lesson.type';
 
-export class ResponseStudentDTO {
+export class ResponseStudentDetailDTO {
   @ApiProperty()
   @Expose()
   readonly id: number;

@@ -2,9 +2,10 @@ import { StudentRepository } from './student.repository';
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { CreateStudentDto } from './dto/request/create-student.dto';
 import { FindStudentsDto } from './dto/request/find-students.dto';
-import { ResponseStudentDTO } from './dto/response/student.dto';
+import { ResponseStudentDetailDTO } from './dto/response/student-detail.dto';
 import { PageMeta } from 'src/common/dto/response-page.dto';
 import { UpdateStudentDto } from './dto/request/update-student.dto';
+import { ResponseStudentDTO } from './dto/response/create-student.dto';
 
 @Injectable()
 export class StudentService {
@@ -41,7 +42,7 @@ export class StudentService {
   async findOneByStudentId(studentId: number, centerId: number): Promise<any> {
     const student = await this.studentRepository.findOneByStudentId(studentId, centerId);
 
-    if (student) return new ResponseStudentDTO(student);
+    if (student) return new ResponseStudentDetailDTO(student);
 
     return null;
   }
