@@ -2,7 +2,7 @@ import { StudentRepository } from './student.repository';
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { CreateStudentDto } from './dto/request/create-student.dto';
 import { FindStudentsDto } from './dto/request/find-students.dto';
-import { ResponseStudentDto } from './dto/response/student.dto';
+import { ResponseStudentDTO } from './dto/response/student.dto';
 import { PageMeta } from 'src/common/dto/response-page.dto';
 import { UpdateStudentDto } from './dto/request/update-student.dto';
 
@@ -10,24 +10,24 @@ import { UpdateStudentDto } from './dto/request/update-student.dto';
 export class StudentService {
   constructor(private readonly studentRepository: StudentRepository) {}
 
-  async create(createStudentDto: CreateStudentDto, centerId: number): Promise<ResponseStudentDto> {
+  async create(createStudentDto: CreateStudentDto, centerId: number): Promise<ResponseStudentDTO> {
     if (await this.checkDuplicateStudent(createStudentDto.name, createStudentDto.phone, centerId))
       throw new ConflictException('Duplicate student information');
 
     const student = await this.studentRepository.create(createStudentDto, centerId);
 
-    return ResponseStudentDto.of(student);
+    return new ResponseStudentDTO(student);
   }
 
   async findManyByCenterId(
     findStudentsDto: FindStudentsDto,
     centerId: number,
-  ): Promise<{ students: ResponseStudentDto[]; meta: PageMeta }> {
+  ): Promise<{ students: ResponseStudentDTO[]; meta: PageMeta }> {
     const [students, total] = await this.studentRepository.findManyByCenterId(findStudentsDto, centerId);
 
     return {
       students: students.map(student => {
-        return ResponseStudentDto.of(student);
+        return new ResponseStudentDTO(student);
       }),
 
       meta: {
@@ -38,10 +38,12 @@ export class StudentService {
     };
   }
 
-  async findOneByStudentId(studentId: number, centerId: number): Promise<ResponseStudentDto> {
+  async findOneByStudentId(studentId: number, centerId: number): Promise<any> {
     const student = await this.studentRepository.findOneByStudentId(studentId, centerId);
 
-    return ResponseStudentDto.of(student);
+    if (student) return new ResponseStudentDTO(student);
+
+    return null;
   }
 
   /**

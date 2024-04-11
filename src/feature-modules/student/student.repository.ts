@@ -42,7 +42,26 @@ export class StudentRepository {
   }
 
   async findOneByStudentId(studentId: number, centerId: number) {
-    return await this.studentDAO.findOneBy({ id: studentId, centerId });
+    return await this.studentDAO
+      .createQueryBuilder('S') // S  = student
+      .select(['S.id', 'S.name', 'S.phone', 'S.particulars'])
+      .leftJoin('S.durationRegistrations', 'DR')
+      .addSelect(['DR.id'])
+      .leftJoin('DR.durationLesson', 'DL', 'DR.lessonId = DL.id')
+      .addSelect(['DL.id', 'DL.name'])
+      .leftJoin('DL.durationSchedules', 'DS')
+      .addSelect(['DS.id', 'DS.startDate', 'DS.endDate', 'DS.startTime', 'DS.endTime', 'DS.repeatDate'])
+      .leftJoin('DS.lessonRoom', 'LR')
+      .addSelect(['LR.id', 'LR.name'])
+      .leftJoin('S.sessionRegistrations', 'SR')
+      .addSelect(['SR.id'])
+      .leftJoin('SR.sessionLesson', 'SL')
+      .addSelect(['SL.id', 'SL.name', 'SL.totalSessions'])
+      .leftJoin('SR.sessionSchedules', 'SS')
+      .addSelect(['SS.id'])
+      .where('S.id = :studentId', { studentId })
+      .andWhere('S.centerId = :centerId', { centerId })
+      .getOne();
   }
 
   async updateStudent(updateStudentDto: UpdateStudentDto, studentId: number, centerId: number): Promise<boolean> {
