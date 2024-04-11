@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { CenterEntity } from 'src/feature-modules/center/entity/center.entity';
 import { CategoryEntity } from 'src/feature-modules/lesson-category/entity/category.entity';
-import { DurationLessonRegistrationEntity } from 'src/feature-modules/lesson-registration/entitiy/duration-registration.entity';
-import { SessionLessonRegistrationEntity } from 'src/feature-modules/lesson-registration/entitiy/session-registration.entity';
+import { DurationLessonRegistrationEntity } from 'src/feature-modules/lesson-registration/entity/duration-registration.entity';
+import { SessionLessonRegistrationEntity } from 'src/feature-modules/lesson-registration/entity/session-registration.entity';
 import { DurationLessonEntity } from 'src/feature-modules/lesson/entity/duration-lesson.entity';
 import { SessionLessonEntity } from 'src/feature-modules/lesson/entity/session-lesson.entity';
 import { PaymentStatus } from 'src/feature-modules/lesson/types/lesson-payment-status.type';
