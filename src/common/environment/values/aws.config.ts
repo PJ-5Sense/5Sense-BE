@@ -1,5 +1,6 @@
 import { IsString, IsUrl } from 'class-validator';
 import ValidateConfig from '../environment.validator';
+import { getValue } from '../aws-parameter-store';
 
 export class AwsConfig {
   @IsString()
@@ -21,8 +22,8 @@ export class AwsConfig {
   AWS_S3_BASE_OBJECT_KEY: string;
 }
 
-export default () => {
-  const env = {
+export default async () => {
+  let env = {
     AWS_REGION: process.env.AWS_REGION,
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
@@ -30,6 +31,12 @@ export default () => {
     AWS_S3_BASE_URL: process.env.AWS_S3_BASE_URL,
     AWS_S3_BASE_OBJECT_KEY: process.env.AWS_S3_BASE_OBJECT_KEY,
   };
+
+  if (process.env.NODE_ENV !== 'local') {
+    console.log('?');
+    env = await getValue('aws');
+    console.log(env);
+  }
 
   ValidateConfig(env, AwsConfig);
 
