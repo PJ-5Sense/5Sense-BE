@@ -6,6 +6,7 @@ import * as sharp from 'sharp';
 export class SharpPipe implements PipeTransform<Express.Multer.File, Promise<string>> {
   async transform(profile: Express.Multer.File): Promise<string | null> {
     if (!profile) return null;
+
     const originalName = path.parse(profile.originalname).name;
     const filename = Date.now() + '-' + originalName + '.webp';
 

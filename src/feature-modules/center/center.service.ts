@@ -7,6 +7,7 @@ import { CenterRepository } from './center.repository';
 import { unlinkSync } from 'fs';
 import { UpdateCenterDTO } from './dto/request/update-center.dto';
 import { S3Helper } from 'src/common/helper/s3.helper';
+import { ResponseCenterDTO } from './dto/response/create-center.dto';
 
 @Injectable()
 export class CenterService {
@@ -23,20 +24,13 @@ export class CenterService {
     if (userInfo.centerId)
       throw new InternalServerErrorException('More than one center cannot be registered at this time');
 
-    const profile = this.configService.get('PROFILE');
+    const profile = this.configService.get('DEFAULT_PROFILE');
     const center = await this.centerRepository.create(createCenterDto, userInfo.userId, profile);
 
     //  센터 등록 시, 1개의 룸 추가 필요함(리팩토링 필요함)
     await this.lessonRoomService.addDefaultRoomForNewCenter(center.id);
 
-    return {
-      name: center.name,
-      address: center.address,
-      mainPhone: center.mainPhone,
-      profile: center.profile,
-      open: center.open,
-      close: center.close,
-    };
+    return new ResponseCenterDTO(center);
   }
 
   async findOneByUserId(userId: number) {
@@ -47,14 +41,7 @@ export class CenterService {
   async findOneMyCenter(userId: number, centerId: number) {
     const myCenter = await this.centerRepository.findOneMyCenter(userId, centerId);
 
-    return {
-      name: myCenter.name,
-      address: myCenter.address,
-      mainPhone: myCenter.mainPhone,
-      profile: myCenter.profile,
-      open: myCenter.open,
-      close: myCenter.close,
-    };
+    return new ResponseCenterDTO(myCenter);
   }
 
   async updateCenter(profile: string | null, updateCenterDto: UpdateCenterDTO, userInfo: JwtPayload) {
@@ -73,14 +60,8 @@ export class CenterService {
     const center = await this.centerRepository.updateCenter(s3URL, updateCenterDto, userInfo);
 
     this.deleteLocalFile('./temp/' + profile);
-    return {
-      name: center.name,
-      address: center.address,
-      mainPhone: center.mainPhone,
-      profile: center.profile,
-      open: center.open,
-      close: center.close,
-    };
+
+    return new ResponseCenterDTO(center);
   }
 
   deleteLocalFile(filePath: string): void {

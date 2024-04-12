@@ -6,8 +6,8 @@ import { CurrentUser } from 'src/common/decorator/user.decorator';
 import { JwtPayload } from './type/jwt-payload.type';
 import { AuthService } from './auth.service';
 import { CancelMembershipDTO } from './dto/request/cancelMembership.dto';
-import { SwaggerReissue, SwaggerSocialLogin } from '../../swagger/user/auth.swagger';
-import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { SwaggerCancelMembership, SwaggerReissue, SwaggerSocialLogin } from '../../swagger/auth/auth.swagger';
+import { ApiTags } from '@nestjs/swagger';
 
 @Public()
 @ApiTags('Auth - 인증')
@@ -46,6 +46,7 @@ export class AuthController {
     };
   }
 
+  @SwaggerCancelMembership()
   @Delete('cancelMembership')
   @UseGuards(RefreshTokenGuard)
   async cancelMembership(@Body() cancelMembershipDTO: CancelMembershipDTO, @CurrentUser('userId') userId: number) {

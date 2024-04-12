@@ -10,7 +10,6 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
-import { SessionLessonDTO } from './create-lesson.dto';
 import { Type } from 'class-transformer';
 import { LessonType } from '../types/lesson.type';
 import { LessonCategory } from '../types/lesson-category.type';

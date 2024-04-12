@@ -6,11 +6,15 @@ import { CenterService } from './center.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SharpPipe } from '../../common/pipe/resize-image.pipe';
 import { UpdateCenterDTO } from './dto/request/update-center.dto';
+import { SwaggerCreateCenter, SwaggerMyCenter, SwaggerUpdateCenter } from 'src/swagger/center/center.swagger';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Center - 센터')
 @Controller('centers')
 export class CenterController {
   constructor(private readonly centerService: CenterService) {}
 
+  @SwaggerCreateCenter()
   @Post()
   async create(@Body() createCenterDto: CreateCenterDto, @CurrentUser() userInfo: JwtPayload) {
     return {
@@ -20,6 +24,7 @@ export class CenterController {
     };
   }
 
+  @SwaggerMyCenter()
   @Get('my')
   async findOneByUserId(@CurrentUser() userInfo: JwtPayload) {
     return {
@@ -29,11 +34,12 @@ export class CenterController {
     };
   }
 
+  @SwaggerUpdateCenter()
   @Patch()
   @UseInterceptors(FileInterceptor('profile'))
   async updateCenter(
     @UploadedFile(SharpPipe) profile: string | null,
-    @Body() updateCenterDto: Partial<UpdateCenterDTO>,
+    @Body() updateCenterDto: UpdateCenterDTO,
     @CurrentUser() userInfo: JwtPayload,
   ) {
     return {

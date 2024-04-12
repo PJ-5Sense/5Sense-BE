@@ -46,3 +46,18 @@ export function SwaggerReissue() {
     ApiOkResponse({ status: 200, type: ResponseReissueDTO }),
   );
 }
+
+export function SwaggerCancelMembership() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '회원 탈퇴',
+      description: `<h2>회원 탈퇴 시 이메일 정보를 입력해야함</h2>`,
+    }),
+    ApiBearerAuth('RefreshToken'),
+    ApiHeader({
+      name: 'authorization',
+      required: false,
+    }),
+    ApiOkResponse({ status: 200 }),
+  );
+}
