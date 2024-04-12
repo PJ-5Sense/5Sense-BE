@@ -33,9 +33,7 @@ export default async () => {
   };
 
   if (process.env.NODE_ENV !== 'local') {
-    console.log('?');
     env = await getValue('aws');
-    console.log(env);
   }
 
   ValidateConfig(env, AwsConfig);
