@@ -19,6 +19,8 @@ import { UserEntity } from 'src/feature-modules/user/entity/user.entity';
 import { UserService } from 'src/feature-modules/user/user.service';
 import { AuthRepository } from './auth.repository';
 import { CancelMembershipDTO } from './dto/request/cancelMembership.dto';
+import { ResponseSocialLoginDTO } from './dto/response/social-login.dto';
+import { ResponseReissueDTO } from './dto/response/reissue.dto';
 
 @Injectable()
 export class AuthService {
@@ -55,11 +57,14 @@ export class AuthService {
 
     const userSocialInfo = await this.userService.findUserBySocialId(socialLoginInfo.socialUserInfo.socialId, provider);
 
+    let responseData;
     if (!userSocialInfo) {
-      return await this.processNewUserAndGenerateTokens(socialLoginInfo, userAgent);
+      responseData = await this.processNewUserAndGenerateTokens(socialLoginInfo, userAgent);
     } else {
-      return await this.processExistingUserAndGenerateTokens(userSocialInfo, userAgent);
+      responseData = await this.processExistingUserAndGenerateTokens(userSocialInfo, userAgent);
     }
+
+    return new ResponseSocialLoginDTO(responseData);
   }
 
   private async generateAccessToken(payload: JwtPayload): Promise<string> {
@@ -178,10 +183,10 @@ export class AuthService {
       centerId: (await this.userService.findOneById(userSocialData.userId)).centers[0]?.id ?? null,
     });
 
-    return {
+    return new ResponseReissueDTO({
       accessToken,
       accessTokenExp: new Date((await this.jwtService.decode(accessToken)['exp']) * 1000),
-    };
+    });
   }
 
   async cancelMembership(cancelMembershipDTO: CancelMembershipDTO, userId: number) {

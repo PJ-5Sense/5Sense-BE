@@ -5,8 +5,8 @@ import { SwaggerDescription } from './description.swagger';
 export function setupSwagger(app: INestApplication): void {
   const options = new DocumentBuilder()
     .setVersion('Development')
-    .addBearerAuth({ type: 'http', scheme: 'bearer', name: 'JWT', in: 'header' }, 'accessToken')
-    .addBearerAuth({ type: 'http', scheme: 'bearer', name: 'JWT', in: 'header' }, 'refreshToken')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', name: 'AccessToken', in: 'header' }, 'AccessToken')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', name: 'RefreshToken', in: 'header' }, 'RefreshToken')
     .setTitle('Oh Sense')
     .setDescription(SwaggerDescription)
     .build();
