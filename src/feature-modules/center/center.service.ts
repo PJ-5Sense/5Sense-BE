@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateCenterDto } from './dto/request/create-center.dto';
 import { JwtPayload } from 'src/feature-modules/auth/type/jwt-payload.type';
@@ -13,6 +14,7 @@ export class CenterService {
     private readonly centerRepository: CenterRepository,
     private readonly lessonRoomService: LessonRoomService,
     private readonly awsS3Helper: S3Helper,
+    private readonly configService: ConfigService,
   ) {}
   async create(createCenterDto: CreateCenterDto, userInfo: JwtPayload) {
     const existCenter = await this.findOneByUserId(userInfo.userId);
@@ -21,7 +23,8 @@ export class CenterService {
     if (userInfo.centerId)
       throw new InternalServerErrorException('More than one center cannot be registered at this time');
 
-    const center = await this.centerRepository.create(createCenterDto, userInfo.userId);
+    const profile = this.configService.get('PROFILE');
+    const center = await this.centerRepository.create(createCenterDto, userInfo.userId, profile);
 
     //  센터 등록 시, 1개의 룸 추가 필요함(리팩토링 필요함)
     await this.lessonRoomService.addDefaultRoomForNewCenter(center.id);

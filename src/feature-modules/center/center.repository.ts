@@ -10,8 +10,8 @@ import { UpdateCenterDTO } from './dto/request/update-center.dto';
 export class CenterRepository {
   constructor(@InjectRepository(CenterEntity) private readonly centerDAO: Repository<CenterEntity>) {}
 
-  async create(createCenterDto: CreateCenterDto, userId: number) {
-    return await this.centerDAO.save({ ...createCenterDto, userId });
+  async create(createCenterDto: CreateCenterDto, userId: number, profile: string) {
+    return await this.centerDAO.save({ ...createCenterDto, userId, profile });
   }
 
   async findOneByUserId(userId: number) {

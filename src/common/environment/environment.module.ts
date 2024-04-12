@@ -7,13 +7,14 @@ import jwtConfig from './values/jwt.config';
 import googleConfig from './values/google.config';
 import naverConfig from './values/naver.config';
 import awsConfig from './values/aws.config';
+import constantConfig from './values/constant.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
-      load: [databaseConfig, appConfig, jwtConfig, kakaoConfig, googleConfig, naverConfig, awsConfig],
+      load: [databaseConfig, appConfig, jwtConfig, kakaoConfig, googleConfig, naverConfig, awsConfig, constantConfig],
     }),
   ],
 })
