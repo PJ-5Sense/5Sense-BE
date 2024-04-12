@@ -1,6 +1,6 @@
 import { StudentRepository } from './student.repository';
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
-import { CreateStudentDto } from './dto/request/create-student.dto';
+import { CreateStudentDTO } from './dto/request/create-student.dto';
 import { FindStudentsDto } from './dto/request/find-students.dto';
 import { ResponseStudentDetailDTO } from './dto/response/student-detail.dto';
 import { PageMeta } from 'src/common/dto/response-page.dto';
@@ -11,7 +11,7 @@ import { ResponseStudentDTO } from './dto/response/create-student.dto';
 export class StudentService {
   constructor(private readonly studentRepository: StudentRepository) {}
 
-  async create(createStudentDto: CreateStudentDto, centerId: number): Promise<ResponseStudentDTO> {
+  async create(createStudentDto: CreateStudentDTO, centerId: number): Promise<ResponseStudentDTO> {
     if (await this.checkDuplicateStudent(createStudentDto.name, createStudentDto.phone, centerId))
       throw new ConflictException('Duplicate student information');
 

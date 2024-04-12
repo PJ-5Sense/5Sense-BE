@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateStudentDto } from './dto/request/create-student.dto';
+import { CreateStudentDTO } from './dto/request/create-student.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentEntity } from './entity/student.entity';
 import { Repository } from 'typeorm';
@@ -9,7 +9,7 @@ import { UpdateStudentDto } from './dto/request/update-student.dto';
 @Injectable()
 export class StudentRepository {
   constructor(@InjectRepository(StudentEntity) private readonly studentDAO: Repository<StudentEntity>) {}
-  async create(createStudentDto: CreateStudentDto, centerId: number) {
+  async create(createStudentDto: CreateStudentDTO, centerId: number) {
     return await this.studentDAO.save({ ...createStudentDto, centerId });
   }
 

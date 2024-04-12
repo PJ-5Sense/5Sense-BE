@@ -6,7 +6,7 @@ import { CenterService } from './center.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SharpPipe } from '../../common/pipe/resize-image.pipe';
 import { UpdateCenterDTO } from './dto/request/update-center.dto';
-import { SwaggerCreateCenter, SwaggerMyCenter, SwaggerUpdateCenter } from 'src/swagger/center/center.swagger';
+import { SwaggerCreateCenter, SwaggerMyCenter, SwaggerUpdateCenter } from 'src/swagger/center.swagger';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Center - 센터')

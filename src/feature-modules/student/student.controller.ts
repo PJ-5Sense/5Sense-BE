@@ -1,16 +1,25 @@
 import { Controller, Post, Body, Get, Query, Param, ParseIntPipe, Put } from '@nestjs/common';
-import { CreateStudentDto } from './dto/request/create-student.dto';
+import { CreateStudentDTO } from './dto/request/create-student.dto';
 import { CurrentUser } from 'src/common/decorator/user.decorator';
 import { FindStudentsDto } from './dto/request/find-students.dto';
 import { UpdateStudentDto } from './dto/request/update-student.dto';
 import { StudentService } from './student.service';
+import {
+  SwaggerCreateStudent,
+  SwaggerFindManyStudent,
+  SwaggerStudentDetail,
+  SwaggerUpdateStudent,
+} from 'src/swagger/student.swagger';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Student - 학생')
 @Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
+  @SwaggerCreateStudent()
   @Post()
-  async create(@Body() createStudentDto: CreateStudentDto, @CurrentUser('centerId') centerId: number) {
+  async create(@Body() createStudentDto: CreateStudentDTO, @CurrentUser('centerId') centerId: number) {
     return {
       success: true,
       message: 'The student has been successfully registered',
@@ -18,6 +27,7 @@ export class StudentController {
     };
   }
 
+  @SwaggerFindManyStudent()
   @Get()
   async findManyByCenterId(@Query() findStudentsDto: FindStudentsDto, @CurrentUser('centerId') centerId: number) {
     return {
@@ -26,7 +36,7 @@ export class StudentController {
       data: await this.studentService.findManyByCenterId(findStudentsDto, centerId),
     };
   }
-
+  @SwaggerStudentDetail()
   @Get('/:studentId')
   async findOne(@Param('studentId', ParseIntPipe) studentId: number, @CurrentUser('centerId') centerId: number) {
     return {
@@ -36,6 +46,7 @@ export class StudentController {
     };
   }
 
+  @SwaggerUpdateStudent()
   @Put('/:studentId')
   async updateStudent(
     @Body() updateStudentDto: UpdateStudentDto,

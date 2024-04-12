@@ -1,8 +1,8 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { socialLoginDTO } from '../../feature-modules/auth/dto/request/social-login.dto';
-import { ResponseSocialLoginDTO } from '../../feature-modules/auth/dto/response/social-login.dto';
-import { ResponseReissueDTO } from '../../feature-modules/auth/dto/response/reissue.dto';
+import { socialLoginDTO } from '../feature-modules/auth/dto/request/social-login.dto';
+import { ResponseSocialLoginDTO } from '../feature-modules/auth/dto/response/social-login.dto';
+import { ResponseReissueDTO } from '../feature-modules/auth/dto/response/reissue.dto';
 
 export function SwaggerSocialLogin() {
   return applyDecorators(

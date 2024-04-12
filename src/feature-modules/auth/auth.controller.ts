@@ -6,7 +6,7 @@ import { CurrentUser } from 'src/common/decorator/user.decorator';
 import { JwtPayload } from './type/jwt-payload.type';
 import { AuthService } from './auth.service';
 import { CancelMembershipDTO } from './dto/request/cancelMembership.dto';
-import { SwaggerCancelMembership, SwaggerReissue, SwaggerSocialLogin } from '../../swagger/auth/auth.swagger';
+import { SwaggerCancelMembership, SwaggerReissue, SwaggerSocialLogin } from '../../swagger/auth.swagger';
 import { ApiTags } from '@nestjs/swagger';
 
 @Public()
