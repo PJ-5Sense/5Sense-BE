@@ -1,33 +1,33 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
-import { CreateTeacherDto } from './dto/request/create-teacher.dto';
-import { FindTeachersDto } from './dto/request/find-teachers.dto';
-import { ResponseTeacherDto } from './dto/response/teacher.dto';
-import { UpdateTeacherDto } from './dto/request/update-teacher.dto';
-import { TeacherRepository } from './dao/teacher.dao';
+import { CreateTeacherDTO } from './dto/request/create-teacher.dto';
+import { FindTeachersDTO } from './dto/request/find-teachers.dto';
+import { ResponseTeacherDTO } from './dto/response/teacher.dto';
+import { UpdateTeacherDTO } from './dto/request/update-teacher.dto';
+import { TeacherRepository } from './teacher.repository';
 
 @Injectable()
 export class TeacherService {
   constructor(private readonly teacherRepository: TeacherRepository) {}
-  async create(createTeacherDto: CreateTeacherDto, centerId: number) {
-    if (await this.checkDuplicateTeacher(createTeacherDto.name, createTeacherDto.phone, centerId))
+  async create(createTeacherDTO: CreateTeacherDTO, centerId: number) {
+    if (await this.checkDuplicateTeacher(createTeacherDTO.name, createTeacherDTO.phone, centerId))
       throw new ConflictException('Duplicate teacher information');
 
-    const teacher = await this.teacherRepository.create(createTeacherDto, centerId);
+    const teacher = await this.teacherRepository.create(createTeacherDTO, centerId);
 
-    return ResponseTeacherDto.of(teacher);
+    return new ResponseTeacherDTO(teacher);
   }
 
-  async findManyByCenterId(findTeachersDto: FindTeachersDto, centerId: number) {
-    const [teachers, total] = await this.teacherRepository.findManyByCenterId(findTeachersDto, centerId);
+  async findManyByCenterId(findTeachersDTO: FindTeachersDTO, centerId: number) {
+    const [teachers, total] = await this.teacherRepository.findManyByCenterId(findTeachersDTO, centerId);
 
     return {
       teachers: teachers.map(teacher => {
-        return ResponseTeacherDto.of(teacher);
+        return new ResponseTeacherDTO(teacher);
       }),
       meta: {
-        page: findTeachersDto.getPage(),
-        take: findTeachersDto.getTake(),
-        hasNextPage: findTeachersDto.hasNextPage(total),
+        page: findTeachersDTO.getPage(),
+        take: findTeachersDTO.getTake(),
+        hasNextPage: findTeachersDTO.hasNextPage(total),
       },
     };
   }
@@ -35,7 +35,7 @@ export class TeacherService {
   async findOneByTeacherId(teacherId: number, centerId: number) {
     const teacher = await this.teacherRepository.findOneByTeacherId(teacherId, centerId);
 
-    return ResponseTeacherDto.of(teacher);
+    return new ResponseTeacherDTO(teacher);
   }
 
   /**
@@ -47,8 +47,8 @@ export class TeacherService {
     return (await this.teacherRepository.findExistingTeacher(name, phone, centerId)) === null ? false : true;
   }
 
-  async updateTeacher(updateTeacher: UpdateTeacherDto, teacherId: number, centerId: number): Promise<void> {
-    if (!(await this.teacherRepository.updateTeacher(updateTeacher, teacherId, centerId)))
+  async updateTeacher(updateTeacherDTO: UpdateTeacherDTO, teacherId: number, centerId: number): Promise<void> {
+    if (!(await this.teacherRepository.updateTeacher(updateTeacherDTO, teacherId, centerId)))
       throw new BadRequestException('Center information or teacher information is invalid');
   }
 }

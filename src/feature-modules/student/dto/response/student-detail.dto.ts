@@ -31,6 +31,7 @@ export class ResponseStudentDetailDTO {
   readonly sessionLessonList: SessionLessonRegistrationEntity[];
 
   // Getters
+  @ApiProperty({ type: [DurationLesson] })
   @Expose()
   private durationLessons(): DurationLesson[] {
     return this.durationLessonList.map(lesson => {
@@ -60,6 +61,7 @@ export class ResponseStudentDetailDTO {
     });
   }
 
+  @ApiProperty({ type: [SessionLesson] })
   @Expose()
   private sessionLessons(): SessionLesson[] {
     return this.sessionLessonList.map(lesson => {
@@ -73,6 +75,8 @@ export class ResponseStudentDetailDTO {
   }
 
   constructor(student: StudentEntity) {
+    if (!student) return null;
+
     this.id = student.id;
     this.name = student.name;
     this.phone = student.phone;

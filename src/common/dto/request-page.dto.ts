@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsOptional } from 'class-validator';
 
@@ -8,10 +9,12 @@ export enum PaginationDefault {
 }
 
 export class PaginationRequest {
+  @ApiProperty({ description: 'page', example: 1 })
   @Type(() => Number)
   @IsOptional()
   page?: number = PaginationDefault.PAGE_DEFAULT;
 
+  @ApiProperty({ description: 'take', example: 10 })
   @Type(() => Number)
   @IsOptional()
   take?: number = PaginationDefault.TAKE_DEFAULT;

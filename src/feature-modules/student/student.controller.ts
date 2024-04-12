@@ -1,8 +1,8 @@
 import { Controller, Post, Body, Get, Query, Param, ParseIntPipe, Put } from '@nestjs/common';
 import { CreateStudentDTO } from './dto/request/create-student.dto';
 import { CurrentUser } from 'src/common/decorator/user.decorator';
-import { FindStudentsDto } from './dto/request/find-students.dto';
-import { UpdateStudentDto } from './dto/request/update-student.dto';
+import { FindStudentsDTO } from './dto/request/find-students.dto';
+import { UpdateStudentDTO } from './dto/request/update-student.dto';
 import { StudentService } from './student.service';
 import {
   SwaggerCreateStudent,
@@ -19,23 +19,24 @@ export class StudentController {
 
   @SwaggerCreateStudent()
   @Post()
-  async create(@Body() createStudentDto: CreateStudentDTO, @CurrentUser('centerId') centerId: number) {
+  async create(@Body() createStudentDTO: CreateStudentDTO, @CurrentUser('centerId') centerId: number) {
     return {
       success: true,
       message: 'The student has been successfully registered',
-      data: await this.studentService.create(createStudentDto, centerId),
+      data: await this.studentService.create(createStudentDTO, centerId),
     };
   }
 
   @SwaggerFindManyStudent()
   @Get()
-  async findManyByCenterId(@Query() findStudentsDto: FindStudentsDto, @CurrentUser('centerId') centerId: number) {
+  async findManyByCenterId(@Query() findStudentsDTO: FindStudentsDTO, @CurrentUser('centerId') centerId: number) {
     return {
       success: true,
       message: 'Successfully retrieved the student list',
-      data: await this.studentService.findManyByCenterId(findStudentsDto, centerId),
+      data: await this.studentService.findManyByCenterId(findStudentsDTO, centerId),
     };
   }
+
   @SwaggerStudentDetail()
   @Get('/:studentId')
   async findOne(@Param('studentId', ParseIntPipe) studentId: number, @CurrentUser('centerId') centerId: number) {
@@ -49,11 +50,11 @@ export class StudentController {
   @SwaggerUpdateStudent()
   @Put('/:studentId')
   async updateStudent(
-    @Body() updateStudentDto: UpdateStudentDto,
+    @Body() updateStudentDTO: UpdateStudentDTO,
     @Param('studentId', ParseIntPipe) studentId: number,
     @CurrentUser('centerId') centerId: number,
   ) {
-    await this.studentService.updateStudent(updateStudentDto, studentId, centerId);
+    await this.studentService.updateStudent(updateStudentDTO, studentId, centerId);
 
     return {
       success: true,

@@ -1,30 +1,30 @@
 import { StudentRepository } from './student.repository';
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { CreateStudentDTO } from './dto/request/create-student.dto';
-import { FindStudentsDto } from './dto/request/find-students.dto';
+import { FindStudentsDTO } from './dto/request/find-students.dto';
 import { ResponseStudentDetailDTO } from './dto/response/student-detail.dto';
 import { PageMeta } from 'src/common/dto/response-page.dto';
-import { UpdateStudentDto } from './dto/request/update-student.dto';
+import { UpdateStudentDTO } from './dto/request/update-student.dto';
 import { ResponseStudentDTO } from './dto/response/create-student.dto';
 
 @Injectable()
 export class StudentService {
   constructor(private readonly studentRepository: StudentRepository) {}
 
-  async create(createStudentDto: CreateStudentDTO, centerId: number): Promise<ResponseStudentDTO> {
-    if (await this.checkDuplicateStudent(createStudentDto.name, createStudentDto.phone, centerId))
+  async create(createStudentDTO: CreateStudentDTO, centerId: number): Promise<ResponseStudentDTO> {
+    if (await this.checkDuplicateStudent(createStudentDTO.name, createStudentDTO.phone, centerId))
       throw new ConflictException('Duplicate student information');
 
-    const student = await this.studentRepository.create(createStudentDto, centerId);
+    const student = await this.studentRepository.create(createStudentDTO, centerId);
 
     return new ResponseStudentDTO(student);
   }
 
   async findManyByCenterId(
-    findStudentsDto: FindStudentsDto,
+    findStudentsDTO: FindStudentsDTO,
     centerId: number,
   ): Promise<{ students: ResponseStudentDTO[]; meta: PageMeta }> {
-    const [students, total] = await this.studentRepository.findManyByCenterId(findStudentsDto, centerId);
+    const [students, total] = await this.studentRepository.findManyByCenterId(findStudentsDTO, centerId);
 
     return {
       students: students.map(student => {
@@ -32,19 +32,17 @@ export class StudentService {
       }),
 
       meta: {
-        page: findStudentsDto.getPage(),
-        take: findStudentsDto.getTake(),
-        hasNextPage: findStudentsDto.hasNextPage(total),
+        page: findStudentsDTO.getPage(),
+        take: findStudentsDTO.getTake(),
+        hasNextPage: findStudentsDTO.hasNextPage(total),
       },
     };
   }
 
-  async findOneByStudentId(studentId: number, centerId: number): Promise<any> {
+  async findOneByStudentId(studentId: number, centerId: number) {
     const student = await this.studentRepository.findOneByStudentId(studentId, centerId);
 
-    if (student) return new ResponseStudentDetailDTO(student);
-
-    return null;
+    return new ResponseStudentDetailDTO(student);
   }
 
   /**
@@ -56,8 +54,8 @@ export class StudentService {
     return (await this.studentRepository.findExistingStudent(name, phone, centerId)) === null ? false : true;
   }
 
-  async updateStudent(updateStudentDto: UpdateStudentDto, studentId: number, centerId: number): Promise<void> {
-    if (!(await this.studentRepository.updateStudent(updateStudentDto, studentId, centerId)))
+  async updateStudent(updateStudentDTO: UpdateStudentDTO, studentId: number, centerId: number): Promise<void> {
+    if (!(await this.studentRepository.updateStudent(updateStudentDTO, studentId, centerId)))
       throw new BadRequestException('Center information or student information is invalid');
   }
 }

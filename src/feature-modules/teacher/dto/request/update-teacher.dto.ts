@@ -1,3 +1,3 @@
-import { CreateTeacherDto } from './create-teacher.dto';
+import { CreateTeacherDTO } from './create-teacher.dto';
 
-export class UpdateTeacherDto extends CreateTeacherDto {}
+export class UpdateTeacherDTO extends CreateTeacherDTO {}

@@ -21,6 +21,8 @@ export class ResponseStudentDTO {
   readonly particulars: string;
 
   constructor(student: StudentEntity) {
+    if (!student) return null;
+
     this.id = student.id;
     this.name = student.name;
     this.phone = student.phone;

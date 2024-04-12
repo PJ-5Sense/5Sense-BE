@@ -1,6 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { ResponseStudentDTO } from 'src/feature-modules/student/dto/response/create-student.dto';
+import { ResponseStudentDetailDTO } from 'src/feature-modules/student/dto/response/student-detail.dto';
 
 export function SwaggerCreateStudent() {
   return applyDecorators(
@@ -20,7 +21,11 @@ export function SwaggerFindManyStudent() {
       description: `<h2>학생 목록 가져오기</h2>`,
     }),
     ApiBearerAuth('AccessToken'),
-    ApiOkResponse({ status: 200, type: ResponseStudentDTO, description: '학생 목록은 배열로 반환합니다.' }),
+    ApiOkResponse({
+      status: 200,
+      type: ResponseStudentDTO,
+      description: '학생 목록은 배열로 반환합니다. - 무한 스크롤 적용됨',
+    }),
   );
 }
 
@@ -31,7 +36,7 @@ export function SwaggerStudentDetail() {
       description: `<h2>학생 디테일 정보 가져오기</h2>`,
     }),
     ApiBearerAuth('AccessToken'),
-    ApiOkResponse({ status: 200, type: ResponseStudentDTO }),
+    ApiOkResponse({ status: 200, type: ResponseStudentDetailDTO }),
   );
 }
 

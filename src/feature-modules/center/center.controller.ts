@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Get, UseInterceptors, UploadedFile, Patch } from '@nestjs/common';
-import { CreateCenterDto } from './dto/request/create-center.dto';
+import { CreateCenterDTO } from './dto/request/create-center.dto';
 import { CurrentUser } from 'src/common/decorator/user.decorator';
 import { JwtPayload } from 'src/feature-modules/auth/type/jwt-payload.type';
 import { CenterService } from './center.service';
@@ -16,11 +16,11 @@ export class CenterController {
 
   @SwaggerCreateCenter()
   @Post()
-  async create(@Body() createCenterDto: CreateCenterDto, @CurrentUser() userInfo: JwtPayload) {
+  async create(@Body() createCenterDTO: CreateCenterDTO, @CurrentUser() userInfo: JwtPayload) {
     return {
       success: true,
       message: 'The center has been successfully registered',
-      data: await this.centerService.create(createCenterDto, userInfo),
+      data: await this.centerService.create(createCenterDTO, userInfo),
     };
   }
 
@@ -39,13 +39,13 @@ export class CenterController {
   @UseInterceptors(FileInterceptor('profile'))
   async updateCenter(
     @UploadedFile(SharpPipe) profile: string | null,
-    @Body() updateCenterDto: UpdateCenterDTO,
+    @Body() updateCenterDTO: UpdateCenterDTO,
     @CurrentUser() userInfo: JwtPayload,
   ) {
     return {
       success: true,
       message: 'Successfully updating center information',
-      data: await this.centerService.updateCenter(profile, updateCenterDto, userInfo),
+      data: await this.centerService.updateCenter(profile, updateCenterDTO, userInfo),
     };
   }
 }

@@ -28,6 +28,8 @@ export class ResponseCenterDTO {
   close: string;
 
   constructor(center: CenterEntity) {
+    if (!center) return null;
+
     this.name = center.name;
     this.address = center.address;
     this.mainPhone = center.mainPhone;

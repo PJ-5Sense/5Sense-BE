@@ -3,42 +3,42 @@ import { CreateStudentDTO } from './dto/request/create-student.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentEntity } from './entity/student.entity';
 import { Repository } from 'typeorm';
-import { FindStudentsDto } from './dto/request/find-students.dto';
-import { UpdateStudentDto } from './dto/request/update-student.dto';
+import { FindStudentsDTO } from './dto/request/find-students.dto';
+import { UpdateStudentDTO } from './dto/request/update-student.dto';
 
 @Injectable()
 export class StudentRepository {
   constructor(@InjectRepository(StudentEntity) private readonly studentDAO: Repository<StudentEntity>) {}
-  async create(createStudentDto: CreateStudentDTO, centerId: number) {
-    return await this.studentDAO.save({ ...createStudentDto, centerId });
+  async create(createStudentDTO: CreateStudentDTO, centerId: number) {
+    return await this.studentDAO.save({ ...createStudentDTO, centerId });
   }
 
   async findExistingStudent(name: string, phone: string, centerId: number) {
     return await this.studentDAO.findOneBy({ name, phone, centerId });
   }
 
-  async findManyByCenterId(findStudentsDto: FindStudentsDto, centerId: number) {
+  async findManyByCenterId(findStudentsDTO: FindStudentsDTO, centerId: number) {
     const queryBuilder = this.studentDAO
       .createQueryBuilder('student')
       .where('student.centerId = :centerId', { centerId });
 
-    if (findStudentsDto.searchBy === 'name') {
+    if (findStudentsDTO.searchBy === 'name') {
       queryBuilder
-        .andWhere('student.name LIKE :name', { name: `%${findStudentsDto.name}%` })
-        .orderBy(`LOCATE('${findStudentsDto.name}', student.name)`, 'ASC')
+        .andWhere('student.name LIKE :name', { name: `%${findStudentsDTO.name}%` })
+        .orderBy(`LOCATE('${findStudentsDTO.name}', student.name)`, 'ASC')
         .addOrderBy('student.name', 'ASC');
     }
 
-    if (findStudentsDto.searchBy === 'phone') {
+    if (findStudentsDTO.searchBy === 'phone') {
       queryBuilder
-        .andWhere('student.phone LIKE :phone', { phone: `%${findStudentsDto.phone}%` })
-        .orderBy(`LOCATE('${findStudentsDto.phone}', student.phone)`, 'ASC')
+        .andWhere('student.phone LIKE :phone', { phone: `%${findStudentsDTO.phone}%` })
+        .orderBy(`LOCATE('${findStudentsDTO.phone}', student.phone)`, 'ASC')
         .addOrderBy('student.phone', 'ASC');
     }
 
-    if (findStudentsDto.searchBy === 'none') queryBuilder.orderBy('student.createdDate', 'DESC');
+    if (findStudentsDTO.searchBy === 'none') queryBuilder.orderBy('student.createdDate', 'DESC');
 
-    return await queryBuilder.offset(findStudentsDto.getSkip()).limit(findStudentsDto.getTake()).getManyAndCount();
+    return await queryBuilder.offset(findStudentsDTO.getSkip()).limit(findStudentsDTO.getTake()).getManyAndCount();
   }
 
   async findOneByStudentId(studentId: number, centerId: number) {
@@ -64,11 +64,11 @@ export class StudentRepository {
       .getOne();
   }
 
-  async updateStudent(updateStudentDto: UpdateStudentDto, studentId: number, centerId: number): Promise<boolean> {
+  async updateStudent(updateStudentDTO: UpdateStudentDTO, studentId: number, centerId: number): Promise<boolean> {
     const result = await this.studentDAO
       .createQueryBuilder()
       .update()
-      .set({ ...updateStudentDto })
+      .set({ ...updateStudentDTO })
       .where('id = :id', { id: studentId })
       .andWhere('centerId = :centerId', { centerId })
       .execute();

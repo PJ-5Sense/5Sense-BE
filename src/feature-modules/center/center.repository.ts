@@ -1,4 +1,4 @@
-import { CreateCenterDto } from './dto/request/create-center.dto';
+import { CreateCenterDTO } from './dto/request/create-center.dto';
 import { CenterEntity } from './entity/center.entity';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,7 +10,7 @@ import { UpdateCenterDTO } from './dto/request/update-center.dto';
 export class CenterRepository {
   constructor(@InjectRepository(CenterEntity) private readonly centerDAO: Repository<CenterEntity>) {}
 
-  async create(createCenterDto: CreateCenterDto, userId: number, profile: string) {
+  async create(createCenterDto: CreateCenterDTO, userId: number, profile: string) {
     return await this.centerDAO.save({ ...createCenterDto, userId, profile });
   }
 

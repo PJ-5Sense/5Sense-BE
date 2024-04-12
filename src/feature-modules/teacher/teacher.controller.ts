@@ -1,32 +1,43 @@
 import { Controller, Post, Body, Get, Query, ParseIntPipe, Param, Put } from '@nestjs/common';
-import { CreateTeacherDto } from './dto/request/create-teacher.dto';
+import { CreateTeacherDTO } from './dto/request/create-teacher.dto';
 import { CurrentUser } from 'src/common/decorator/user.decorator';
-import { FindTeachersDto } from './dto/request/find-teachers.dto';
-import { UpdateTeacherDto } from './dto/request/update-teacher.dto';
+import { FindTeachersDTO } from './dto/request/find-teachers.dto';
+import { UpdateTeacherDTO } from './dto/request/update-teacher.dto';
 import { TeacherService } from './teacher.service';
+import {
+  SwaggerCreateTeacher,
+  SwaggerFindManyTeacher,
+  SwaggerTeacherDetail,
+  SwaggerUpdateTeacher,
+} from 'src/swagger/teacher.swagger';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Teacher - 강사')
 @Controller('teachers')
 export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
 
+  @SwaggerCreateTeacher()
   @Post()
-  async create(@Body() createTeacherDto: CreateTeacherDto, @CurrentUser('centerId') centerId: number) {
+  async create(@Body() createTeacherDTO: CreateTeacherDTO, @CurrentUser('centerId') centerId: number) {
     return {
       success: true,
       message: 'The teacher has been successfully registered',
-      data: await this.teacherService.create(createTeacherDto, centerId),
+      data: await this.teacherService.create(createTeacherDTO, centerId),
     };
   }
 
+  @SwaggerFindManyTeacher()
   @Get()
-  async findManyByCenterId(@Query() findTeachersDto: FindTeachersDto, @CurrentUser('centerId') centerId: number) {
+  async findManyByCenterId(@Query() findTeachersDTO: FindTeachersDTO, @CurrentUser('centerId') centerId: number) {
     return {
       success: true,
       message: 'Successfully retrieved the Teacher list',
-      data: await this.teacherService.findManyByCenterId(findTeachersDto, centerId),
+      data: await this.teacherService.findManyByCenterId(findTeachersDTO, centerId),
     };
   }
 
+  @SwaggerTeacherDetail()
   @Get('/:teacherId')
   async findOne(@Param('teacherId', ParseIntPipe) teacherId: number, @CurrentUser('centerId') centerId: number) {
     return {
@@ -36,13 +47,14 @@ export class TeacherController {
     };
   }
 
+  @SwaggerUpdateTeacher()
   @Put('/:teacherId')
   async updateTeacher(
-    @Body() updateTeacher: UpdateTeacherDto,
+    @Body() updateTeacherDTO: UpdateTeacherDTO,
     @Param('teacherId', ParseIntPipe) teacherId: number,
     @CurrentUser('centerId') centerId: number,
   ) {
-    await this.teacherService.updateTeacher(updateTeacher, teacherId, centerId);
+    await this.teacherService.updateTeacher(updateTeacherDTO, teacherId, centerId);
 
     return {
       success: true,

@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateCenterDto } from './dto/request/create-center.dto';
+import { CreateCenterDTO } from './dto/request/create-center.dto';
 import { JwtPayload } from 'src/feature-modules/auth/type/jwt-payload.type';
 import { LessonRoomService } from 'src/feature-modules/lesson-room/lesson-room.service';
 import { CenterRepository } from './center.repository';
@@ -17,7 +17,7 @@ export class CenterService {
     private readonly awsS3Helper: S3Helper,
     private readonly configService: ConfigService,
   ) {}
-  async create(createCenterDto: CreateCenterDto, userInfo: JwtPayload) {
+  async create(createCenterDTO: CreateCenterDTO, userInfo: JwtPayload) {
     const existCenter = await this.findOneByUserId(userInfo.userId);
 
     if (existCenter) throw new InternalServerErrorException('More than one center cannot be registered at this time');
@@ -25,7 +25,7 @@ export class CenterService {
       throw new InternalServerErrorException('More than one center cannot be registered at this time');
 
     const profile = this.configService.get('DEFAULT_PROFILE');
-    const center = await this.centerRepository.create(createCenterDto, userInfo.userId, profile);
+    const center = await this.centerRepository.create(createCenterDTO, userInfo.userId, profile);
 
     //  센터 등록 시, 1개의 룸 추가 필요함(리팩토링 필요함)
     await this.lessonRoomService.addDefaultRoomForNewCenter(center.id);
@@ -44,8 +44,8 @@ export class CenterService {
     return new ResponseCenterDTO(myCenter);
   }
 
-  async updateCenter(profile: string | null, updateCenterDto: UpdateCenterDTO, userInfo: JwtPayload) {
-    const updateData = { ...updateCenterDto, ...(profile && { profile: profile }) };
+  async updateCenter(profile: string | null, updateCenterDTO: UpdateCenterDTO, userInfo: JwtPayload) {
+    const updateData = { ...updateCenterDTO, ...(profile && { profile: profile }) };
     let s3URL = null;
 
     if (Object.keys(updateData).length === 0) {
@@ -57,7 +57,7 @@ export class CenterService {
       s3URL = await this.awsS3Helper.uploadFile('profile', profile, './temp', 'image/webp', 'all');
     }
 
-    const center = await this.centerRepository.updateCenter(s3URL, updateCenterDto, userInfo);
+    const center = await this.centerRepository.updateCenter(s3URL, updateCenterDTO, userInfo);
 
     this.deleteLocalFile('./temp/' + profile);
 
