@@ -1,5 +1,5 @@
 import { ViewColumn, ViewEntity } from 'typeorm';
-import { PaymentStatus } from '../../lesson/types/lesson-payment-status.type';
+import { PaymentStatus } from '../../lesson/type/lesson-payment-status.type';
 
 @ViewEntity({
   name: 'registration_view',

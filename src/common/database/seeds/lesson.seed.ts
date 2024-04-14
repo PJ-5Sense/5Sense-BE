@@ -5,7 +5,7 @@ import { DurationLessonRegistrationEntity } from 'src/feature-modules/lesson-reg
 import { SessionLessonRegistrationEntity } from 'src/feature-modules/lesson-registration/entity/session-registration.entity';
 import { DurationLessonEntity } from 'src/feature-modules/lesson/entity/duration-lesson.entity';
 import { SessionLessonEntity } from 'src/feature-modules/lesson/entity/session-lesson.entity';
-import { PaymentStatus } from 'src/feature-modules/lesson/types/lesson-payment-status.type';
+import { PaymentStatus } from 'src/feature-modules/lesson/type/lesson-payment-status.type';
 import { StudentEntity } from 'src/feature-modules/student/entity/student.entity';
 import { TeacherEntity } from 'src/feature-modules/teacher/entity/teacher.entity';
 import { UserEntity } from 'src/feature-modules/user/entity/user.entity';

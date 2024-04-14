@@ -76,7 +76,3 @@ export class LessonViewEntity {
   @ViewColumn({ name: 'created_date' })
   createdDate: Date;
 }
-
-// 카테고리로 검색
-// 강사명으로 검색
-// 타입별로 검색

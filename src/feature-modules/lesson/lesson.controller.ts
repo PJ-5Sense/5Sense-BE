@@ -1,19 +1,23 @@
 import { Controller, Get, Post, Body, Query, Param, Put, Patch } from '@nestjs/common';
 import { LessonService } from './lesson.service';
-import { CreateLessonDTO } from './dto/create-lesson.dto';
+import { CreateLessonDTO } from './dto/request/create-lesson.dto';
 import { CurrentUser } from 'src/common/decorator/user.decorator';
-import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/find-many-lesson.dto';
-import { FindOneLessonDTO } from './dto/find-one-lesson.dto';
-import { UpdateLessonDTO } from './dto/update-lesson.dto';
-import { CloseLessonDTO } from './dto/close-lesson.dto';
+import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/request/find-many-lesson.dto';
+import { FindOneLessonDTO } from './dto/request/find-one-lesson.dto';
+import { UpdateLessonDTO } from './dto/request/update-lesson.dto';
+import { CloseLessonDTO } from './dto/request/close-lesson.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { SwaggerCreateLesson, SwaggerFindByFilterLesson, SwaggerLessonDetail } from 'src/swagger/lesson.swagger';
 
+@ApiTags('Lesson - 클래스')
 @Controller('lessons')
 export class LessonController {
   constructor(private readonly lessonService: LessonService) {}
 
+  @SwaggerCreateLesson()
   @Post()
-  async createLesson(@Body() createLessonDto: CreateLessonDTO, @CurrentUser('centerId') centerId: number) {
-    await this.lessonService.createLesson(createLessonDto, centerId);
+  async createLesson(@Body() createLessonDTO: CreateLessonDTO, @CurrentUser('centerId') centerId: number) {
+    await this.lessonService.createLesson(createLessonDTO, centerId);
 
     return {
       success: true,
@@ -21,6 +25,7 @@ export class LessonController {
     };
   }
 
+  @SwaggerFindByFilterLesson()
   @Get('filters')
   async findLessonsByFilter(
     @Query() findManyByFilterDTO: FindManyByFilterDTO,
@@ -33,6 +38,7 @@ export class LessonController {
     };
   }
 
+  @SwaggerLessonDetail()
   @Get(':lessonId/details')
   async findLessonDetails(
     @CurrentUser('centerId') centerId: number,

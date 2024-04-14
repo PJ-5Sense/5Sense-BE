@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { ResponseStudentDTO } from 'src/feature-modules/student/dto/response/create-student.dto';
+import { ResponseStudentDTO } from 'src/feature-modules/student/dto/response/student.dto';
 import { ResponseStudentDetailDTO } from 'src/feature-modules/student/dto/response/student-detail.dto';
 
 export function SwaggerCreateStudent() {

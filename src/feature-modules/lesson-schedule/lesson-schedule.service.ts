@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { DurationScheduleDTO } from '../lesson/dto/create-lesson.dto';
+import { DurationScheduleDTO } from '../lesson/dto/request/create-lesson.dto';
 import { ScheduleRepository } from './repository/duration-schedule.repository';
-import { UpdateDurationScheduleDTO } from '../lesson/dto/update-lesson.dto';
+import { UpdateDurationScheduleDTO } from '../lesson/dto/request/update-lesson.dto';
 import { GetRangeSchedulesDTO } from './dto/get-range-schedule.dto';
 
 @Injectable()

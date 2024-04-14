@@ -1,12 +1,14 @@
 import { LessonScheduleService } from '../lesson-schedule/lesson-schedule.service';
 import { Injectable } from '@nestjs/common';
-import { CreateLessonDTO } from './dto/create-lesson.dto';
-import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/find-many-lesson.dto';
-import { FindOneLessonDTO } from './dto/find-one-lesson.dto';
-import { LessonType } from './types/lesson.type';
+import { CreateLessonDTO } from './dto/request/create-lesson.dto';
+import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/request/find-many-lesson.dto';
+import { FindOneLessonDTO } from './dto/request/find-one-lesson.dto';
+import { LessonType } from './type/lesson.type';
 import { LessonRepository } from './lesson.repository';
 import { LessonCategoryService } from 'src/feature-modules/lesson-category/category.service';
-import { UpdateLessonDTO } from './dto/update-lesson.dto';
+import { UpdateLessonDTO } from './dto/request/update-lesson.dto';
+import { ResponseFilteredLessonDTO } from './dto/response/filtered-lesson.dto';
+import { PaginatedResponseFilteredLessonDTO } from 'src/feature-modules/lesson/dto/response/pagenation-response.dto';
 // TODO : 트랜잭션 사용하는 방법 정의하기 - 단순 사용이 아닌 중복된 코드들을 개선하기 위한 작업이 필요함
 @Injectable()
 export class LessonService {
@@ -117,14 +119,14 @@ export class LessonService {
   async getFilteredLessons(findManyLessonDTO: FindManyByFilterDTO, centerId: number) {
     const [lessons, total] = await this.lessonRepository.findManyLessonByFilter(findManyLessonDTO, centerId);
 
-    return {
-      lessons,
-      meta: {
-        page: findManyLessonDTO.getPage(),
-        take: findManyLessonDTO.getTake(),
-        hasNextPage: findManyLessonDTO.hasNextPage(total),
-      },
-    };
+    return new PaginatedResponseFilteredLessonDTO(
+      lessons.map(lesson => {
+        return new ResponseFilteredLessonDTO(lesson);
+      }),
+      findManyLessonDTO.getPage(),
+      findManyLessonDTO.getTake(),
+      findManyLessonDTO.hasNextPage(total),
+    );
   }
 
   async getLessonDetails(id: number, centerId: number, findOneLessonDTO: FindOneLessonDTO) {

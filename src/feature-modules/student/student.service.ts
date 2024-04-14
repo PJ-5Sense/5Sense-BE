@@ -5,7 +5,7 @@ import { FindStudentsDTO } from './dto/request/find-students.dto';
 import { ResponseStudentDetailDTO } from './dto/response/student-detail.dto';
 import { PageMeta } from 'src/common/dto/response-page.dto';
 import { UpdateStudentDTO } from './dto/request/update-student.dto';
-import { ResponseStudentDTO } from './dto/response/create-student.dto';
+import { ResponseStudentDTO } from './dto/response/student.dto';
 
 @Injectable()
 export class StudentService {

@@ -11,8 +11,8 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { LessonType } from '../types/lesson.type';
-import { LessonCategory } from '../types/lesson-category.type';
+import { LessonType } from '../../type/lesson.type';
+import { LessonCategory } from '../../type/lesson-category.type';
 
 export class UpdateDurationScheduleDTO {
   @IsInt()

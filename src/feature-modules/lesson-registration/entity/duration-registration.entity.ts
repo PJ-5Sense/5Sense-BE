@@ -1,6 +1,6 @@
 import { StudentEntity } from 'src/feature-modules/student/entity/student.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { PaymentStatus } from 'src/feature-modules/lesson/types/lesson-payment-status.type';
+import { PaymentStatus } from 'src/feature-modules/lesson/type/lesson-payment-status.type';
 import { DurationLessonEntity } from 'src/feature-modules/lesson/entity/duration-lesson.entity';
 
 @Entity({ name: 'duration_lesson_registration' })
