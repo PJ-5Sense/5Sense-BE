@@ -1,5 +1,6 @@
 import { ViewColumn, ViewEntity } from 'typeorm';
 import { PaymentStatus } from '../../lesson/type/lesson-payment-status.type';
+import { LessonType } from '../../lesson/type/lesson.type';
 
 @ViewEntity({
   name: 'registration_view',
@@ -42,7 +43,7 @@ export class RegistrationViewEntity {
   id: number;
 
   @ViewColumn({ name: 'type' })
-  type: string;
+  type: LessonType;
 
   @ViewColumn({ name: 'payment_status' })
   paymentStatus: PaymentStatus;
