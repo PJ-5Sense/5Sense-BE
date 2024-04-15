@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { LessonViewEntity } from '../../entity/lesson-view.entity';
-import { PaginatedResponseFilteredLessonDTO } from 'src/feature-modules/lesson/dto/response/pagenation-response.dto';
 
 export class ResponseFilteredLessonDTO {
   @ApiProperty()
