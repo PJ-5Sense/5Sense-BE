@@ -2,6 +2,7 @@ import { RegistrationViewEntity } from '../../entity/registration-view.entity';
 import { PaymentStatus } from '../../../lesson/type/lesson-payment-status.type';
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { PageMeta } from 'src/common/dto/response-page.dto';
 
 export class ResponseBuildPaymentDTO {
   @ApiProperty()
@@ -55,19 +56,11 @@ export class PaginatedResponseBuildPaymentDTO {
   })
   students: ResponseBuildPaymentDTO[];
 
-  @ApiProperty()
-  page: number;
-
-  @ApiProperty()
-  take: number;
-
-  @ApiProperty()
-  hasNextPage: boolean;
+  @ApiProperty({ type: PageMeta })
+  meta: PageMeta;
 
   constructor(students: ResponseBuildPaymentDTO[], page: number, take: number, hasNextPage: boolean) {
     this.students = students;
-    this.page = page;
-    this.take = take;
-    this.hasNextPage = hasNextPage;
+    this.meta = new PageMeta({ page, take, hasNextPage });
   }
 }
