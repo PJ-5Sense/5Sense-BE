@@ -32,7 +32,7 @@ export default async () => {
     DATABASE_USER: process.env.DATABASE_USER,
   };
 
-  const isProduction = process.env.NODE_ENV === 'local' ? true : false;
+  const isProduction = process.env.NODE_ENV === 'production' ? false : true;
 
   if (process.env.NODE_ENV !== 'local') {
     env = await getValue('mysql-database');
