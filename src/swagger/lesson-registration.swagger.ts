@@ -12,3 +12,14 @@ export function SwaggerBillingPayments() {
     ApiOkResponse({ status: 200, type: PaginatedResponseBuildPaymentDTO }),
   );
 }
+
+export function SwaggerUpdateBillingPayment() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '청구/납부 상태 변경',
+      description: `<h2>청구/납부 상태 변경하기</h2>`,
+    }),
+    ApiBearerAuth('AccessToken'),
+    ApiOkResponse({ status: 200 }),
+  );
+}

@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DurationLessonRegistrationEntity } from './entity/duration-registration.entity';
 import { Repository } from 'typeorm';
 import { SessionLessonRegistrationEntity } from './entity/session-registration.entity';
 import { RegistrationViewEntity } from './entity/registration-view.entity';
 import { BillingPaymentDTO, SearchPaymentStatus } from './dto/request/billing-payment.dto';
+import { UpdateBuildPaymentDTO } from './dto/request/update-build-payment.dto';
+import { LessonType } from '../lesson/type/lesson.type';
 
 @Injectable()
 export class LessonRegistrationRepository {
@@ -47,5 +49,25 @@ export class LessonRegistrationRepository {
     if (billingPaymentDTO.searchBy === 'none') queryBuilder.orderBy('registration.createdDate', 'DESC');
 
     return await queryBuilder.offset(billingPaymentDTO.getSkip()).limit(billingPaymentDTO.getTake()).getManyAndCount();
+  }
+
+  async updateBillingPayment(id: number, updateBuildPaymentDTO: UpdateBuildPaymentDTO) {
+    let result;
+    const lesson = await this.registrationViewDAO.findOneBy({ id, type: updateBuildPaymentDTO.type });
+
+    if (!lesson) {
+      throw new BadRequestException('lesson not found');
+    }
+
+    if (updateBuildPaymentDTO.type === LessonType.DURATION) {
+      result = await this.durationRegistrationDAO.update(
+        { id },
+        { paymentStatus: updateBuildPaymentDTO.paymentStatus },
+      );
+    } else {
+      result = await this.sessionRegistrationDAO.update({ id }, { paymentStatus: updateBuildPaymentDTO.paymentStatus });
+    }
+
+    return result.affected;
   }
 }
