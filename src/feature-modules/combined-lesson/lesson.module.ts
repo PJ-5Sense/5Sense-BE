@@ -6,16 +6,12 @@ import { SessionLessonEntity } from './entity/session-lesson.entity';
 import { LessonCategoryModule } from 'src/feature-modules/lesson-category/category.module';
 import { LessonRepository } from './lesson.repository';
 import { LessonViewEntity } from './entity/lesson-view.entity';
-import { LessonScheduleModule } from '../lesson-schedule/lesson-schedule.module';
-import { LessonRegistrationModule } from 'src/feature-modules/lesson-registration/lesson-registration.module';
 import { DurationLessonEntity } from '../duration-lesson/duration-lesson.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([DurationLessonEntity, SessionLessonEntity, LessonViewEntity]),
-    LessonScheduleModule,
     LessonCategoryModule,
-    LessonRegistrationModule,
   ],
   controllers: [LessonController],
   providers: [LessonService, LessonRepository],

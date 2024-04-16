@@ -1,40 +1,13 @@
-import { LessonScheduleService } from '../lesson-schedule/lesson-schedule.service';
 import { Injectable } from '@nestjs/common';
-import { DurationLessonDTO } from './dto/request/create-duration-lesson.dto';
 import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/request/find-many-lesson.dto';
-import { FindOneLessonDTO } from './dto/request/find-one-lesson.dto';
 import { LessonType } from './type/lesson.type';
 import { LessonRepository } from './lesson.repository';
-import { LessonCategoryService } from 'src/feature-modules/lesson-category/category.service';
-import { UpdateLessonDTO } from './dto/request/update-lesson.dto';
 import { ResponseFilteredLessonDTO } from './dto/response/filtered-lesson.dto';
 import { PaginatedResponseFilteredLessonDTO } from 'src/feature-modules/combined-lesson/dto/response/pagenation-response.dto';
 // TODO : 트랜잭션 사용하는 방법 정의하기 - 단순 사용이 아닌 중복된 코드들을 개선하기 위한 작업이 필요함
 @Injectable()
 export class LessonService {
-  constructor(
-    private readonly lessonRepository: LessonRepository,
-    private readonly lessonScheduleService: LessonScheduleService,
-    private readonly lessonCategoryService: LessonCategoryService,
-  ) {}
-  // TODO : 트랜잭션 처리 필요
-  async createDurationLesson(durationLessonDTO: DurationLessonDTO, centerId: number) {
-    // 카테고리가 대분류 기타라면 존재하는지 확인 하는 처리
-    if (!durationLessonDTO.category.id) {
-      durationLessonDTO.category.id = await this.lessonCategoryService.processEtceteraCategory(
-        durationLessonDTO.category.name,
-      );
-
-      const { schedules, category, ...durationLesson } = durationLessonDTO;
-      const lessonId = await this.lessonRepository.createDurationLesson({
-        ...durationLesson,
-        centerId,
-        categoryId: category.id,
-      });
-
-      await this.lessonScheduleService.createDurationSchedules(lessonId, schedules);
-    }
-  }
+  constructor(private readonly lessonRepository: LessonRepository) {}
 
   async getLessonsByDate(findManyByDateDTO: FindManyByDateDTO, centerId: number) {
     const startDate = new Date(findManyByDateDTO.year, findManyByDateDTO.month - 1, 1);
@@ -118,94 +91,6 @@ export class LessonService {
     );
   }
 
-  async getLessonDetails(id: number, centerId: number, findOneLessonDTO: FindOneLessonDTO) {
-    if (findOneLessonDTO.type === LessonType.DURATION) {
-      const lesson = await this.lessonRepository.findOneDurationDetails(id, centerId);
-      const duration = this.formatLessonDurationDates(
-        lesson.durationSchedules[0].startDate,
-        lesson.durationSchedules[0].endDate,
-      );
-
-      return {
-        id: lesson.id,
-        name: lesson.name,
-        memo: lesson.memo,
-        type: LessonType.DURATION,
-        teacher: lesson.teacher.name,
-        mainCategory: lesson.category.parentId ? lesson.category.parentName : lesson.category.name,
-        subCategory: lesson.category.parentId ? lesson.category.name : null,
-        duration,
-        numberOfStudents: lesson.durationRegistrations.length,
-        lessonDurations: lesson.durationSchedules.map(schedule => {
-          return {
-            id: schedule.id,
-            startTime: schedule.startTime,
-            endTime: schedule.endTime,
-            repeatDate: schedule.repeatDate,
-            room: schedule.lessonRoom.name,
-          };
-        }),
-        registeredStudents: lesson.durationRegistrations.map(registration => {
-          return {
-            name: registration.student.name,
-            phone: registration.student.phone,
-          };
-        }),
-      };
-    }
-
-    if (findOneLessonDTO.type === LessonType.SESSION) {
-      const lesson = await this.lessonRepository.findOneSessionDetails(id, centerId);
-
-      return {
-        id: lesson.id,
-        name: lesson.name,
-        memo: lesson.memo,
-        type: LessonType.SESSION,
-        teacher: lesson.teacher.name,
-        mainCategory: lesson.category.parentId ? lesson.category.parentName : lesson.category.name,
-        subCategory: lesson.category.parentId ? lesson.category.name : null,
-        tuitionFee: lesson.tuitionFee,
-        lessonTime: lesson.lessonTime,
-        totalSessions: lesson.totalSessions,
-        capacity: lesson.capacity,
-        numberOfStudents: lesson.sessionRegistrations.length,
-        registeredStudents: lesson.sessionRegistrations.map(registration => {
-          return {
-            name: registration.student.name,
-            phone: registration.student.phone,
-            sessionCount: `${registration.sessionSchedules.length}/${lesson.totalSessions}`,
-          };
-        }),
-      };
-    }
-  }
-
-  async updateLesson(updateLessonDTO: UpdateLessonDTO, lessonId: number, centerId: number) {
-    // 기간반 레슨 수정에 스케쥴 수정은 기간을 제외한 나머지 수정 가능함
-    if (updateLessonDTO.type === LessonType.DURATION) {
-      const { schedules, category, ...duration } = updateLessonDTO.durationLesson;
-      await this.lessonRepository.updateDurationLesson(lessonId, { ...duration, categoryId: category.id, centerId });
-      await this.lessonScheduleService.updateDurationSchedules(lessonId, schedules);
-      return;
-    }
-
-    if (updateLessonDTO.type === LessonType.SESSION) {
-      await this.lessonRepository.updateSessionLesson(lessonId, updateLessonDTO.sessionLesson, centerId);
-      return;
-    }
-  }
-
-  async closeLesson(lessonId: number, centerId: number, type: LessonType) {
-    if (type === LessonType.DURATION) {
-      return await this.lessonRepository.closeDurationLesson(lessonId, centerId);
-    }
-
-    if (type === LessonType.SESSION) {
-      return await this.lessonRepository.closeSessionLesson(lessonId, centerId);
-    }
-  }
-
   ////////////////////////////////////////////////////////////////////////////////////
   ////                                Private Section                             ////
   ////////////////////////////////////////////////////////////////////////////////////
@@ -235,12 +120,5 @@ export class LessonService {
 
     // 배열 0번째는 1일을 의미하여 첫 시작날에 -1을 계산해서 리턴하도록 함
     return firstDayDateOfMonth - 1;
-  }
-
-  private formatLessonDurationDates(start: Date, end: Date) {
-    const startDate = `${start.getFullYear()}.` + `${start.getMonth() + 1}.` + `${start.getDate()}`;
-    const endDate = `${end.getFullYear()}.` + `${end.getMonth() + 1}.` + `${end.getDate()}`;
-
-    return startDate + ' ~ ' + endDate;
   }
 }

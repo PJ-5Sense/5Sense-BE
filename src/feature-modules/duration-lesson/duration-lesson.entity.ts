@@ -1,6 +1,6 @@
 import { CenterEntity } from 'src/feature-modules/center/entity/center.entity';
 import { CategoryEntity } from 'src/feature-modules/lesson-category/entity/category.entity';
-import { DurationLessonRegistrationEntity } from 'src/feature-modules/lesson-registration/entity/duration-registration.entity';
+import { DurationLessonRegistrationEntity } from 'src/feature-modules/billing-payment/entity/duration-registration.entity';
 import { TeacherEntity } from 'src/feature-modules/teacher/entity/teacher.entity';
 import {
   Column,

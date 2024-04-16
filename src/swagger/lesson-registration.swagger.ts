@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { PaginatedResponseBuildPaymentDTO } from 'src/feature-modules/lesson-registration/dto/response/billing-payment.dto';
+import { PaginatedResponseBuildPaymentDTO } from 'src/feature-modules/billing-payment/dto/response/billing-payment.dto';
 
 export function SwaggerBillingPayments() {
   return applyDecorators(

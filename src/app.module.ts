@@ -14,6 +14,10 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/exception.filter';
 import { LoggerMiddleware } from './common/middleware/http-log.middleware';
 import { LessonRoomModule } from './feature-modules/lesson-room/lesson-room.module';
+import { DurationLessonModule } from './feature-modules/duration-lesson/duration-lesson.module';
+import { SessionLessonModule } from './feature-modules/session-lesson/session-lesson.module';
+import { BillingPaymentModule } from './feature-modules/billing-payment/lesson-registration.module';
+import { LessonScheduleModule } from './feature-modules/lesson-schedule/lesson-schedule.module';
 
 @Module({
   imports: [
@@ -23,6 +27,10 @@ import { LessonRoomModule } from './feature-modules/lesson-room/lesson-room.modu
     AuthModule,
     CenterModule,
     LessonModule,
+    DurationLessonModule,
+    SessionLessonModule,
+    LessonScheduleModule,
+    BillingPaymentModule,
     StudentModule,
     TeacherModule,
     CenterModule,

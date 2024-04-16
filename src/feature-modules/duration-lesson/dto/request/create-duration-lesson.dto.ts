@@ -1,17 +1,6 @@
-import {
-  ArrayNotEmpty,
-  IsArray,
-  IsDateString,
-  IsEnum,
-  IsInt,
-  IsObject,
-  Matches,
-  ValidateIf,
-  ValidateNested,
-} from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsDateString, IsInt, IsObject, Matches, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { LessonType } from '../../type/lesson.type';
-import { LessonCategory } from '../../type/lesson-category.type';
+import { LessonCategory } from '../../../combined-lesson/type/lesson-category.type';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class DurationScheduleDTO {
@@ -44,7 +33,7 @@ export class DurationScheduleDTO {
   roomId: number;
 }
 
-export class DurationLessonDTO {
+export class CreateDurationLessonDTO {
   @ApiProperty()
   @Matches(`^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s.,!?-]{1,20}$`)
   name: string;
