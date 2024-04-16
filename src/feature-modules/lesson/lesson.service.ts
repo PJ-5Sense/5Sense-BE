@@ -132,10 +132,6 @@ export class LessonService {
   async getLessonDetails(id: number, centerId: number, findOneLessonDTO: FindOneLessonDTO) {
     if (findOneLessonDTO.type === LessonType.DURATION) {
       const lesson = await this.lessonRepository.findOneDurationDetails(id, centerId);
-      const duration = this.formatLessonDurationDates(
-        lesson.durationSchedules[0].startDate,
-        lesson.durationSchedules[0].endDate,
-      );
 
       return {
         id: lesson.id,
@@ -148,11 +144,12 @@ export class LessonService {
         mainCategory: lesson.category.parentId ? lesson.category.parentName : lesson.category.name,
         subCategory: lesson.category.parentId ? lesson.category.name : null,
         categoryId: lesson.category.id,
-        duration,
         numberOfStudents: lesson.durationRegistrations.length,
         lessonDurations: lesson.durationSchedules.map(schedule => {
+          const duration = this.formatLessonDurationDates(schedule.startDate, schedule.endDate);
           return {
             id: schedule.id,
+            duration,
             startTime: schedule.startTime,
             endTime: schedule.endTime,
             repeatDate: schedule.repeatDate,

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { DurationLessonEntity } from './entity/duration-lesson.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -40,9 +40,9 @@ export class LessonRepository {
   }
 
   async findOneDurationDetails(id: number, centerId: number) {
-    return await this.durationLessonDAO
+    const lesson = await this.durationLessonDAO
       .createQueryBuilder('L')
-      .select(['L.id', 'L.name', 'L.memo', , 'L.tuitionFee'])
+      .select(['L.id', 'L.name', 'L.memo', 'L.tuitionFee'])
       .leftJoin('L.durationRegistrations', 'D_R')
       .addSelect(['D_R.id', 'D_R.student'])
       .leftJoin('D_R.student', 'S', 'S.id = D_R.studentId')
@@ -58,6 +58,12 @@ export class LessonRepository {
       .where('L.id = :id', { id })
       .andWhere('L.centerId = :centerId', { centerId })
       .getOne();
+
+    if (!lesson) {
+      throw new InternalServerErrorException('lesson not found');
+    }
+
+    return lesson;
   }
 
   async updateDurationLesson(
