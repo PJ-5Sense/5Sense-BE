@@ -1,6 +1,6 @@
 import { LessonScheduleService } from '../lesson-schedule/lesson-schedule.service';
 import { Injectable } from '@nestjs/common';
-import { CreateLessonDTO } from './dto/request/create-lesson.dto';
+import { DurationLessonDTO } from './dto/request/create-duration-lesson.dto';
 import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/request/find-many-lesson.dto';
 import { FindOneLessonDTO } from './dto/request/find-one-lesson.dto';
 import { LessonType } from './type/lesson.type';
@@ -9,6 +9,7 @@ import { LessonCategoryService } from 'src/feature-modules/lesson-category/categ
 import { UpdateLessonDTO } from './dto/request/update-lesson.dto';
 import { ResponseFilteredLessonDTO } from './dto/response/filtered-lesson.dto';
 import { PaginatedResponseFilteredLessonDTO } from 'src/feature-modules/lesson/dto/response/pagenation-response.dto';
+import { SessionLessonDTO } from './dto/request/create-session-lesson.dto';
 // TODO : 트랜잭션 사용하는 방법 정의하기 - 단순 사용이 아닌 중복된 코드들을 개선하기 위한 작업이 필요함
 @Injectable()
 export class LessonService {
@@ -18,16 +19,14 @@ export class LessonService {
     private readonly lessonCategoryService: LessonCategoryService,
   ) {}
   // TODO : 트랜잭션 처리 필요
-  async createLesson(createLessonDTO: CreateLessonDTO, centerId: number) {
-    if (createLessonDTO.type === LessonType.DURATION) {
-      // 카테고리가 대분류 기타라면 존재하는지 확인 하는 처리
-      if (!createLessonDTO.durationLesson.category.id) {
-        createLessonDTO.durationLesson.category.id = await this.lessonCategoryService.processEtceteraCategory(
-          createLessonDTO.durationLesson.category.name,
-        );
-      }
+  async createDurationLesson(durationLessonDTO: DurationLessonDTO, centerId: number) {
+    // 카테고리가 대분류 기타라면 존재하는지 확인 하는 처리
+    if (!durationLessonDTO.category.id) {
+      durationLessonDTO.category.id = await this.lessonCategoryService.processEtceteraCategory(
+        durationLessonDTO.category.name,
+      );
 
-      const { schedules, category, ...durationLesson } = createLessonDTO.durationLesson;
+      const { schedules, category, ...durationLesson } = durationLessonDTO;
       const lessonId = await this.lessonRepository.createDurationLesson({
         ...durationLesson,
         centerId,
@@ -36,14 +35,14 @@ export class LessonService {
 
       await this.lessonScheduleService.createDurationSchedules(lessonId, schedules);
     }
+  }
 
-    if (createLessonDTO.type === LessonType.SESSION) {
-      if (!createLessonDTO.sessionLesson.category.id) {
-        createLessonDTO.durationLesson.category.id = await this.lessonCategoryService.processEtceteraCategory(
-          createLessonDTO.durationLesson.category.name,
-        );
-      }
-      return await this.lessonRepository.createSessionLesson(createLessonDTO.sessionLesson, centerId);
+  async createSessionLesson(sessionLessonDTO: SessionLessonDTO, centerId: number) {
+    if (!sessionLessonDTO.category.id) {
+      sessionLessonDTO.category.id = await this.lessonCategoryService.processEtceteraCategory(
+        sessionLessonDTO.category.name,
+      );
+      return await this.lessonRepository.createSessionLesson(sessionLessonDTO, centerId);
     }
   }
 
