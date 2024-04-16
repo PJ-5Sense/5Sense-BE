@@ -6,7 +6,7 @@ import { SessionLessonEntity } from './entity/session-lesson.entity';
 import { LessonViewEntity } from './entity/lesson-view.entity';
 import { FindManyByFilterDTO } from './dto/request/find-many-lesson.dto';
 import { UpdateSessionLessonDTO } from './dto/request/update-lesson.dto';
-import { SessionLessonDTO } from './dto/request/create-session-lesson.dto';
+import { SessionLessonDTO } from './dto/request/create-lesson.dto';
 
 @Injectable()
 export class LessonRepository {
@@ -42,7 +42,7 @@ export class LessonRepository {
   async findOneDurationDetails(id: number, centerId: number) {
     return await this.durationLessonDAO
       .createQueryBuilder('L')
-      .select(['L.id', 'L.name', 'L.memo', 'L.createdDate'])
+      .select(['L.id', 'L.name', 'L.memo', , 'L.tuitionFee'])
       .leftJoin('L.durationRegistrations', 'D_R')
       .addSelect(['D_R.id', 'D_R.student'])
       .leftJoin('D_R.student', 'S', 'S.id = D_R.studentId')
@@ -52,7 +52,7 @@ export class LessonRepository {
       .innerJoin('D_S.lessonRoom', 'L_R')
       .addSelect(['L_R.id', 'L_R.name'])
       .innerJoin('L.teacher', 'T')
-      .addSelect(['T.name'])
+      .addSelect(['T.id', 'T.name'])
       .innerJoin('L.category', 'C')
       .addSelect(['C.id', 'C.name', 'C.parentId', 'C.parentName'])
       .where('L.id = :id', { id })

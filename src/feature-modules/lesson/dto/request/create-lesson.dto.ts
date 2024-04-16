@@ -74,3 +74,57 @@ export class DurationLessonDTO {
   @Type(() => DurationScheduleDTO)
   schedules: DurationScheduleDTO[];
 }
+
+export class SessionLessonDTO {
+  @ApiProperty()
+  @Matches(`^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s.,!?-]{1,20}$`)
+  name: string;
+
+  @ApiProperty()
+  @Matches(`^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s.,!?-]{0,300}$`)
+  memo: string;
+
+  @ApiProperty()
+  @IsInt()
+  lessonTime: number;
+
+  @ApiProperty()
+  @IsInt()
+  tuitionFee: number;
+
+  @ApiProperty()
+  @IsInt()
+  capacity: number;
+
+  @ApiProperty()
+  @IsInt()
+  totalSessions: number;
+
+  @ApiProperty({ type: LessonCategory })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => LessonCategory)
+  category: LessonCategory;
+
+  @ApiProperty()
+  @IsInt()
+  teacherId: number;
+}
+
+export class CreateLessonDTO {
+  @ApiProperty({ type: 'enum', enum: LessonType, examples: [LessonType.DURATION, LessonType.SESSION] })
+  @IsEnum(LessonType)
+  type: LessonType;
+
+  @ApiProperty({ type: DurationLessonDTO })
+  @ValidateIf((o: CreateLessonDTO) => o.type === LessonType.DURATION)
+  @ValidateNested()
+  @Type(() => DurationLessonDTO)
+  durationLesson: DurationLessonDTO;
+
+  @ApiProperty({ type: SessionLessonDTO })
+  @ValidateIf((o: CreateLessonDTO) => o.type === LessonType.SESSION)
+  @ValidateNested()
+  @Type(() => SessionLessonDTO)
+  sessionLesson: SessionLessonDTO;
+}

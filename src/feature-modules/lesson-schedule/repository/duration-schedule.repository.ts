@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DurationLessonScheduleEntity } from '../entity/duration-lesson-schedule.entity';
-import { DurationScheduleDTO } from '../../lesson/dto/request/create-duration-lesson.dto';
+import { DurationScheduleDTO } from '../../lesson/dto/request/create-lesson.dto';
 import { UpdateDurationScheduleDTO } from '../../lesson/dto/request/update-lesson.dto';
 import { GetRangeSchedulesDTO } from '../dto/get-range-schedule.dto';
 import { LessonRoomEntity } from 'src/feature-modules/lesson-room/entity/lesson-room.entity';
