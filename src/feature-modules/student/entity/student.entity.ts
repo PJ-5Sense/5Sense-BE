@@ -1,7 +1,7 @@
 import { CenterEntity } from 'src/feature-modules/center/entity/center.entity';
-import { DurationLessonRegistrationEntity } from 'src/feature-modules/billing-payment/entity/duration-registration.entity';
-import { SessionLessonRegistrationEntity } from 'src/feature-modules/billing-payment/entity/session-registration.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { SessionLessonRegistrationEntity } from '../../session-lesson-registration/entity/session-registration.entity';
+import { DurationLessonRegistrationEntity } from '../../duration-lesson-registration/entity/duration-registration.entity';
 
 @Entity({ name: 'student' })
 export class StudentEntity {

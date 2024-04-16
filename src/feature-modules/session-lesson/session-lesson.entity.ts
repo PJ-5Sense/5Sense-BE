@@ -1,6 +1,5 @@
 import { CenterEntity } from 'src/feature-modules/center/entity/center.entity';
 import { CategoryEntity } from 'src/feature-modules/lesson-category/entity/category.entity';
-import { SessionLessonRegistrationEntity } from 'src/feature-modules/billing-payment/entity/session-registration.entity';
 import { TeacherEntity } from 'src/feature-modules/teacher/entity/teacher.entity';
 import {
   Column,
@@ -12,6 +11,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { SessionLessonRegistrationEntity } from '../session-lesson-registration/entity/session-registration.entity';
 
 @Entity({ name: 'session_lesson' })
 export class SessionLessonEntity {

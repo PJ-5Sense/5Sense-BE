@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SessionLessonEntity } from './entity/session-lesson.entity';
+import { SessionLessonEntity } from '../session-lesson/session-lesson.entity';
 import { LessonViewEntity } from './entity/lesson-view.entity';
 import { FindManyByFilterDTO } from './dto/request/find-many-lesson.dto';
 import { DurationLessonEntity } from '../duration-lesson/duration-lesson.entity';

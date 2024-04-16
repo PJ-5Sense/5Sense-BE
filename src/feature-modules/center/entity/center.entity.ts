@@ -13,7 +13,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { SessionLessonEntity } from 'src/feature-modules/combined-lesson/entity/session-lesson.entity';
+import { SessionLessonEntity } from 'src/feature-modules/session-lesson/session-lesson.entity';
 
 @Entity({ name: 'center' })
 export class CenterEntity {

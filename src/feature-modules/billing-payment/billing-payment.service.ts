@@ -1,14 +1,14 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { LessonRegistrationRepository } from './lesson-registration.repository';
+import { BillingPaymentRepository } from './billing-payment.repository';
 import { BillingPaymentDTO } from './dto/request/billing-payment.dto';
 import { PaginatedResponseBuildPaymentDTO, ResponseBuildPaymentDTO } from './dto/response/billing-payment.dto';
 import { UpdateBuildPaymentDTO } from './dto/request/update-build-payment.dto';
 
 @Injectable()
-export class LessonRegistrationService {
-  constructor(private readonly lessonRegistrationRepository: LessonRegistrationRepository) {}
+export class BillingPaymentService {
+  constructor(private readonly billingPaymentRepository: BillingPaymentRepository) {}
   async getManyBillingPayments(billingPaymentDTO: BillingPaymentDTO, centerId: number) {
-    const [billingPayments, total] = await this.lessonRegistrationRepository.getManyBillingPayments(
+    const [billingPayments, total] = await this.billingPaymentRepository.getManyBillingPayments(
       billingPaymentDTO,
       centerId,
     );
@@ -23,7 +23,7 @@ export class LessonRegistrationService {
   }
 
   async updateBillingPayment(id: number, updateBuildPaymentDTO: UpdateBuildPaymentDTO) {
-    const success = await this.lessonRegistrationRepository.updateBillingPayment(id, updateBuildPaymentDTO);
+    const success = await this.billingPaymentRepository.updateBillingPayment(id, updateBuildPaymentDTO);
 
     if (!success) {
       // TODO: 업데이트 실패는 서버 에러가 되는것인가? 적절한 에러핸들링 고민하기

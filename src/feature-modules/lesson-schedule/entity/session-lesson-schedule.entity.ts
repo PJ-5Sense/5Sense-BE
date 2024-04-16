@@ -1,6 +1,6 @@
 import { LessonRoomEntity } from 'src/feature-modules/lesson-room/entity/lesson-room.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { SessionLessonRegistrationEntity } from '../../billing-payment/entity/session-registration.entity';
+import { SessionLessonRegistrationEntity } from '../../session-lesson-registration/entity/session-registration.entity';
 
 @Entity({ name: 'session_lesson_schedule' })
 export class SessionLessonScheduleEntity {

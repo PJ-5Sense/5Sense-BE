@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SessionLessonEntity } from '../combined-lesson/entity/session-lesson.entity';
+import { SessionLessonEntity } from './session-lesson.entity';
 import { SessionLessonController } from './session-lesson.controller';
 import { SessionLessonService } from './session.lesson.service';
 import { SessionLessonRepository } from './session-lesson.repository';

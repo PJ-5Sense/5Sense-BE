@@ -1,6 +1,5 @@
 import { CenterEntity } from 'src/feature-modules/center/entity/center.entity';
 import { CategoryEntity } from 'src/feature-modules/lesson-category/entity/category.entity';
-import { DurationLessonRegistrationEntity } from 'src/feature-modules/billing-payment/entity/duration-registration.entity';
 import { TeacherEntity } from 'src/feature-modules/teacher/entity/teacher.entity';
 import {
   Column,
@@ -13,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { DurationLessonScheduleEntity } from '../lesson-schedule/entity/duration-lesson-schedule.entity';
+import { DurationLessonRegistrationEntity } from '../duration-lesson-registration/entity/duration-registration.entity';
 
 @Entity({ name: 'duration_lesson' })
 export class DurationLessonEntity {

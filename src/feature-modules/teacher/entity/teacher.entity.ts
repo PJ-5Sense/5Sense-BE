@@ -1,6 +1,6 @@
 import { CenterEntity } from 'src/feature-modules/center/entity/center.entity';
 import { DurationLessonEntity } from 'src/feature-modules/duration-lesson/duration-lesson.entity';
-import { SessionLessonEntity } from 'src/feature-modules/combined-lesson/entity/session-lesson.entity';
+import { SessionLessonEntity } from 'src/feature-modules/session-lesson/session-lesson.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'teacher' })

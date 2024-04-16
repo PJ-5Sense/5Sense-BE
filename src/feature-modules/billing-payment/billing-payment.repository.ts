@@ -1,15 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DurationLessonRegistrationEntity } from './entity/duration-registration.entity';
 import { Repository } from 'typeorm';
-import { SessionLessonRegistrationEntity } from './entity/session-registration.entity';
 import { RegistrationViewEntity } from './entity/registration-view.entity';
 import { BillingPaymentDTO, SearchPaymentStatus } from './dto/request/billing-payment.dto';
-import { UpdateBuildPaymentDTO } from './dto/request/update-build-payment.dto';
+import { DurationLessonRegistrationEntity } from '../duration-lesson-registration/entity/duration-registration.entity';
+import { SessionLessonRegistrationEntity } from '../session-lesson-registration/entity/session-registration.entity';
 import { LessonType } from '../combined-lesson/type/lesson.type';
+import { UpdateBuildPaymentDTO } from './dto/request/update-build-payment.dto';
 
 @Injectable()
-export class LessonRegistrationRepository {
+export class BillingPaymentRepository {
   constructor(
     @InjectRepository(DurationLessonRegistrationEntity)
     private readonly durationRegistrationDAO: Repository<DurationLessonRegistrationEntity>,

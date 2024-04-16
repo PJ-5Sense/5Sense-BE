@@ -1,10 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { CenterEntity } from 'src/feature-modules/center/entity/center.entity';
 import { CategoryEntity } from 'src/feature-modules/lesson-category/entity/category.entity';
-import { DurationLessonRegistrationEntity } from 'src/feature-modules/billing-payment/entity/duration-registration.entity';
-import { SessionLessonRegistrationEntity } from 'src/feature-modules/billing-payment/entity/session-registration.entity';
 import { DurationLessonEntity } from 'src/feature-modules/duration-lesson/duration-lesson.entity';
-import { SessionLessonEntity } from 'src/feature-modules/combined-lesson/entity/session-lesson.entity';
+import { SessionLessonEntity } from 'src/feature-modules/session-lesson/session-lesson.entity';
 import { PaymentStatus } from 'src/feature-modules/combined-lesson/type/lesson-payment-status.type';
 import { StudentEntity } from 'src/feature-modules/student/entity/student.entity';
 import { TeacherEntity } from 'src/feature-modules/teacher/entity/teacher.entity';
@@ -13,6 +11,8 @@ import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 import { DurationLessonScheduleEntity } from 'src/feature-modules/lesson-schedule/entity/duration-lesson-schedule.entity';
 import { SessionLessonScheduleEntity } from 'src/feature-modules/lesson-schedule/entity/session-lesson-schedule.entity';
+import { DurationLessonRegistrationEntity } from '../../../feature-modules/duration-lesson-registration/entity/duration-registration.entity';
+import { SessionLessonRegistrationEntity } from '../../../feature-modules/session-lesson-registration/entity/session-registration.entity';
 
 export default class LessonSeed1702051029391 implements Seeder {
   track = false;

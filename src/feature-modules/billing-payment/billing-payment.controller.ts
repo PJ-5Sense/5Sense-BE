@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
-import { BillingPaymentService } from './lesson-registration.service';
 import { BillingPaymentDTO } from './dto/request/billing-payment.dto';
 import { CurrentUser } from '../../common/decorator/user.decorator';
 import { ApiTags } from '@nestjs/swagger';
 import { SwaggerBillingPayments, SwaggerUpdateBillingPayment } from 'src/swagger/lesson-registration.swagger';
 import { UpdateBuildPaymentDTO } from './dto/request/update-build-payment.dto';
+import { BillingPaymentService } from './billing-payment.service';
 
 // TODO : 청구/납부 기록은 별도의 테이블에서 관리해야함 ( 현재 LessonRegistration 테이블을 뷰로 만들어서 사용중임 )
 @ApiTags('Billing Payment - 청구/납부')

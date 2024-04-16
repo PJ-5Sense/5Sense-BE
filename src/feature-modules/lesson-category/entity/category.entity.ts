@@ -1,5 +1,5 @@
 import { DurationLessonEntity } from 'src/feature-modules/duration-lesson/duration-lesson.entity';
-import { SessionLessonEntity } from 'src/feature-modules/combined-lesson/entity/session-lesson.entity';
+import { SessionLessonEntity } from 'src/feature-modules/session-lesson/session-lesson.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'category' })
