@@ -64,7 +64,7 @@ export class AuthService {
       responseData = await this.processExistingUserAndGenerateTokens(userSocialInfo, userAgent);
     }
 
-    return new ResponseSocialLoginDTO(responseData);
+    return new ResponseSocialLoginDTO({ ...responseData, type: provider });
   }
 
   private async generateAccessToken(payload: JwtPayload): Promise<string> {
