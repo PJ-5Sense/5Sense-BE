@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PaymentStatus } from '../../../lesson/type/lesson-payment-status.type';
-import { LessonType } from '../../../lesson/type/lesson.type';
+import { PaymentStatus } from '../../../combined-lesson/type/lesson-payment-status.type';
+import { LessonType } from '../../../combined-lesson/type/lesson.type';
 import { IsEnum } from 'class-validator';
 
 export class UpdateBuildPaymentDTO {

@@ -1,5 +1,5 @@
 import { RegistrationViewEntity } from '../../entity/registration-view.entity';
-import { PaymentStatus } from '../../../lesson/type/lesson-payment-status.type';
+import { PaymentStatus } from '../../../combined-lesson/type/lesson-payment-status.type';
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { PageMeta } from 'src/common/dto/response-page.dto';

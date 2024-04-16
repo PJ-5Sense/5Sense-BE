@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DurationLessonEntity } from './entity/duration-lesson.entity';
+import { DurationLessonEntity } from '../duration-lesson/duration-lesson.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SessionLessonEntity } from './entity/session-lesson.entity';
@@ -95,23 +95,6 @@ export class LessonRepository {
   ////////////////////////////////////////////////////////////////////
   //                      Session Lesson                            //
   ////////////////////////////////////////////////////////////////////
-  /**
-   *
-   * 회차반 데이터를 생성함
-   * @param {SessionLessonDTO} sessionLesson
-   * @param {number} centerId
-   */
-  async createSessionLesson(sessionLesson: SessionLessonDTO, centerId: number) {
-    const { category, ...lessonData } = sessionLesson;
-
-    await this.sessionLessonDAO.save(
-      this.sessionLessonDAO.create({
-        ...lessonData,
-        centerId,
-        categoryId: category.id,
-      }),
-    );
-  }
 
   async findOneSessionDetails(id: number, centerId: number) {
     return await this.sessionLessonDAO

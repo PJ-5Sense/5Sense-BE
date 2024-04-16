@@ -1,5 +1,5 @@
 import { LessonRoomEntity } from 'src/feature-modules/lesson-room/entity/lesson-room.entity';
-import { DurationLessonEntity } from 'src/feature-modules/lesson/entity/duration-lesson.entity';
+import { DurationLessonEntity } from 'src/feature-modules/duration-lesson/duration-lesson.entity';
 import { StudentEntity } from 'src/feature-modules/student/entity/student.entity';
 import { TeacherEntity } from 'src/feature-modules/teacher/entity/teacher.entity';
 import { UserEntity } from 'src/feature-modules/user/entity/user.entity';
@@ -13,7 +13,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { SessionLessonEntity } from 'src/feature-modules/lesson/entity/session-lesson.entity';
+import { SessionLessonEntity } from 'src/feature-modules/combined-lesson/entity/session-lesson.entity';
 
 @Entity({ name: 'center' })
 export class CenterEntity {

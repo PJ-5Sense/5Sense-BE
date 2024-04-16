@@ -8,12 +8,10 @@ import { CloseLessonDTO } from './dto/request/close-lesson.dto';
 import { ApiTags } from '@nestjs/swagger';
 import {
   SwaggerCreateDurationLesson,
-  SwaggerCreateSessionLesson,
   SwaggerFindByFilterLesson,
   SwaggerLessonDetail,
 } from 'src/swagger/lesson.swagger';
 import { DurationLessonDTO } from './dto/request/create-duration-lesson.dto';
-import { SessionLessonDTO } from './dto/request/create-session-lesson.dto';
 
 @ApiTags('Lesson - 클래스')
 @Controller('lessons')
@@ -24,17 +22,6 @@ export class LessonController {
   @Post('duration')
   async createDurationLesson(@Body() durationLessonDTO: DurationLessonDTO, @CurrentUser('centerId') centerId: number) {
     await this.lessonService.createDurationLesson(durationLessonDTO, centerId);
-
-    return {
-      success: true,
-      message: `The Lesson has been successfully registered`,
-    };
-  }
-
-  @SwaggerCreateSessionLesson()
-  @Post('session')
-  async createSessionLesson(@Body() sessionLessonDTO: SessionLessonDTO, @CurrentUser('centerId') centerId: number) {
-    await this.lessonService.createSessionLesson(sessionLessonDTO, centerId);
 
     return {
       success: true,

@@ -12,7 +12,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DurationLessonScheduleEntity } from '../../lesson-schedule/entity/duration-lesson-schedule.entity';
+import { DurationLessonScheduleEntity } from '../lesson-schedule/entity/duration-lesson-schedule.entity';
 
 @Entity({ name: 'duration_lesson' })
 export class DurationLessonEntity {

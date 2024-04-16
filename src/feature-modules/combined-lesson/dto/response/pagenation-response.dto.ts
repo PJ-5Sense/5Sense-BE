@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PageMeta } from 'src/common/dto/response-page.dto';
-import { ResponseFilteredLessonDTO } from 'src/feature-modules/lesson/dto/response/filtered-lesson.dto';
+import { ResponseFilteredLessonDTO } from 'src/feature-modules/combined-lesson/dto/response/filtered-lesson.dto';
 
 // TODO : generic하게 타입을 받아서 사용하도록 변경해야함
 export class PaginatedResponseFilteredLessonDTO {

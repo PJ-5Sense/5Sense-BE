@@ -8,8 +8,7 @@ import { LessonRepository } from './lesson.repository';
 import { LessonCategoryService } from 'src/feature-modules/lesson-category/category.service';
 import { UpdateLessonDTO } from './dto/request/update-lesson.dto';
 import { ResponseFilteredLessonDTO } from './dto/response/filtered-lesson.dto';
-import { PaginatedResponseFilteredLessonDTO } from 'src/feature-modules/lesson/dto/response/pagenation-response.dto';
-import { SessionLessonDTO } from './dto/request/create-session-lesson.dto';
+import { PaginatedResponseFilteredLessonDTO } from 'src/feature-modules/combined-lesson/dto/response/pagenation-response.dto';
 // TODO : 트랜잭션 사용하는 방법 정의하기 - 단순 사용이 아닌 중복된 코드들을 개선하기 위한 작업이 필요함
 @Injectable()
 export class LessonService {
@@ -34,15 +33,6 @@ export class LessonService {
       });
 
       await this.lessonScheduleService.createDurationSchedules(lessonId, schedules);
-    }
-  }
-
-  async createSessionLesson(sessionLessonDTO: SessionLessonDTO, centerId: number) {
-    if (!sessionLessonDTO.category.id) {
-      sessionLessonDTO.category.id = await this.lessonCategoryService.processEtceteraCategory(
-        sessionLessonDTO.category.name,
-      );
-      return await this.lessonRepository.createSessionLesson(sessionLessonDTO, centerId);
     }
   }
 

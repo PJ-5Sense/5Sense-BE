@@ -7,7 +7,7 @@ import { UserModule } from './feature-modules/user/user.module';
 import { CenterModule } from './feature-modules/center/center.module';
 import { TeacherModule } from './feature-modules/teacher/teacher.module';
 import { StudentModule } from './feature-modules/student/student.module';
-import { LessonModule } from './feature-modules/lesson/lesson.module';
+import { LessonModule } from './feature-modules/combined-lesson/lesson.module';
 import { AuthModule } from './feature-modules/auth/auth.module';
 import { AuthGuard } from './common/guard/auth-jwt.guard';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';

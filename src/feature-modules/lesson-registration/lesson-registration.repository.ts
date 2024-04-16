@@ -6,7 +6,7 @@ import { SessionLessonRegistrationEntity } from './entity/session-registration.e
 import { RegistrationViewEntity } from './entity/registration-view.entity';
 import { BillingPaymentDTO, SearchPaymentStatus } from './dto/request/billing-payment.dto';
 import { UpdateBuildPaymentDTO } from './dto/request/update-build-payment.dto';
-import { LessonType } from '../lesson/type/lesson.type';
+import { LessonType } from '../combined-lesson/type/lesson.type';
 
 @Injectable()
 export class LessonRegistrationRepository {
