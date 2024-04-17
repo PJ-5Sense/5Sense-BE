@@ -3,7 +3,7 @@ import { LessonService } from './lesson.service';
 import { CurrentUser } from 'src/common/decorator/user.decorator';
 import { FindManyByDateDTO, FindManyByFilterDTO } from './dto/request/find-many-lesson.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { SwaggerFindByFilterLesson } from 'src/swagger/combined-lesson.swagger';
+import { SwaggerFindByDateLesson, SwaggerFindByFilterLesson } from 'src/swagger/combined-lesson.swagger';
 
 @ApiTags('Lesson - 클래스(기간/회차 통합)')
 @Controller('lessons')
@@ -23,6 +23,7 @@ export class LessonController {
     };
   }
 
+  @SwaggerFindByDateLesson()
   @Get('/:year/:month')
   async getLessonsByDate(@Param() findManyLessonDTO: FindManyByDateDTO, @CurrentUser('centerId') centerId: number) {
     return {

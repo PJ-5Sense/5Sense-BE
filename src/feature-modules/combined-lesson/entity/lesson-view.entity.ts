@@ -1,4 +1,5 @@
 import { ViewColumn, ViewEntity } from 'typeorm';
+import { LessonType } from '../type/lesson.type';
 
 // 카테고리로 필터로 찾으면, 카테고리 pk아이디로 IN으로 검색
 
@@ -47,7 +48,7 @@ export class LessonViewEntity {
   id: number;
 
   @ViewColumn({ name: 'type' })
-  type: string;
+  type: LessonType;
 
   @ViewColumn({ name: 'name' })
   name: string;

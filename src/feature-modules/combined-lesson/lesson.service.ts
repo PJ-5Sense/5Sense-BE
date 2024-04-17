@@ -4,6 +4,8 @@ import { LessonType } from './type/lesson.type';
 import { LessonRepository } from './lesson.repository';
 import { ResponseFilteredLessonDTO } from './dto/response/filtered-lesson.dto';
 import { PaginatedResponseFilteredLessonDTO } from 'src/feature-modules/combined-lesson/dto/response/pagenation-response.dto';
+import { generateExampleDto } from '../../test';
+import { ResponseCalendarLessonDTO } from './dto/response/calendar-lesson.dto';
 // TODO : 트랜잭션 사용하는 방법 정의하기 - 단순 사용이 아닌 중복된 코드들을 개선하기 위한 작업이 필요함
 @Injectable()
 export class LessonService {
@@ -41,7 +43,8 @@ export class LessonService {
           numberOfStudents: durationLesson.durationRegistrations.length,
           room: schedule.lessonRoom.name,
         };
-
+        const qwe = generateExampleDto(new ResponseCalendarLessonDTO(lessonData));
+        console.log(qwe);
         for (const day of schedule.repeatDate.split(',')) {
           const index = weeks.indexOf(day);
           let startDayDate = this.getStartDayDate(firstWeekDayDates[index], startDay);
@@ -75,6 +78,7 @@ export class LessonService {
       }
     }
 
+    console.log(typeof monthArray);
     return monthArray;
   }
 
