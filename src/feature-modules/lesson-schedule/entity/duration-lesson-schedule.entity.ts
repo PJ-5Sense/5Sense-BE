@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { DurationLessonEntity } from '../../lesson/entity/duration-lesson.entity';
+import { DurationLessonEntity } from '../../duration-lesson/duration-lesson.entity';
 import { LessonRoomEntity } from 'src/feature-modules/lesson-room/entity/lesson-room.entity';
 
 @Entity({ name: 'duration_lesson_schedule' })

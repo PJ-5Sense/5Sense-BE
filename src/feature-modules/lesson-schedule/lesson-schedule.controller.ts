@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { LessonScheduleService } from './lesson-schedule.service';
 import { GetDailySchedulesDTO } from './dto/get-daily-schedules.dto';
 import { GetRangeSchedulesDTO } from './dto/get-range-schedule.dto';
