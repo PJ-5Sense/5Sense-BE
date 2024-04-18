@@ -61,9 +61,3 @@ export class ResponseCalendarLessonDTO {
     this.room = lesson.room;
   }
 }
-
-export class ResponseCalendarLessonsDTO {
-  @Expose()
-  @ApiProperty({ type: [ResponseCalendarLessonDTO] })
-  date: string;
-}

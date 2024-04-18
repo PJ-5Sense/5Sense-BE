@@ -1,8 +1,28 @@
-import { RegistrationViewEntity } from '../../entity/registration-view.entity';
 import { PaymentStatus } from '../../../combined-lesson/type/lesson-payment-status.type';
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { PageMeta } from 'src/common/dto/response-page.dto';
+import { BillingPaymentEntity } from '../../entity/billing-payment.entity';
+import { LessonType } from 'src/feature-modules/combined-lesson/type/lesson.type';
+
+class Student {
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  phone: string;
+}
+
+class Lesson {
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  type: string;
+
+  @ApiProperty()
+  tuitionFee: number;
+}
 
 export class ResponseBuildPaymentDTO {
   @ApiProperty()
@@ -11,41 +31,34 @@ export class ResponseBuildPaymentDTO {
 
   @ApiProperty()
   @Expose()
-  type: string;
-
-  @ApiProperty()
-  @Expose()
   paymentStatus: PaymentStatus;
 
-  @ApiProperty()
+  @ApiProperty({ type: Lesson })
   @Expose()
-  name: string;
+  lesson: Lesson;
 
-  @ApiProperty()
+  @ApiProperty({ type: Student })
   @Expose()
-  tuitionFee: number;
+  student: Student;
 
-  @ApiProperty()
-  @Expose()
-  studentName: string;
-
-  @ApiProperty()
-  @Expose()
-  studentPhone: string;
-
-  @ApiProperty()
-  @Expose()
-  centerId: number;
-
-  constructor(billingPayment: RegistrationViewEntity) {
+  constructor(billingPayment: BillingPaymentEntity) {
     this.id = billingPayment.id;
-    this.type = billingPayment.type;
     this.paymentStatus = billingPayment.paymentStatus;
-    this.name = billingPayment.name;
-    this.tuitionFee = billingPayment.tuitionFee;
-    this.studentName = billingPayment.studentName;
-    this.studentPhone = billingPayment.studentPhone;
-    this.centerId = billingPayment.centerId;
+    this.student = { name: billingPayment.student.name, phone: billingPayment.student.phone };
+
+    if (billingPayment.durationLesson?.name) {
+      this.lesson = {
+        name: billingPayment.durationLesson.name,
+        type: LessonType.DURATION,
+        tuitionFee: billingPayment.durationLesson.tuitionFee,
+      };
+    } else {
+      this.lesson = {
+        name: billingPayment.sessionLesson.name,
+        type: LessonType.SESSION,
+        tuitionFee: billingPayment.sessionLesson.tuitionFee,
+      };
+    }
   }
 }
 
@@ -54,13 +67,13 @@ export class PaginatedResponseBuildPaymentDTO {
   @ApiProperty({
     type: [ResponseBuildPaymentDTO],
   })
-  students: ResponseBuildPaymentDTO[];
+  billingPayments: ResponseBuildPaymentDTO[];
 
   @ApiProperty({ type: PageMeta })
   meta: PageMeta;
 
-  constructor(students: ResponseBuildPaymentDTO[], page: number, take: number, hasNextPage: boolean) {
-    this.students = students;
+  constructor(billingPayments: ResponseBuildPaymentDTO[], page: number, take: number, hasNextPage: boolean) {
+    this.billingPayments = billingPayments;
     this.meta = new PageMeta({ page, take, hasNextPage });
   }
 }

@@ -18,6 +18,8 @@ import { DurationLessonModule } from './feature-modules/duration-lesson/duration
 import { SessionLessonModule } from './feature-modules/session-lesson/session-lesson.module';
 import { BillingPaymentModule } from './feature-modules/billing-payment/billing-payment.module';
 import { LessonScheduleModule } from './feature-modules/lesson-schedule/lesson-schedule.module';
+import { DurationLessonRegistrationModule } from './feature-modules/duration-lesson-registration/duration-registration.module';
+import { SessionLessonRegistrationModule } from './feature-modules/session-lesson-registration/session-registration.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { LessonScheduleModule } from './feature-modules/lesson-schedule/lesson-s
     DurationLessonModule,
     SessionLessonModule,
     LessonScheduleModule,
+    DurationLessonRegistrationModule,
+    SessionLessonRegistrationModule,
     BillingPaymentModule,
     StudentModule,
     TeacherModule,

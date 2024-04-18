@@ -11,4 +11,4 @@ import { LessonRegistrationRepository } from './session-registration.repository'
   providers: [LessonRegistrationService, LessonRegistrationRepository],
   exports: [],
 })
-export class LessonRegistrationModule {}
+export class SessionLessonRegistrationModule {}

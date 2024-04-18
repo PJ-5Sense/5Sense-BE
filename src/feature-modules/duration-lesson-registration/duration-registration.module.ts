@@ -11,4 +11,4 @@ import { DurationLessonRegistrationRepository } from './duration-registration.re
   providers: [DurationLessonRegistrationService, DurationLessonRegistrationRepository],
   exports: [],
 })
-export class LessonRegistrationModule {}
+export class DurationLessonRegistrationModule {}

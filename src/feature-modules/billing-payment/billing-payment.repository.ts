@@ -1,73 +1,61 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RegistrationViewEntity } from './entity/registration-view.entity';
 import { BillingPaymentDTO, SearchPaymentStatus } from './dto/request/billing-payment.dto';
-import { DurationLessonRegistrationEntity } from '../duration-lesson-registration/entity/duration-registration.entity';
-import { SessionLessonRegistrationEntity } from '../session-lesson-registration/entity/session-registration.entity';
-import { LessonType } from '../combined-lesson/type/lesson.type';
 import { UpdateBuildPaymentDTO } from './dto/request/update-build-payment.dto';
+import { BillingPaymentEntity } from './entity/billing-payment.entity';
 
 @Injectable()
 export class BillingPaymentRepository {
   constructor(
-    @InjectRepository(DurationLessonRegistrationEntity)
-    private readonly durationRegistrationDAO: Repository<DurationLessonRegistrationEntity>,
-
-    @InjectRepository(SessionLessonRegistrationEntity)
-    private readonly sessionRegistrationDAO: Repository<SessionLessonRegistrationEntity>,
-
-    @InjectRepository(RegistrationViewEntity)
-    private readonly registrationViewDAO: Repository<RegistrationViewEntity>,
+    @InjectRepository(BillingPaymentEntity)
+    private readonly billingPaymentDAO: Repository<BillingPaymentEntity>,
   ) {}
 
   async getManyBillingPayments(billingPaymentDTO: BillingPaymentDTO, centerId: number) {
-    const queryBuilder = this.registrationViewDAO
-      .createQueryBuilder('registration')
-      .where('registration.centerId = :centerId', { centerId });
+    const queryBuilder = this.billingPaymentDAO
+      .createQueryBuilder('payment')
+      .innerJoin('payment.student', 'student')
+      .addSelect(['student.name', 'student.phone'])
+      .leftJoin('payment.durationLesson', 'duration')
+      .addSelect(['duration.name', 'duration.tuitionFee'])
+      .leftJoin('payment.sessionLesson', 'session')
+      .addSelect(['session.name', 'session.tuitionFee'])
+      .where('payment.centerId = :centerId', { centerId });
 
     if (billingPaymentDTO.PaymentStatus !== SearchPaymentStatus.ALL) {
-      queryBuilder.andWhere('registration.paymentStatus = :paymentStatus', {
+      queryBuilder.andWhere('payment.paymentStatus = :paymentStatus', {
         paymentStatus: billingPaymentDTO.PaymentStatus,
       });
     }
 
     if (billingPaymentDTO.searchBy === 'name') {
       queryBuilder
-        .andWhere('registration.student_name LIKE :name', { name: `%${billingPaymentDTO.name}%` })
-        .orderBy(`LOCATE('${billingPaymentDTO.name}', registration.student_name)`, 'ASC')
-        .addOrderBy('registration.student_name', 'ASC');
+        .andWhere('student.name LIKE :name', { name: `%${billingPaymentDTO.name}%` })
+        .orderBy(`LOCATE('${billingPaymentDTO.name}', student.name)`, 'ASC')
+        .addOrderBy('student.name', 'ASC');
     }
 
     if (billingPaymentDTO.searchBy === 'phone') {
       queryBuilder
-        .andWhere('registration.student_phone LIKE :phone', { phone: `%${billingPaymentDTO.phone}%` })
-        .orderBy(`LOCATE('${billingPaymentDTO.phone}', registration.student_phone)`, 'ASC')
-        .addOrderBy('registration.student_phone', 'ASC');
+        .andWhere('student.phone LIKE :phone', { phone: `%${billingPaymentDTO.phone}%` })
+        .orderBy(`LOCATE('${billingPaymentDTO.phone}', student.phone)`, 'ASC')
+        .addOrderBy('student.phone', 'ASC');
     }
 
-    if (billingPaymentDTO.searchBy === 'none') queryBuilder.orderBy('registration.createdDate', 'DESC');
+    if (billingPaymentDTO.searchBy === 'none') queryBuilder.orderBy('payment.createdDate', 'DESC');
 
     return await queryBuilder.offset(billingPaymentDTO.getSkip()).limit(billingPaymentDTO.getTake()).getManyAndCount();
   }
 
   async updateBillingPayment(id: number, updateBuildPaymentDTO: UpdateBuildPaymentDTO) {
-    let result;
-    const lesson = await this.registrationViewDAO.findOneBy({ id, type: updateBuildPaymentDTO.type });
+    const lesson = await this.billingPaymentDAO.findOneBy({ id });
 
     if (!lesson) {
       throw new BadRequestException('lesson not found');
     }
 
-    if (updateBuildPaymentDTO.type === LessonType.DURATION) {
-      result = await this.durationRegistrationDAO.update(
-        { id },
-        { paymentStatus: updateBuildPaymentDTO.paymentStatus },
-      );
-    } else {
-      result = await this.sessionRegistrationDAO.update({ id }, { paymentStatus: updateBuildPaymentDTO.paymentStatus });
-    }
-
-    return result.affected;
+    return (await this.billingPaymentDAO.update({ id }, { paymentStatus: updateBuildPaymentDTO.paymentStatus }))
+      .affected;
   }
 }
