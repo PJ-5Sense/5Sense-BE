@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { SessionLessonRepository } from './session-lesson.repository';
-import { CreateSessionLessonDTO } from './dto/request/create-session-lesson.dto';
 import { LessonCategoryService } from '../lesson-category/category.service';
 import { LessonType } from '../combined-lesson/type/lesson.type';
 import { UpdateSessionLessonDTO } from './dto/request/update-session-lesson.dto';
+import { CreateSessionLessonDTO } from './dto/request/create-session-lesson.dto';
+import { ResponseGetDetailSessionLessonDTO } from './dto/response/get-detail-lesson.dto';
 
 @Injectable()
 export class SessionLessonService {
@@ -24,29 +25,7 @@ export class SessionLessonService {
   async getOne(id: number, centerId: number) {
     const lesson = await this.sessionLessonRepository.getOne(id, centerId);
 
-    return {
-      id: lesson.id,
-      name: lesson.name,
-      memo: lesson.memo,
-      type: LessonType.SESSION,
-      teacher: lesson.teacher.name,
-      teacherId: lesson.teacher.id,
-      mainCategory: lesson.category.parentId ? lesson.category.parentName : lesson.category.name,
-      subCategory: lesson.category.parentId ? lesson.category.name : null,
-      category: lesson.category.id,
-      tuitionFee: lesson.tuitionFee,
-      lessonTime: lesson.lessonTime,
-      totalSessions: lesson.totalSessions,
-      capacity: lesson.capacity,
-      numberOfStudents: lesson.sessionRegistrations.length,
-      registeredStudents: lesson.sessionRegistrations.map(registration => {
-        return {
-          name: registration.student.name,
-          phone: registration.student.phone,
-          sessionCount: `${registration.sessionSchedules.length}/${lesson.totalSessions}`,
-        };
-      }),
-    };
+    return new ResponseGetDetailSessionLessonDTO(lesson);
   }
 
   async update(updateSessionLessonDTO: UpdateSessionLessonDTO, lessonId: number, centerId: number) {

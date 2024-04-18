@@ -1,7 +1,7 @@
-import { IsInt, IsObject, Matches, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
-import { LessonCategory } from '../../../combined-lesson/type/lesson-category.type';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsInt, IsObject, Matches, ValidateNested } from 'class-validator';
+import { LessonCategory } from 'src/feature-modules/combined-lesson/type/lesson-category.type';
 
 export class CreateSessionLessonDTO {
   @ApiProperty()

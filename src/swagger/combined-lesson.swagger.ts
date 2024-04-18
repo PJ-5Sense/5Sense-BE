@@ -19,10 +19,15 @@ export function SwaggerFindByFilterLesson() {
 export function SwaggerFindByDateLesson() {
   return applyDecorators(
     ApiOperation({
-      summary: '클래스 목록 가져1오기 (클래스 관리 페이지)',
-      description: `<h2>클래스 관리 페이지에서 클래스 목록 가져오기</h2>`,
+      summary: '클래스 목록 가져오기 (메인 페이지)',
+      description: `<h2>메인 페이지에서 클래스 목록 가져오기</h2>`,
     }),
     ApiBearerAuth('AccessToken'),
-    ApiOkResponse({ status: 200, type: [ResponseCalendarLessonDTO] }),
+    ApiOkResponse({
+      status: 200,
+      type: ResponseCalendarLessonDTO,
+      description: `ResponseCalendarLessonDTO[][]
+      <br> 해당 월에 요일 개수만큼 배열 개수가 있으며 각 요일에 클래스가 담김`,
+    }),
   );
 }

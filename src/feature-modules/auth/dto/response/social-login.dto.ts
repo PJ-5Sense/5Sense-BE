@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
+import { SocialType } from '../../type/social.type';
 
 export class ResponseSocialLoginDTO {
   @ApiProperty({ description: '유효시간  6시간' })
@@ -22,12 +23,17 @@ export class ResponseSocialLoginDTO {
   @Expose()
   isNew: boolean;
 
+  @ApiProperty({ description: '소셜로그인 타입', enum: SocialType })
+  @Expose()
+  type: SocialType;
+
   constructor(authResponse: {
     accessToken: string;
     refreshToken: string;
     accessTokenExp: Date;
     hasCenter: boolean;
     isNew: boolean;
+    type: SocialType;
   }) {
     Object.assign(this, authResponse);
   }

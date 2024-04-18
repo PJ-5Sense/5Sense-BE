@@ -4,6 +4,7 @@ import { CreateDurationLessonDTO } from './dto/request/create-duration-lesson.dt
 import { LessonCategoryService } from '../lesson-category/category.service';
 import { LessonType } from '../combined-lesson/type/lesson.type';
 import { UpdateDurationLessonDTO } from './dto/request/update-duration-lesson-dto';
+import { ResponseGetDetailDurationLessonDTO } from './dto/response/get-detail-lesson.dto';
 
 @Injectable()
 export class DurationLessonService {
@@ -34,40 +35,8 @@ export class DurationLessonService {
 
   async getOne(id: number, centerId: number) {
     const lesson = await this.durationLessonRepository.getOne(id, centerId);
-    const duration = this.formatLessonDurationDates(
-      lesson.durationSchedules[0].startDate,
-      lesson.durationSchedules[0].endDate,
-    );
 
-    return {
-      id: lesson.id,
-      name: lesson.name,
-      memo: lesson.memo,
-      tuitionFee: lesson.tuitionFee,
-      type: LessonType.DURATION,
-      teacher: lesson.teacher.name,
-      teacherId: lesson.teacher.id,
-      mainCategory: lesson.category.parentId ? lesson.category.parentName : lesson.category.name,
-      subCategory: lesson.category.parentId ? lesson.category.name : null,
-      category: lesson.category.id,
-      duration,
-      numberOfStudents: lesson.durationRegistrations.length,
-      lessonDurations: lesson.durationSchedules.map(schedule => {
-        return {
-          id: schedule.id,
-          startTime: schedule.startTime,
-          endTime: schedule.endTime,
-          repeatDate: schedule.repeatDate,
-          room: schedule.lessonRoom.name,
-        };
-      }),
-      registeredStudents: lesson.durationRegistrations.map(registration => {
-        return {
-          name: registration.student.name,
-          phone: registration.student.phone,
-        };
-      }),
-    };
+    return new ResponseGetDetailDurationLessonDTO(lesson);
   }
 
   async updateLesson(updateDurationLessonDTO: UpdateDurationLessonDTO, lessonId: number, centerId: number) {

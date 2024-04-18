@@ -3,14 +3,19 @@ import { CreateDurationLessonDTO } from './dto/request/create-duration-lesson.dt
 import { CurrentUser } from '../../common/decorator/user.decorator';
 import { DurationLessonService } from './duration.lesson.service';
 import { ApiTags } from '@nestjs/swagger';
-import { SwaggerCreateDurationLesson, SwaggerDurationLessonDetail } from '../../swagger/duration-lesson.swagger';
+import {
+  SwaggerCloseLesson,
+  SwaggerCreateLesson,
+  SwaggerLessonDetail,
+  SwaggerUpdateLesson,
+} from '../../swagger/duration-lesson.swagger';
 import { UpdateDurationLessonDTO } from './dto/request/update-duration-lesson-dto';
 
-ApiTags('Duration Lesson - 기간반');
-@Controller()
+@ApiTags('Duration Lesson - 기간반')
+@Controller('duration-lessons')
 export class DurationLessonController {
   constructor(private readonly durationLessonService: DurationLessonService) {}
-  @SwaggerCreateDurationLesson()
+  @SwaggerCreateLesson()
   @Post('duration')
   async createDurationLesson(
     @Body() durationLessonDTO: CreateDurationLessonDTO,
@@ -24,7 +29,7 @@ export class DurationLessonController {
     };
   }
 
-  @SwaggerDurationLessonDetail()
+  @SwaggerLessonDetail()
   @Get(':lessonId/details')
   async findLessonDetails(@CurrentUser('centerId') centerId: number, @Param('lessonId') lessonId: number) {
     return {
@@ -34,6 +39,7 @@ export class DurationLessonController {
     };
   }
 
+  @SwaggerUpdateLesson()
   @Put('/:lessonId')
   async updateLesson(
     @Param('lessonId') lessonId: number,
@@ -48,6 +54,7 @@ export class DurationLessonController {
     };
   }
 
+  @SwaggerCloseLesson()
   @Patch('/:lessonId/close')
   async closeLesson(@Param('lessonId') lessonId: number, @CurrentUser('centerId') centerId: number) {
     await this.durationLessonService.closeLesson(lessonId, centerId);

@@ -1,10 +1,11 @@
 import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { SessionLessonService } from './session.lesson.service';
-import { CreateSessionLessonDTO } from './dto/request/create-session-lesson.dto';
 import { CurrentUser } from '../../common/decorator/user.decorator';
 import { ApiTags } from '@nestjs/swagger';
-import { SwaggerCreateSessionLesson } from '../../swagger/session-lesson.swagger';
+import { SwaggerCreateSessionLesson, SwaggerSessionLessonDetail } from '../../swagger/session-lesson.swagger';
 import { UpdateSessionLessonDTO } from './dto/request/update-session-lesson.dto';
+import { CreateSessionLessonDTO } from './dto/request/create-session-lesson.dto';
+import { SwaggerCloseLesson, SwaggerUpdateLesson } from 'src/swagger/duration-lesson.swagger';
 
 @ApiTags('Session Lesson - 회차반')
 @Controller('session-lessons')
@@ -22,6 +23,7 @@ export class SessionLessonController {
     };
   }
 
+  @SwaggerSessionLessonDetail()
   @Get(':lessonId/details')
   async getOne(@CurrentUser('centerId') centerId: number, @Param('lessonId') lessonId: number) {
     return {
@@ -31,6 +33,7 @@ export class SessionLessonController {
     };
   }
 
+  @SwaggerUpdateLesson()
   @Put('/:lessonId')
   async updateLesson(
     @Param('lessonId') lessonId: number,
@@ -45,6 +48,7 @@ export class SessionLessonController {
     };
   }
 
+  @SwaggerCloseLesson()
   @Patch('/:lessonId/close')
   async closeLesson(@Param('lessonId') lessonId: number, @CurrentUser('centerId') centerId: number) {
     await this.sessionLessonService.closeLesson(lessonId, centerId);
