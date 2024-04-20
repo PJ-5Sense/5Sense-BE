@@ -43,7 +43,18 @@ export class TeacherRepository {
   }
 
   async findOneByTeacherId(teacherId: number, centerId: number) {
-    return await this.teacherDAO.findOneBy({ id: teacherId, centerId });
+    return await this.teacherDAO
+      .createQueryBuilder('teacher')
+      .select(['teacher.id', 'teacher.name', 'teacher.phone'])
+      .leftJoin('teacher.durationLessons', 'DL', 'teacher.id = DL.teacherId')
+      .addSelect(['DL.id'])
+      .leftJoin('DL.durationSchedules', 'DS', 'DS.lessonId = DL.id')
+      .addSelect(['DS.id', 'DS.startDate', 'DS.endDate', 'DS.startTime', 'DS.endTime', 'DS.repeatDate'])
+      .leftJoin('teacher.sessionLessons', 'SL', 'teacher.id = SL.teacherId')
+      .addSelect(['SL.id', 'SL.name', 'SL.totalSessions', 'SL.capacity'])
+      .where('teacher.centerId = :centerId', { centerId })
+      .andWhere('teacher.id = :id', { id: teacherId })
+      .getOne();
   }
 
   async updateTeacher(updateTeacherDTO: UpdateTeacherDTO, teacherId: number, centerId: number): Promise<boolean> {

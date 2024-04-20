@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { PaginatedResponseFilteredLessonDTO } from 'src/feature-modules/combined-lesson/dto/response/pagenation-response.dto';
+import { PaginatedResponseFilteredLessonDTO } from 'src/feature-modules/combined-lesson/dto/response/pagination-response.dto';
 import { ResponseCalendarLessonDTO } from '../feature-modules/combined-lesson/dto/response/calendar-lesson.dto';
 
 export function SwaggerFindByFilterLesson() {

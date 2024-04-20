@@ -5,10 +5,16 @@ export class DurationSchedule {
   id: number;
 
   @ApiProperty()
-  scheduleDuration: string;
+  startDate: Date;
 
   @ApiProperty()
-  scheduleTime: string;
+  endDate: Date;
+
+  @ApiProperty()
+  startTime: string;
+
+  @ApiProperty()
+  endTime: string;
 
   @ApiProperty()
   repeatDate: string;
@@ -22,6 +28,6 @@ export class DurationLesson {
   @ApiProperty()
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: DurationSchedule, isArray: true })
   schedules: DurationSchedule[];
 }

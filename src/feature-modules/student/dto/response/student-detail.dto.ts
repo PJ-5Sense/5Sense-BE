@@ -23,56 +23,13 @@ export class ResponseStudentDetailDTO {
   @Expose()
   readonly particulars: string;
 
-  // Exclude
-  @Exclude()
-  readonly durationLessonList: DurationLessonEntity[];
-
-  @Exclude()
-  readonly sessionLessonList: SessionLessonRegistrationEntity[];
-
-  // Getters
   @ApiProperty({ type: [DurationLesson] })
   @Expose()
-  private durationLessons(): DurationLesson[] {
-    return this.durationLessonList.map(lesson => {
-      return {
-        id: lesson.id,
-        name: lesson.name,
-        schedules: lesson.durationSchedules.map(schedule => {
-          const startDate =
-            `${schedule.startDate.getFullYear()}.` +
-            `${schedule.startDate.getMonth() + 1}.` +
-            `${schedule.startDate.getDate()}`;
-          const endDate =
-            `${schedule.endDate.getFullYear()}.` +
-            `${schedule.endDate.getMonth() + 1}.` +
-            `${schedule.endDate.getDate()}`;
-
-          const startTime = schedule.startTime.slice(0, 5);
-          const endTime = schedule.endTime.slice(0, 5);
-          return {
-            id: schedule.id,
-            scheduleDuration: startDate + ' ~ ' + endDate,
-            scheduleTime: startTime + ' - ' + endTime,
-            repeatDate: schedule.repeatDate,
-          };
-        }),
-      };
-    });
-  }
+  durationLessons: DurationLesson[];
 
   @ApiProperty({ type: [SessionLesson] })
   @Expose()
-  private sessionLessons(): SessionLesson[] {
-    return this.sessionLessonList.map(lesson => {
-      return {
-        id: lesson.sessionLesson.id,
-        name: lesson.sessionLesson.name,
-        sessionCount: lesson.sessionSchedules.length,
-        totalSessions: lesson.sessionLesson.totalSessions,
-      };
-    });
-  }
+  sessionLessons: SessionLesson[];
 
   constructor(student: StudentEntity) {
     if (!student) return null;
@@ -81,7 +38,29 @@ export class ResponseStudentDetailDTO {
     this.name = student.name;
     this.phone = student.phone;
     this.particulars = student.particulars;
-    this.durationLessonList = student.durationRegistrations.map(lesson => lesson.durationLesson);
-    this.sessionLessonList = student.sessionRegistrations;
+    this.durationLessons = student.durationRegistrations.map(registration => {
+      return {
+        id: registration.durationLesson.id,
+        name: registration.durationLesson.name,
+        schedules: registration.durationLesson.durationSchedules.map(schedule => {
+          return {
+            id: schedule.id,
+            startDate: schedule.startDate,
+            endDate: schedule.endDate,
+            startTime: schedule.startTime,
+            endTime: schedule.endTime,
+            repeatDate: schedule.repeatDate,
+          };
+        }),
+      };
+    });
+    this.sessionLessons = student.sessionRegistrations.map(registration => {
+      return {
+        id: registration.sessionLesson.id,
+        name: registration.sessionLesson.name,
+        totalSessions: registration.sessionLesson.totalSessions,
+        sessionCount: registration.sessionSchedules.length,
+      };
+    });
   }
 }

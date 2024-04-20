@@ -8,8 +8,8 @@ export class SessionLesson {
   name: string;
 
   @ApiProperty()
-  sessionCount: number;
+  totalSessions: number;
 
   @ApiProperty()
-  totalSessions: number;
+  sessionCount: number;
 }

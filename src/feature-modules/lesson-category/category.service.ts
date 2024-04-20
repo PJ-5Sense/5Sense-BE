@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from './entity/category.entity';
 import { Repository } from 'typeorm';
-import { CategoryType } from './type/category.type';
+import { MainCategoryType, SubCategoryType } from './type/category.type';
 
 @Injectable()
 export class LessonCategoryService {
@@ -28,8 +28,8 @@ export class LessonCategoryService {
 
     const categories = [...new Set([...durationCategories, ...sessionCategories])];
 
-    const mainCategory: CategoryType[] = [];
-    const subCategory: CategoryType[] = [];
+    const mainCategory: MainCategoryType[] = [];
+    const subCategory: SubCategoryType[] = [];
 
     categories.forEach(category => {
       if (category.parentId && category.parentName) {
