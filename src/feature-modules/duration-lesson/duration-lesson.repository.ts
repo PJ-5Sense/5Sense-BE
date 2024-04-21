@@ -45,6 +45,10 @@ export class DurationLessonRepository {
     }
   }
 
+  async findMany(centerId: number) {
+    return await this.durationLessonDAO.find({ where: { centerId }, select: ['id', 'name'] });
+  }
+
   async getOne(id: number, centerId: number) {
     const lesson = await this.durationLessonDAO
       .createQueryBuilder('L')

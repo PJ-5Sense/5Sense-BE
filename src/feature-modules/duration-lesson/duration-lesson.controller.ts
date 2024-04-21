@@ -6,6 +6,7 @@ import { ApiTags } from '@nestjs/swagger';
 import {
   SwaggerCloseLesson,
   SwaggerCreateLesson,
+  SwaggerFindManyLesson,
   SwaggerLessonDetail,
   SwaggerUpdateLesson,
 } from '../../swagger/duration-lesson.swagger';
@@ -16,7 +17,7 @@ import { UpdateDurationLessonDTO } from './dto/request/update-duration-lesson-dt
 export class DurationLessonController {
   constructor(private readonly durationLessonService: DurationLessonService) {}
   @SwaggerCreateLesson()
-  @Post('duration')
+  @Post('')
   async createDurationLesson(
     @Body() durationLessonDTO: CreateDurationLessonDTO,
     @CurrentUser('centerId') centerId: number,
@@ -29,9 +30,19 @@ export class DurationLessonController {
     };
   }
 
+  @SwaggerFindManyLesson()
+  @Get()
+  async findManyLesson(@CurrentUser('centerId') centerId: number) {
+    return {
+      success: true,
+      message: `Successfully retrieved the list of duration lesson information`,
+      data: await this.durationLessonService.findMany(centerId),
+    };
+  }
+
   @SwaggerLessonDetail()
   @Get(':lessonId/details')
-  async findLessonDetails(@CurrentUser('centerId') centerId: number, @Param('lessonId') lessonId: number) {
+  async getLessonDetails(@CurrentUser('centerId') centerId: number, @Param('lessonId') lessonId: number) {
     return {
       success: true,
       message: `Successfully retrieved the details of the duration lesson information`,
