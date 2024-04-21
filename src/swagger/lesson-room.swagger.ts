@@ -1,5 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ResponseRoomScheduleDTO } from 'src/feature-modules/lesson-room/dto/response/room-schedule.dto';
 
 export function SwaggerCreateLessonRoom() {
   return applyDecorators(
@@ -31,5 +32,16 @@ export function SwaggerDeleteLessonRoom() {
     }),
     ApiBearerAuth('AccessToken'),
     ApiOkResponse({ status: 200 }),
+  );
+}
+
+export function SwaggerGetDailyLessonRoomSchedule() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '룸 예약 정보 가져오기 (daily)',
+      description: `<h2>룸 예약 하루 기준 정보 가져오기</h2>`,
+    }),
+    ApiBearerAuth('AccessToken'),
+    ApiOkResponse({ status: 200, type: ResponseRoomScheduleDTO, isArray: true }),
   );
 }

@@ -109,7 +109,7 @@ export default class LessonSeed1702051029391 implements Seeder {
 
           await sessionScheduleFactory.save({
             sessionRegistration: savedRegistration,
-            startDate: startDate,
+            sessionDate: startDate,
             startTime: startTime,
             endTime: endTime,
             studentId: studentIds[faker.number.int({ min: 4, max: 28 }) % studentIds.length],

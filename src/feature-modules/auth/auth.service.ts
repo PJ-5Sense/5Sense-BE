@@ -105,6 +105,8 @@ export class AuthService {
     const refreshToken = await this.generateRefreshToken({
       userId: Number(newUser.id),
       centerId: null,
+      open: '',
+      close: '',
     });
 
     await this.authRepository.createOrUpdate({
@@ -116,6 +118,8 @@ export class AuthService {
     const accessToken = await this.generateAccessToken({
       userId: Number(newUser.id),
       centerId: null,
+      open: '',
+      close: '',
     });
 
     return {
@@ -137,11 +141,15 @@ export class AuthService {
    */
   private async processExistingUserAndGenerateTokens(user: UserEntity, userAgent: string) {
     const centerId = user.centers[0]?.id ?? null;
+    const open = user.centers[0]?.open ?? '';
+    const close = user.centers[0]?.close ?? '';
     const authInfo = await this.authRepository.findOneByUserAgent(user.id, userAgent);
 
     const refreshToken = await this.generateRefreshToken({
       userId: user.id,
       centerId,
+      open,
+      close,
     });
 
     const social: CreateAuthDto = {
@@ -159,6 +167,8 @@ export class AuthService {
     const accessToken = await this.generateAccessToken({
       userId: user.id,
       centerId,
+      open,
+      close,
     });
 
     return {
@@ -178,9 +188,13 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Refresh Token, you need to check');
     }
 
+    const center = (await this.userService.findOneById(userSocialData.userId)).centers[0];
+
     const accessToken = await this.generateAccessToken({
       userId: userSocialData.userId,
-      centerId: (await this.userService.findOneById(userSocialData.userId)).centers[0]?.id ?? null,
+      centerId: center.id ?? null,
+      open: center.open ?? '',
+      close: center.close ?? '',
     });
 
     return new ResponseReissueDTO({
