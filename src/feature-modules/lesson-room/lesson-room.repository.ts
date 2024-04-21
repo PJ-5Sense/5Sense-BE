@@ -27,19 +27,29 @@ export class LessonRoomRepository {
   }
 
   async getMany(startDate: Date, endDate: Date, centerId: number) {
-    startDate = new Date(startDate.setHours(0, 0, 0));
-    endDate = new Date(endDate.setHours(23, 59, 59));
+    startDate = new Date(startDate.setHours(0, 0, 0, 0));
+    endDate = new Date(endDate.setHours(23, 59, 59, 999));
 
     return await this.lessonRoomDAO
       .createQueryBuilder('room')
       .select(['room.id', 'room.name', 'room.capacity'])
-      .leftJoin('room.durationSchedules', 'durationSchedules')
+      .leftJoin(
+        'room.durationSchedules',
+        'durationSchedules',
+        'durationSchedules.startDate <= :endDate AND durationSchedules.endDate >= :startDate',
+        { startDate, endDate },
+      )
       .addSelect(['durationSchedules.id', 'durationSchedules.startTime', 'durationSchedules.lessonTime'])
       .leftJoin('durationSchedules.durationLesson', 'durationLesson')
       .addSelect(['durationLesson.id', 'durationLesson.name'])
       .leftJoin('durationLesson.teacher', 'durationLessonTeacher')
       .addSelect(['durationLessonTeacher.id', 'durationLessonTeacher.name'])
-      .leftJoin('room.sessionSchedules', 'sessionSchedules')
+      .leftJoin(
+        'room.sessionSchedules',
+        'sessionSchedules',
+        'sessionSchedules.sessionDate >= :startDate AND sessionSchedules.sessionDate <= :endDate',
+        { startDate, endDate },
+      )
       .addSelect(['sessionSchedules.id', 'sessionSchedules.startTime'])
       .leftJoin('sessionSchedules.sessionRegistration', 'sessionRegistration')
       .addSelect(['sessionRegistration.id'])
@@ -50,11 +60,10 @@ export class LessonRoomRepository {
       .leftJoin('sessionLesson.teacher', 'sessionLessonTeacher')
       .addSelect(['sessionLessonTeacher.id', 'sessionLessonTeacher.name'])
       .where('room.centerId = :centerId', { centerId })
-      .andWhere('sessionSchedules.sessionDate >= :startDate', { startDate })
-      .andWhere('sessionSchedules.sessionDate <= :endDate', { endDate })
-      .andWhere('durationSchedules.startDate <= :startDate', { startDate })
-      .andWhere('durationSchedules.endDate >= :endDate', { endDate })
-      .orderBy({ 'durationSchedules.startTime': 'ASC', 'sessionSchedules.startTime': 'ASC' })
+      .orderBy({
+        'durationSchedules.startTime': 'ASC',
+        'sessionSchedules.startTime': 'ASC',
+      })
       .getMany();
   }
 }

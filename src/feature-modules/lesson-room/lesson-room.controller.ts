@@ -79,6 +79,10 @@ export class LessonRoomController {
   @Get('daily')
   // TODO : 학원의 장사 시간을 반영해야함
   async getDailySchedules(@Query() getDailySchedulesDTO: GetDailySchedulesDTO, @CurrentUser() jwtPayload: JwtPayload) {
-    return await this.lessonRoomService.getSchedulesDaily(getDailySchedulesDTO, jwtPayload);
+    return {
+      success: true,
+      message: 'Successfully getting daily schedules',
+      data: await this.lessonRoomService.getSchedulesDaily(getDailySchedulesDTO, jwtPayload),
+    };
   }
 }

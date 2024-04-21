@@ -61,7 +61,8 @@ export class LessonRoomService {
       for (let hour = startTimeParts[0]; hour < endTimeParts[0]; hour++) {
         for (let minutes = 0; minutes < 60; minutes += 30) {
           const timeString = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-          rooms[i].workTime[timeString] = {} as any;
+          // 빈 경우 예약 가능 상태만 할당
+          rooms[i].workTime[timeString] = { isOpenForBooking: true } as any;
         }
       }
 
