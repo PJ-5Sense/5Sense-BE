@@ -4,6 +4,7 @@ import { CreateDurationLessonDTO } from './dto/request/create-duration-lesson.dt
 import { LessonCategoryService } from '../lesson-category/category.service';
 import { UpdateDurationLessonDTO } from './dto/request/update-duration-lesson-dto';
 import { ResponseGetDetailDurationLessonDTO } from './dto/response/get-detail-lesson.dto';
+import { FindManyLessonDTO } from './dto/response/find-many-lesson.dto';
 
 @Injectable()
 export class DurationLessonService {
@@ -33,7 +34,8 @@ export class DurationLessonService {
   }
 
   async findMany(centerId: number) {
-    return await this.durationLessonRepository.findMany(centerId);
+    const lessons = await this.durationLessonRepository.findMany(centerId);
+    return lessons.map(lesson => new FindManyLessonDTO(lesson));
   }
 
   async getOne(id: number, centerId: number) {
