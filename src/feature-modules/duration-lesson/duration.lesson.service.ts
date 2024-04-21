@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { DurationLessonRepository } from './duration-lesson.repository';
 import { CreateDurationLessonDTO } from './dto/request/create-duration-lesson.dto';
 import { LessonCategoryService } from '../lesson-category/category.service';
-import { LessonType } from '../combined-lesson/type/lesson.type';
 import { UpdateDurationLessonDTO } from './dto/request/update-duration-lesson-dto';
 import { ResponseGetDetailDurationLessonDTO } from './dto/response/get-detail-lesson.dto';
 
@@ -31,6 +30,10 @@ export class DurationLessonService {
         schedules,
       );
     }
+  }
+
+  async findMany(centerId: number) {
+    return await this.durationLessonRepository.findMany(centerId);
   }
 
   async getOne(id: number, centerId: number) {

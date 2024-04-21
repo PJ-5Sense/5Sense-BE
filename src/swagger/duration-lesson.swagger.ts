@@ -1,5 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { FindManyLessonDTO } from 'src/feature-modules/duration-lesson/dto/response/find-many-lesson.dto';
 import { ResponseGetDetailDurationLessonDTO } from 'src/feature-modules/duration-lesson/dto/response/get-detail-lesson.dto';
 
 export function SwaggerCreateLesson() {
@@ -10,6 +11,16 @@ export function SwaggerCreateLesson() {
     }),
     ApiBearerAuth('AccessToken'),
     ApiOkResponse({ status: 201 }),
+  );
+}
+export function SwaggerFindManyLesson() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '클래스 목록 가져오기',
+      description: `<h2>학생이 클래스 추가할 때 사용되는 목록 가져오기</h2>`,
+    }),
+    ApiBearerAuth('AccessToken'),
+    ApiOkResponse({ status: 201, type: FindManyLessonDTO, isArray: true }),
   );
 }
 
