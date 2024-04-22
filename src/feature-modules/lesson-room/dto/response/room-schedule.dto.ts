@@ -40,30 +40,30 @@ export class ResponseRoomScheduleDTO {
 
   @Type(() => TimeSlot)
   @ApiProperty({
-    example: [
-      {
-        '13:00': {
-          id: 1,
-          type: 'duration',
-          name: '꽁꽁 얼어붙은 한강위로 고양이가 날라다닙니다.',
-          lessonTime: 60,
-          teacher: '우도욱',
-          isOpenForBooking: false,
-        },
+    example: {
+      '13:00': {
+        id: 1,
+        type: 'duration',
+        name: '꽁꽁 얼어붙은 한강위로 고양이가 날라다닙니다.',
+        lessonTime: 60,
+        teacher: '우도욱',
+        isOpenForBooking: false,
       },
-      {
-        '14:00': {
-          id: 2,
-          type: 'session',
-          name: '꽁꽁 얼어붙은 한강위로 고양이가 날라다닙니다.',
-          lessonTime: 60,
-          teacher: '우도욱',
-          capacity: 5,
-          studentCount: 3,
-          isOpenForBooking: true,
-        },
+      '14:00': {
+        id: 2,
+        type: 'session',
+        name: '꽁꽁 얼어붙은 한강위로 고양이가 날라다닙니다.',
+        lessonTime: 60,
+        teacher: '우도욱',
+        capacity: 5,
+        studentCount: 3,
+        isOpenForBooking: true,
       },
-    ],
+      '15:00': {
+        isOpenForBooking: true,
+      },
+    },
+
     description: '클래스 정보',
   })
   workTime: Record<string, TimeSlot>;

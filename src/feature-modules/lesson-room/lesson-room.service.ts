@@ -43,7 +43,6 @@ export class LessonRoomService {
       new Date(getDailySchedulesDTO.date),
       jwtPayload.centerId,
     );
-
     const startTimeParts = jwtPayload.open.split(':').map(Number);
     const endTimeParts = jwtPayload.close.split(':').map(Number);
     const rooms: ResponseRoomScheduleDTO[] = [];
@@ -62,7 +61,14 @@ export class LessonRoomService {
         for (let minutes = 0; minutes < 60; minutes += 30) {
           const timeString = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
           // 빈 경우 예약 가능 상태만 할당
-          rooms[i].workTime[timeString] = { isOpenForBooking: true } as any;
+          rooms[i].workTime[timeString] = {
+            id: null,
+            type: null,
+            name: null,
+            lessonTime: null,
+            teacher: null,
+            isOpenForBooking: true,
+          };
         }
       }
 
@@ -71,7 +77,7 @@ export class LessonRoomService {
         const timeString = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 
         // 해당 시간의 정보가 초기화 되어 있지 않다면 초기화 시작
-        if (rooms[i].workTime[timeString]?.id === undefined) {
+        if (!rooms[i].workTime[timeString].id) {
           rooms[i].workTime[timeString] = {
             id: schedules.durationLesson.id,
             type: LessonType.DURATION,
@@ -88,7 +94,7 @@ export class LessonRoomService {
         const timeString = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 
         // 해당 시간의 정보가 초기화 되어 있지 않다면 초기화 시작
-        if (rooms[i].workTime[timeString]?.id === undefined) {
+        if (!rooms[i].workTime[timeString].id) {
           const studentCount = schedules.sessionRegistration.sessionLesson.sessionRegistrations.length;
           const capacity = schedules.sessionRegistration.sessionLesson.capacity;
           const isOpenForBooking = studentCount < capacity;
@@ -105,7 +111,6 @@ export class LessonRoomService {
           };
         }
       }
-
       return rooms;
     }
   }

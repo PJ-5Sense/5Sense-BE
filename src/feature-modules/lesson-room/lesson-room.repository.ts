@@ -60,10 +60,7 @@ export class LessonRoomRepository {
       .leftJoin('sessionLesson.teacher', 'sessionLessonTeacher')
       .addSelect(['sessionLessonTeacher.id', 'sessionLessonTeacher.name'])
       .where('room.centerId = :centerId', { centerId })
-      .orderBy({
-        'durationSchedules.startTime': 'ASC',
-        'sessionSchedules.startTime': 'ASC',
-      })
+      .orderBy({ 'durationSchedules.startTime': 'ASC', 'sessionSchedules.startTime': 'ASC' })
       .getMany();
   }
 }
