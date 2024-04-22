@@ -2,10 +2,15 @@ import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { SessionLessonService } from './session.lesson.service';
 import { CurrentUser } from '../../common/decorator/user.decorator';
 import { ApiTags } from '@nestjs/swagger';
-import { SwaggerCreateSessionLesson, SwaggerSessionLessonDetail } from '../../swagger/session-lesson.swagger';
 import { UpdateSessionLessonDTO } from './dto/request/update-session-lesson.dto';
 import { CreateSessionLessonDTO } from './dto/request/create-session-lesson.dto';
-import { SwaggerCloseLesson, SwaggerUpdateLesson } from 'src/swagger/duration-lesson.swagger';
+import {
+  SwaggerCloseSessionLesson,
+  SwaggerCreateSessionLesson,
+  SwaggerFindManySessionLesson,
+  SwaggerSessionLessonDetail,
+  SwaggerUpdateSessionLesson,
+} from 'src/swagger/session-lesson.swagger';
 
 @ApiTags('Session Lesson - 회차반')
 @Controller('session-lessons')
@@ -23,6 +28,16 @@ export class SessionLessonController {
     };
   }
 
+  @SwaggerFindManySessionLesson()
+  @Get()
+  async findManyLesson(@CurrentUser('centerId') centerId: number) {
+    return {
+      success: true,
+      message: `Successfully retrieved the session lesson list`,
+      data: await this.sessionLessonService.findMany(centerId),
+    };
+  }
+
   @SwaggerSessionLessonDetail()
   @Get(':lessonId/details')
   async getOne(@CurrentUser('centerId') centerId: number, @Param('lessonId') lessonId: number) {
@@ -33,7 +48,7 @@ export class SessionLessonController {
     };
   }
 
-  @SwaggerUpdateLesson()
+  @SwaggerUpdateSessionLesson()
   @Put('/:lessonId')
   async updateLesson(
     @Param('lessonId') lessonId: number,
@@ -48,7 +63,7 @@ export class SessionLessonController {
     };
   }
 
-  @SwaggerCloseLesson()
+  @SwaggerCloseSessionLesson()
   @Patch('/:lessonId/close')
   async closeLesson(@Param('lessonId') lessonId: number, @CurrentUser('centerId') centerId: number) {
     await this.sessionLessonService.closeLesson(lessonId, centerId);

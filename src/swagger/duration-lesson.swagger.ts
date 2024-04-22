@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { FindManyLessonDTO } from 'src/feature-modules/duration-lesson/dto/response/find-many-lesson.dto';
 import { ResponseGetDetailDurationLessonDTO } from 'src/feature-modules/duration-lesson/dto/response/get-detail-lesson.dto';
 
-export function SwaggerCreateLesson() {
+export function SwaggerCreateDurationLesson() {
   return applyDecorators(
     ApiOperation({
       summary: '클래스 등록',
@@ -13,7 +13,7 @@ export function SwaggerCreateLesson() {
     ApiOkResponse({ status: 201 }),
   );
 }
-export function SwaggerFindManyLesson() {
+export function SwaggerFindManyDurationLesson() {
   return applyDecorators(
     ApiOperation({
       summary: '클래스 목록 가져오기',
@@ -24,7 +24,7 @@ export function SwaggerFindManyLesson() {
   );
 }
 
-export function SwaggerLessonDetail() {
+export function SwaggerDurationLessonDetail() {
   return applyDecorators(
     ApiOperation({
       summary: '클래스 상세 정보',
@@ -35,7 +35,7 @@ export function SwaggerLessonDetail() {
   );
 }
 
-export function SwaggerUpdateLesson() {
+export function SwaggerUpdateDurationLesson() {
   return applyDecorators(
     ApiOperation({
       summary: '클래스 정보 업데이트',
@@ -46,7 +46,7 @@ export function SwaggerUpdateLesson() {
   );
 }
 
-export function SwaggerCloseLesson() {
+export function SwaggerCloseDurationLesson() {
   return applyDecorators(
     ApiOperation({
       summary: '클래스 정보 업데이트',
