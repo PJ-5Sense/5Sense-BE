@@ -4,11 +4,11 @@ import { CurrentUser } from '../../common/decorator/user.decorator';
 import { DurationLessonService } from './duration.lesson.service';
 import { ApiTags } from '@nestjs/swagger';
 import {
-  SwaggerCloseLesson,
-  SwaggerCreateLesson,
-  SwaggerFindManyLesson,
-  SwaggerLessonDetail,
-  SwaggerUpdateLesson,
+  SwaggerCloseDurationLesson,
+  SwaggerCreateDurationLesson,
+  SwaggerFindManyDurationLesson,
+  SwaggerDurationLessonDetail,
+  SwaggerUpdateDurationLesson,
 } from '../../swagger/duration-lesson.swagger';
 import { UpdateDurationLessonDTO } from './dto/request/update-duration-lesson-dto';
 
@@ -16,7 +16,7 @@ import { UpdateDurationLessonDTO } from './dto/request/update-duration-lesson-dt
 @Controller('duration-lessons')
 export class DurationLessonController {
   constructor(private readonly durationLessonService: DurationLessonService) {}
-  @SwaggerCreateLesson()
+  @SwaggerCreateDurationLesson()
   @Post('')
   async createDurationLesson(
     @Body() durationLessonDTO: CreateDurationLessonDTO,
@@ -30,7 +30,7 @@ export class DurationLessonController {
     };
   }
 
-  @SwaggerFindManyLesson()
+  @SwaggerFindManyDurationLesson()
   @Get()
   async findManyLesson(@CurrentUser('centerId') centerId: number) {
     return {
@@ -40,7 +40,7 @@ export class DurationLessonController {
     };
   }
 
-  @SwaggerLessonDetail()
+  @SwaggerDurationLessonDetail()
   @Get(':lessonId/details')
   async getLessonDetails(@CurrentUser('centerId') centerId: number, @Param('lessonId') lessonId: number) {
     return {
@@ -50,7 +50,7 @@ export class DurationLessonController {
     };
   }
 
-  @SwaggerUpdateLesson()
+  @SwaggerUpdateDurationLesson()
   @Put('/:lessonId')
   async updateLesson(
     @Param('lessonId') lessonId: number,
@@ -65,7 +65,7 @@ export class DurationLessonController {
     };
   }
 
-  @SwaggerCloseLesson()
+  @SwaggerCloseDurationLesson()
   @Patch('/:lessonId/close')
   async closeLesson(@Param('lessonId') lessonId: number, @CurrentUser('centerId') centerId: number) {
     await this.durationLessonService.closeLesson(lessonId, centerId);

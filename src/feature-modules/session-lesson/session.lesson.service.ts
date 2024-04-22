@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { SessionLessonRepository } from './session-lesson.repository';
 import { LessonCategoryService } from '../lesson-category/category.service';
-import { LessonType } from '../combined-lesson/type/lesson.type';
 import { UpdateSessionLessonDTO } from './dto/request/update-session-lesson.dto';
 import { CreateSessionLessonDTO } from './dto/request/create-session-lesson.dto';
 import { ResponseGetDetailSessionLessonDTO } from './dto/response/get-detail-lesson.dto';
+import { ResponseFindManySessionLessonDTO } from './dto/response/find-many-lesson.dto';
 
 @Injectable()
 export class SessionLessonService {
@@ -20,6 +20,11 @@ export class SessionLessonService {
       );
       return await this.sessionLessonRepository.create(sessionLessonDTO, centerId);
     }
+  }
+
+  async findMany(centerId: number) {
+    const lessons = await this.sessionLessonRepository.findMany(centerId);
+    return lessons.map(lesson => new ResponseFindManySessionLessonDTO(lesson));
   }
 
   async getOne(id: number, centerId: number) {
