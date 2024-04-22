@@ -111,7 +111,7 @@ export class LessonRoomService {
           };
         }
       }
-      return rooms;
     }
+    return rooms.reverse();
   }
 }
