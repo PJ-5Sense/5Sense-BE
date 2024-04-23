@@ -5,7 +5,7 @@ import { LessonType } from '../combined-lesson/type/lesson.type';
 import { LessonRoomRepository } from './lesson-room.repository';
 import { GetDailySchedulesDTO } from './dto/request/get-daily-schedules.dto';
 import { JwtPayload } from '../auth/type/jwt-payload.type';
-import { ResponseRoomScheduleDTO, TimeSlot } from './dto/response/room-schedule.dto';
+import { ResponseRoomScheduleDTO } from './dto/response/room-schedule.dto';
 
 @Injectable()
 export class LessonRoomService {
@@ -112,6 +112,6 @@ export class LessonRoomService {
         }
       }
     }
-    return rooms.reverse();
+    return rooms;
   }
 }
