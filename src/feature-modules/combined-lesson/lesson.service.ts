@@ -4,10 +4,11 @@ import { LessonType } from './type/lesson.type';
 import { LessonRepository } from './lesson.repository';
 import { ResponseFilteredLessonDTO } from './dto/response/filtered-lesson.dto';
 import { PaginatedResponseFilteredLessonDTO } from 'src/feature-modules/combined-lesson/dto/response/pagination-response.dto';
+import { DateHelper } from 'src/common/helper/date.helper';
 // TODO : 트랜잭션 사용하는 방법 정의하기 - 단순 사용이 아닌 중복된 코드들을 개선하기 위한 작업이 필요함
 @Injectable()
 export class LessonService {
-  constructor(private readonly lessonRepository: LessonRepository) {}
+  constructor(private readonly lessonRepository: LessonRepository, private readonly dateHelper: DateHelper) {}
 
   async getLessonsByDate(findManyByDateDTO: FindManyByDateDTO, centerId: number) {
     const startDate = new Date(findManyByDateDTO.year, findManyByDateDTO.month - 1, 1);
@@ -18,7 +19,7 @@ export class LessonService {
       .fill(null)
       .map(() => []);
     const weeks = ['일', '월', '화', '수', '목', '금', '토'];
-    const firstWeekDayDates = this.getDatesOfFirstWeekByDay(findManyByDateDTO.year, findManyByDateDTO.month);
+    const firstWeekDayDates = this.dateHelper.getDatesOfFirstWeekByDay(findManyByDateDTO.year, findManyByDateDTO.month);
     const [durationLessons, sessionLessons] = await this.lessonRepository.findManyLessonByDate(
       startDate,
       endDate,
@@ -44,7 +45,7 @@ export class LessonService {
 
         for (const day of schedule.repeatDate.split(',')) {
           const index = weeks.indexOf(day);
-          let startDayDate = this.getStartDayDate(firstWeekDayDates[index], startDay);
+          let startDayDate = this.dateHelper.getStartDayDate(firstWeekDayDates[index], startDay);
 
           while (startDayDate < lastDayOfMonth) {
             monthArray[startDayDate].push(lessonData);
@@ -89,36 +90,5 @@ export class LessonService {
       findManyLessonDTO.getTake(),
       findManyLessonDTO.hasNextPage(total),
     );
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////////
-  ////                                Private Section                             ////
-  ////////////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * 요일 별 첫 주 날짜 가져오기 함수
-   *
-   * @param {number} year 2024
-   * @param {number} month 2
-   * @returns {number[]} [4, 5, 6, 7, 1, 2, 3] = [일, 월, 화, 수, 목, 금, 토]
-   */
-  private getDatesOfFirstWeekByDay(year: number, month: number) {
-    const result = new Array(7).fill(null); // 일주일 배열 생성
-    const firstDayOfMonth = new Date(year, month - 1, 1).getDay(); // 1일의 요일을 가져오기
-
-    for (let i = 0; i < 7; i++) {
-      result[(firstDayOfMonth + i) % 7] = i + 1; // 해당 요일에 날짜를 할당
-    }
-
-    return result;
-  }
-
-  private getStartDayDate(firstDayDateOfMonth: number, startDayDate: number) {
-    while (firstDayDateOfMonth < startDayDate) {
-      firstDayDateOfMonth += 7;
-    }
-
-    // 배열 0번째는 1일을 의미하여 첫 시작날에 -1을 계산해서 리턴하도록 함
-    return firstDayDateOfMonth - 1;
   }
 }

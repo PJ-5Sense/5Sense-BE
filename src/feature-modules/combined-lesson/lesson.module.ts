@@ -7,6 +7,7 @@ import { LessonCategoryModule } from 'src/feature-modules/lesson-category/catego
 import { LessonRepository } from './lesson.repository';
 import { LessonViewEntity } from './entity/lesson-view.entity';
 import { DurationLessonEntity } from '../duration-lesson/duration-lesson.entity';
+import { DateHelper } from 'src/common/helper/date.helper';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { DurationLessonEntity } from '../duration-lesson/duration-lesson.entity'
     LessonCategoryModule,
   ],
   controllers: [LessonController],
-  providers: [LessonService, LessonRepository],
+  providers: [LessonService, LessonRepository, DateHelper],
 })
 export class LessonModule {}

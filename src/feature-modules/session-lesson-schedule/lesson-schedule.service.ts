@@ -2,12 +2,14 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { SessionScheduleRepository } from './session-schedule.repository';
 import { CreateSessionScheduleDTO } from './dto/request/create-session-schedule.dto';
 import { SessionLessonRegistrationService } from '../session-lesson-registration/session-registration.service';
+import { DateHelper } from 'src/common/helper/date.helper';
 
 @Injectable()
 export class SessionLessonScheduleService {
   constructor(
     private readonly sessionScheduleRepository: SessionScheduleRepository,
     private readonly sessionLessonRegistrationService: SessionLessonRegistrationService,
+    private readonly dateHelper: DateHelper,
   ) {}
 
   async create(createSessionScheduleDTO: CreateSessionScheduleDTO) {
@@ -23,7 +25,7 @@ export class SessionLessonScheduleService {
       throw new NotFoundException('해당 학생/클래스 등록 정보가 없습니다.');
     } else {
       studentRegistration.sessionSchedules.map(schedule => {
-        if (this.isSameDay(schedule.sessionDate, new Date(registrationData.sessionDate))) {
+        if (this.dateHelper.isSameDay(schedule.sessionDate, new Date(registrationData.sessionDate))) {
           if (schedule.startTime.slice(0, 5) === createSessionScheduleDTO.startTime) {
             throw new ConflictException(`이미 해당 시간에 예약이 되어있습니다`);
           }
@@ -35,19 +37,5 @@ export class SessionLessonScheduleService {
       ...registrationData,
       sessionRegistrationId: studentRegistration.id,
     });
-  }
-
-  /**
-   * 두 날짜가 같은 '날'인지 확인합니다.
-   * @param date1 ISO 문자열
-   * @param date2 ISO 문자열
-   * @returns boolean 같은 날이면 true, 다르면 false
-   */
-  isSameDay(date1: Date, date2: Date): boolean {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
   }
 }

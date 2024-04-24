@@ -7,10 +7,11 @@ import { GetDailySchedulesDTO } from './dto/request/get-daily-schedules.dto';
 import { JwtPayload } from '../auth/type/jwt-payload.type';
 import { ResponseRoomScheduleDTO } from './dto/response/room-schedule.dto';
 import { GetRangeSchedulesDTO } from './dto/request/get-range-schedule.dto';
+import { DateHelper } from 'src/common/helper/date.helper';
 
 @Injectable()
 export class LessonRoomService {
-  constructor(private readonly lessonRoomRepository: LessonRoomRepository) {}
+  constructor(private readonly lessonRoomRepository: LessonRoomRepository, private readonly dateHelper: DateHelper) {}
   async addDefaultRoomForNewCenter(centerId: number) {
     return await this.lessonRoomRepository.addDefaultRoomForNewCenter(centerId);
   }
@@ -47,6 +48,7 @@ export class LessonRoomService {
     const startTimeParts = jwtPayload.open.split(':').map(Number);
     const endTimeParts = jwtPayload.close.split(':').map(Number);
     const rooms: ResponseRoomScheduleDTO[] = [];
+    const targetDay = this.dateHelper.extractDayName(new Date(getDailySchedulesDTO.date));
 
     // 각 룸 정보 초기화
     for (let i = 0; i < schedulesOfRooms.length; i++) {
@@ -72,22 +74,22 @@ export class LessonRoomService {
           };
         }
       }
-
-      // 요일 정보 파악해야함
       for (const schedules of schedulesOfRooms[i].durationSchedules) {
-        const [hour, minutes] = schedules.startTime.split(':').map(Number);
-        const timeString = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        if (schedules.repeatDate.includes(targetDay)) {
+          const [hour, minutes] = schedules.startTime.split(':').map(Number);
+          const timeString = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 
-        // 해당 시간의 정보가 초기화 되어 있지 않다면 초기화 시작
-        if (!rooms[i].workTime[timeString].id) {
-          rooms[i].workTime[timeString] = {
-            id: schedules.durationLesson.id,
-            type: LessonType.DURATION,
-            name: schedules.durationLesson.name,
-            lessonTime: schedules.lessonTime,
-            teacher: schedules.durationLesson.teacher.name,
-            isOpenForBooking: false,
-          };
+          // 해당 시간의 정보가 초기화 되어 있지 않다면 초기화 시작
+          if (rooms[i].workTime[timeString] !== undefined && !rooms[i].workTime[timeString].id) {
+            rooms[i].workTime[timeString] = {
+              id: schedules.durationLesson.id,
+              type: LessonType.DURATION,
+              name: schedules.durationLesson.name,
+              lessonTime: schedules.lessonTime,
+              teacher: schedules.durationLesson.teacher.name,
+              isOpenForBooking: false,
+            };
+          }
         }
       }
 
@@ -96,7 +98,7 @@ export class LessonRoomService {
         const timeString = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 
         // 해당 시간의 정보가 초기화 되어 있지 않다면 초기화 시작
-        if (!rooms[i].workTime[timeString].id) {
+        if (rooms[i].workTime[timeString] !== undefined && !rooms[i].workTime[timeString].id) {
           const studentCount = schedules.sessionRegistration.sessionLesson.sessionRegistrations.length;
           const capacity = schedules.sessionRegistration.sessionLesson.capacity;
           const isOpenForBooking = studentCount < capacity;
