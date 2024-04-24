@@ -5,7 +5,7 @@ import { DurationLessonController } from './duration-lesson.controller';
 import { DurationLessonService } from './duration.lesson.service';
 import { DurationLessonRepository } from './duration-lesson.repository';
 import { LessonCategoryModule } from '../lesson-category/category.module';
-import { DurationLessonScheduleEntity } from '../lesson-schedule/entity/duration-lesson-schedule.entity';
+import { DurationLessonScheduleEntity } from '../duration-lesson-registration/entity/duration-lesson-schedule.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([DurationLessonEntity, DurationLessonScheduleEntity]), LessonCategoryModule],

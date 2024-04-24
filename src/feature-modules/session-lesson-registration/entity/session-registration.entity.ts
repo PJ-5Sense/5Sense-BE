@@ -1,7 +1,7 @@
 import { StudentEntity } from 'src/feature-modules/student/entity/student.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { SessionLessonEntity } from 'src/feature-modules/session-lesson/session-lesson.entity';
-import { SessionLessonScheduleEntity } from '../../lesson-schedule/entity/session-lesson-schedule.entity';
+import { SessionLessonScheduleEntity } from '../../session-lesson-schedule/entity/session-lesson-schedule.entity';
 
 @Entity({ name: 'session_lesson_registration' })
 export class SessionLessonRegistrationEntity {

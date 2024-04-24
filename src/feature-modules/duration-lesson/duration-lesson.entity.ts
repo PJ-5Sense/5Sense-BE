@@ -11,7 +11,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DurationLessonScheduleEntity } from '../lesson-schedule/entity/duration-lesson-schedule.entity';
+import { DurationLessonScheduleEntity } from '../duration-lesson-registration/entity/duration-lesson-schedule.entity';
 import { DurationLessonRegistrationEntity } from '../duration-lesson-registration/entity/duration-registration.entity';
 
 @Entity({ name: 'duration_lesson' })

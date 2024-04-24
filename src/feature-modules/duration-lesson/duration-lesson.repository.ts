@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DurationLessonEntity } from './duration-lesson.entity';
 import { Repository } from 'typeorm';
-import { DurationLessonScheduleEntity } from '../lesson-schedule/entity/duration-lesson-schedule.entity';
+import { DurationLessonScheduleEntity } from '../duration-lesson-registration/entity/duration-lesson-schedule.entity';
 import { DurationScheduleDTO } from './dto/request/create-duration-lesson.dto';
 import { UpdateDurationScheduleDTO } from './dto/request/update-duration-lesson-dto';
 
