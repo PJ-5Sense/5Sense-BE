@@ -30,7 +30,11 @@ export class SessionLessonRepository {
   }
 
   async findMany(centerId: number) {
-    return await this.sessionLessonDAO.find({ where: { centerId }, select: ['id', 'name', 'lessonTime'] });
+    return await this.sessionLessonDAO.find({
+      where: { centerId, isClosed: false },
+      select: ['id', 'name', 'lessonTime', 'capacity'],
+      relations: { sessionRegistrations: true },
+    });
   }
   async getOne(id: number, centerId: number) {
     const lesson = await this.sessionLessonDAO

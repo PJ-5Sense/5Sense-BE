@@ -23,7 +23,13 @@ export class SessionLessonService {
   }
 
   async findMany(centerId: number) {
-    const lessons = await this.sessionLessonRepository.findMany(centerId);
+    const lessons = (await this.sessionLessonRepository.findMany(centerId)).filter(lesson => {
+      // 학생 등록이 가능한 클래스만 목록에 추가되도록 함
+      return lesson.sessionRegistrations.length < lesson.capacity;
+    });
+
+    console.log(lessons);
+
     return lessons.map(lesson => new ResponseFindManySessionLessonDTO(lesson));
   }
 

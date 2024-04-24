@@ -84,7 +84,7 @@ export default class LessonSeed1702051029391 implements Seeder {
       lesson.memo = faker.word.words({ count: { min: 5, max: 10 } });
       lesson.lessonTime = 60;
       lesson.tuitionFee = Number(faker.finance.accountNumber({ length: 8 }));
-      lesson.capacity = 5;
+      lesson.capacity = 10;
       lesson.totalSessions = 10;
       lesson.centerId = centerId;
       lesson.teacherId = teacherIds[faker.number.int({ min: 4, max: 28 }) % teacherIds.length];
