@@ -1,6 +1,5 @@
 import { StudentEntity } from 'src/feature-modules/student/entity/student.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { PaymentStatus } from 'src/feature-modules/combined-lesson/type/lesson-payment-status.type';
 import { SessionLessonEntity } from 'src/feature-modules/session-lesson/session-lesson.entity';
 import { SessionLessonScheduleEntity } from '../../lesson-schedule/entity/session-lesson-schedule.entity';
 
@@ -8,9 +7,6 @@ import { SessionLessonScheduleEntity } from '../../lesson-schedule/entity/sessio
 export class SessionLessonRegistrationEntity {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
-
-  @Column({ name: 'payment_status', type: 'enum', enum: PaymentStatus, comment: '결제 상태' })
-  paymentStatus: PaymentStatus;
 
   @CreateDateColumn({ name: 'created_date' })
   createdDate: Date;

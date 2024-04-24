@@ -1,15 +1,11 @@
 import { StudentEntity } from 'src/feature-modules/student/entity/student.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { PaymentStatus } from 'src/feature-modules/combined-lesson/type/lesson-payment-status.type';
 import { DurationLessonEntity } from 'src/feature-modules/duration-lesson/duration-lesson.entity';
 
 @Entity({ name: 'duration_lesson_registration' })
 export class DurationLessonRegistrationEntity {
   @PrimaryGeneratedColumn({ type: 'int', unsigned: true })
   id: number;
-
-  @Column({ name: 'payment_status', type: 'enum', enum: PaymentStatus, comment: '결제 상태' })
-  paymentStatus: PaymentStatus;
 
   @CreateDateColumn({ name: 'created_date' })
   createdDate: Date;

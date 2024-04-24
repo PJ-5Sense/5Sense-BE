@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { BillingPaymentDTO, SearchPaymentStatus } from './dto/request/billing-payment.dto';
 import { UpdateBuildPaymentDTO } from './dto/request/update-build-payment.dto';
 import { BillingPaymentEntity } from './entity/billing-payment.entity';
+import { PaymentStatus } from '../combined-lesson/type/lesson-payment-status.type';
+import { LessonType } from '../combined-lesson/type/lesson.type';
 
 @Injectable()
 export class BillingPaymentRepository {
@@ -57,5 +59,18 @@ export class BillingPaymentRepository {
 
     return (await this.billingPaymentDAO.update({ id }, { paymentStatus: updateBuildPaymentDTO.paymentStatus }))
       .affected;
+  }
+
+  async create(lessonId: number, studentId: number, centerId: number, paymentStatus: PaymentStatus, type: LessonType) {
+    const durationLessonId = type === LessonType.DURATION ? lessonId : null;
+    const sessionLessonId = type === LessonType.SESSION ? lessonId : null;
+    const billingPayment = this.billingPaymentDAO.create({
+      durationLessonId,
+      sessionLessonId,
+      studentId,
+      centerId,
+      paymentStatus,
+    });
+    return await this.billingPaymentDAO.save(billingPayment);
   }
 }

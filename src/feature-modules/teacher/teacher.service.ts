@@ -20,7 +20,6 @@ export class TeacherService {
 
   async findManyByCenterId(findTeachersDTO: FindTeachersDTO, centerId: number) {
     const [teachers, total] = await this.teacherRepository.findManyByCenterId(findTeachersDTO, centerId);
-    console.log(teachers);
     return {
       teachers: teachers.map(teacher => {
         return new ResponseTeacherDTO(teacher);

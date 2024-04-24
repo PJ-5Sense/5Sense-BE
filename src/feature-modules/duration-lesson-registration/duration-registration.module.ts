@@ -4,9 +4,10 @@ import { DurationLessonRegistrationEntity } from './entity/duration-registration
 import { LessonRegistrationController } from './duration-registration.controller';
 import { DurationLessonRegistrationService } from './duration-registration.service';
 import { DurationLessonRegistrationRepository } from './duration-registration.repository';
+import { BillingPaymentModule } from '../billing-payment/billing-payment.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([DurationLessonRegistrationEntity])],
+  imports: [TypeOrmModule.forFeature([DurationLessonRegistrationEntity]), BillingPaymentModule],
   controllers: [LessonRegistrationController],
   providers: [DurationLessonRegistrationService, DurationLessonRegistrationRepository],
   exports: [],

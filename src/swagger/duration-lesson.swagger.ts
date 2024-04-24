@@ -56,3 +56,14 @@ export function SwaggerCloseDurationLesson() {
     ApiOkResponse({ status: 200 }),
   );
 }
+
+export function SwaggerCreateDurationLessonRegistration() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '기간반 클래스 추가',
+      description: `<h2>학생이 기간반 클래스 추가하기</h2>`,
+    }),
+    ApiBearerAuth('AccessToken'),
+    ApiOkResponse({ status: 200 }),
+  );
+}
