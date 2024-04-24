@@ -32,7 +32,7 @@ export class LessonRoomRepository {
 
     return await this.lessonRoomDAO
       .createQueryBuilder('R')
-      .select(['R.id', 'R.name', 'R.capacity'])
+      .select(['R.id', 'R.name', 'R.capacity', 'R.createdDate'])
       .leftJoin('R.durationSchedules', 'DLS', 'DLS.startDate <= :endDate AND DLS.endDate >= :startDate', {
         startDate,
         endDate,
@@ -56,7 +56,7 @@ export class LessonRoomRepository {
       .leftJoin('SL.teacher', 'ST')
       .addSelect(['ST.id', 'ST.name'])
       .where('R.centerId = :centerId', { centerId })
-      .orderBy({ 'DLS.startTime': 'ASC', 'SLS.startTime': 'ASC' })
+      .orderBy({ 'R.createdDate': 'ASC' })
       .getMany();
   }
 }
