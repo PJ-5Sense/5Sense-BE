@@ -31,36 +31,32 @@ export class LessonRoomRepository {
     endDate = new Date(endDate.setHours(23, 59, 59, 999));
 
     return await this.lessonRoomDAO
-      .createQueryBuilder('room')
-      .select(['room.id', 'room.name', 'room.capacity'])
-      .leftJoin(
-        'room.durationSchedules',
-        'durationSchedules',
-        'durationSchedules.startDate <= :endDate AND durationSchedules.endDate >= :startDate',
-        { startDate, endDate },
-      )
-      .addSelect(['durationSchedules.id', 'durationSchedules.startTime', 'durationSchedules.lessonTime'])
-      .leftJoin('durationSchedules.durationLesson', 'durationLesson')
-      .addSelect(['durationLesson.id', 'durationLesson.name'])
-      .leftJoin('durationLesson.teacher', 'durationLessonTeacher')
-      .addSelect(['durationLessonTeacher.id', 'durationLessonTeacher.name'])
-      .leftJoin(
-        'room.sessionSchedules',
-        'sessionSchedules',
-        'sessionSchedules.sessionDate >= :startDate AND sessionSchedules.sessionDate <= :endDate',
-        { startDate, endDate },
-      )
-      .addSelect(['sessionSchedules.id', 'sessionSchedules.startTime'])
-      .leftJoin('sessionSchedules.sessionRegistration', 'sessionRegistration')
-      .addSelect(['sessionRegistration.id'])
-      .leftJoin('sessionRegistration.sessionLesson', 'sessionLesson')
-      .addSelect(['sessionLesson.id', 'sessionLesson.name', 'sessionLesson.lessonTime', 'sessionLesson.capacity'])
-      .leftJoin('sessionLesson.sessionRegistrations', 'lessonSessionRegistrations')
+      .createQueryBuilder('R')
+      .select(['R.id', 'R.name', 'R.capacity'])
+      .leftJoin('R.durationSchedules', 'DLS', 'DLS.startDate <= :endDate AND DLS.endDate >= :startDate', {
+        startDate,
+        endDate,
+      }) // DLS = durationSchedules(Duration Lesson Schedule)
+      .addSelect(['DLS.id', 'DLS.startTime', 'DLS.lessonTime', 'DLS.repeatDate'])
+      .leftJoin('DLS.durationLesson', 'DL')
+      .addSelect(['DL.id', 'DL.name'])
+      .leftJoin('DL.teacher', 'DT') // DT = Duration Teacher
+      .addSelect(['DT.id', 'DT.name'])
+      .leftJoin('R.sessionSchedules', 'SLS', 'SLS.sessionDate >= :startDate AND SLS.sessionDate <= :endDate', {
+        startDate,
+        endDate,
+      }) // SLS = sessionSchedules(Session Lesson Schedule)
+      .addSelect(['SLS.id', 'SLS.startTime'])
+      .leftJoin('SLS.sessionRegistration', 'SLR')
+      .addSelect(['SLR.id'])
+      .leftJoin('SLR.sessionLesson', 'SL')
+      .addSelect(['SL.id', 'SL.name', 'SL.lessonTime', 'SL.capacity'])
+      .leftJoin('SL.sessionRegistrations', 'lessonSessionRegistrations')
       .addSelect(['lessonSessionRegistrations.id'])
-      .leftJoin('sessionLesson.teacher', 'sessionLessonTeacher')
-      .addSelect(['sessionLessonTeacher.id', 'sessionLessonTeacher.name'])
-      .where('room.centerId = :centerId', { centerId })
-      .orderBy({ 'durationSchedules.startTime': 'ASC', 'sessionSchedules.startTime': 'ASC' })
+      .leftJoin('SL.teacher', 'ST')
+      .addSelect(['ST.id', 'ST.name'])
+      .where('R.centerId = :centerId', { centerId })
+      .orderBy({ 'DLS.startTime': 'ASC', 'SLS.startTime': 'ASC' })
       .getMany();
   }
 }

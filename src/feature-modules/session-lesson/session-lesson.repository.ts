@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { SessionLessonEntity } from './session-lesson.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, Repository } from 'typeorm';
 import { CreateSessionLessonDTO } from './dto/request/create-session-lesson.dto';
 import { UpdateSessionLessonDTO } from './dto/request/update-session-lesson.dto';
 
@@ -29,13 +29,22 @@ export class SessionLessonRepository {
     );
   }
 
-  async findMany(centerId: number) {
-    return await this.sessionLessonDAO.find({
-      where: { centerId, isClosed: false },
-      select: ['id', 'name', 'lessonTime', 'capacity'],
-      relations: { sessionRegistrations: true },
-    });
+  async findMany(lessonTimeLimit: number | null, centerId: number) {
+    const query = this.sessionLessonDAO
+      .createQueryBuilder('lesson')
+      .select(['lesson.id', 'lesson.name', 'lesson.lessonTime', 'lesson.capacity'])
+      .leftJoin('lesson.sessionRegistrations', 'registration')
+      .addSelect(['registration.id'])
+      .where('lesson.centerId = :centerId', { centerId })
+      .andWhere('lesson.isClosed = :isClosed', { isClosed: false });
+
+    if (lessonTimeLimit) {
+      query.andWhere('lesson.lessonTime <= :lessonTimeLimit', { lessonTimeLimit });
+    }
+
+    return await query.getMany();
   }
+
   async getOne(id: number, centerId: number) {
     const lesson = await this.sessionLessonDAO
       .createQueryBuilder('L')

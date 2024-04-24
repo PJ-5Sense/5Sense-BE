@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { SessionLessonService } from './session.lesson.service';
 import { CurrentUser } from '../../common/decorator/user.decorator';
 import { ApiTags } from '@nestjs/swagger';
@@ -11,6 +11,7 @@ import {
   SwaggerSessionLessonDetail,
   SwaggerUpdateSessionLesson,
 } from 'src/swagger/session-lesson.swagger';
+import { FindManySessionLessonDTO } from './dto/request/find-many-session-lesson.dto';
 
 @ApiTags('Session Lesson - 회차반')
 @Controller('session-lessons')
@@ -30,11 +31,14 @@ export class SessionLessonController {
 
   @SwaggerFindManySessionLesson()
   @Get()
-  async findManyLesson(@CurrentUser('centerId') centerId: number) {
+  async findManyLesson(
+    @Query() findManySessionLessonDTO: FindManySessionLessonDTO,
+    @CurrentUser('centerId') centerId: number,
+  ) {
     return {
       success: true,
       message: `Successfully retrieved the session lesson list`,
-      data: await this.sessionLessonService.findMany(centerId),
+      data: await this.sessionLessonService.findMany(findManySessionLessonDTO, centerId),
     };
   }
 

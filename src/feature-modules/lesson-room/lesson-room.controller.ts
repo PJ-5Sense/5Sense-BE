@@ -18,22 +18,6 @@ import { JwtPayload } from '../auth/type/jwt-payload.type';
 @Controller('lesson-rooms')
 export class LessonRoomController {
   constructor(private readonly lessonRoomService: LessonRoomService) {}
-  //
-  // 스케줄 보기 API
-  // 스케줄 등록하기 API (회차반 only)
-  //
-  // 목록 가져오기 클래스 관리에서 클래스 추가할떄 작업
-  // 스케쥴 목록 가져오기
-  @Get('range')
-  // TODO : 학원의 장사 시간을 반영해야함
-  async getSchedulesWithinRange(
-    @Query() getRangeSchedulesDTO: GetRangeSchedulesDTO,
-    @CurrentUser('centerId') centerId: number,
-  ) {
-    // 기간, 시간, 요일 -> 기간반
-    // 기간(하루 요일) -> 회차반
-    // 해당 기간과 요일로 전체정보를 가져오도록 함
-  }
 
   @SwaggerCreateLessonRoom()
   @Post()
@@ -83,6 +67,18 @@ export class LessonRoomController {
       success: true,
       message: 'Successfully getting daily schedules',
       data: await this.lessonRoomService.getSchedulesDaily(getDailySchedulesDTO, jwtPayload),
+    };
+  }
+
+  @Get('range')
+  async getSchedulesWithinRange(
+    @Query() getRangeSchedulesDTO: GetRangeSchedulesDTO,
+    @CurrentUser() jwtPayload: JwtPayload,
+  ) {
+    return {
+      success: true,
+      message: 'Successfully getting schedules within range',
+      data: await this.lessonRoomService.getSchedulesWithinRange(getRangeSchedulesDTO, jwtPayload),
     };
   }
 }

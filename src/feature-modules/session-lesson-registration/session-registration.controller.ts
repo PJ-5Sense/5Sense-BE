@@ -5,7 +5,7 @@ import { SwaggerCreateSessionLessonRegistration } from 'src/swagger/session-less
 import { CreateSessionRegistrationDTO } from './dto/request/create-registration.dto';
 import { CurrentUser } from 'src/common/decorator/user.decorator';
 
-@ApiTags('Session Lesson Registration - 클래스 등록(청구 납부 관련 포함)')
+@ApiTags('Session Lesson Registration - 회차반 클래스 등록')
 @Controller('session-lesson-registrations')
 export class LessonRegistrationController {
   constructor(private readonly lessonRegistrationService: SessionLessonRegistrationService) {}

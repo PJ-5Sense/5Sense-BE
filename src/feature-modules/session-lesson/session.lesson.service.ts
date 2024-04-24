@@ -5,6 +5,7 @@ import { UpdateSessionLessonDTO } from './dto/request/update-session-lesson.dto'
 import { CreateSessionLessonDTO } from './dto/request/create-session-lesson.dto';
 import { ResponseGetDetailSessionLessonDTO } from './dto/response/get-detail-lesson.dto';
 import { ResponseFindManySessionLessonDTO } from './dto/response/find-many-lesson.dto';
+import { FindManySessionLessonDTO } from './dto/request/find-many-session-lesson.dto';
 
 @Injectable()
 export class SessionLessonService {
@@ -22,13 +23,15 @@ export class SessionLessonService {
     }
   }
 
-  async findMany(centerId: number) {
-    const lessons = (await this.sessionLessonRepository.findMany(centerId)).filter(lesson => {
+  async findMany(findManySessionLessonDTO: FindManySessionLessonDTO, centerId: number) {
+    const lessons = (
+      await this.sessionLessonRepository.findMany(findManySessionLessonDTO.lessonTimeLimit, centerId)
+    ).filter(lesson => {
       // 학생 등록이 가능한 클래스만 목록에 추가되도록 함
-      return lesson.sessionRegistrations.length < lesson.capacity;
+      if (findManySessionLessonDTO.isCheckRegistrationsCount) {
+        return lesson.sessionRegistrations.length < lesson.capacity;
+      } else return true;
     });
-
-    console.log(lessons);
 
     return lessons.map(lesson => new ResponseFindManySessionLessonDTO(lesson));
   }

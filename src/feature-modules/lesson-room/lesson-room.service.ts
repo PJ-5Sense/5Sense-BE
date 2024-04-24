@@ -6,6 +6,7 @@ import { LessonRoomRepository } from './lesson-room.repository';
 import { GetDailySchedulesDTO } from './dto/request/get-daily-schedules.dto';
 import { JwtPayload } from '../auth/type/jwt-payload.type';
 import { ResponseRoomScheduleDTO } from './dto/response/room-schedule.dto';
+import { GetRangeSchedulesDTO } from './dto/request/get-range-schedule.dto';
 
 @Injectable()
 export class LessonRoomService {
@@ -72,6 +73,7 @@ export class LessonRoomService {
         }
       }
 
+      // 요일 정보 파악해야함
       for (const schedules of schedulesOfRooms[i].durationSchedules) {
         const [hour, minutes] = schedules.startTime.split(':').map(Number);
         const timeString = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
@@ -113,5 +115,9 @@ export class LessonRoomService {
       }
     }
     return rooms;
+  }
+
+  async getSchedulesWithinRange(getRangeSchedulesDTO: GetRangeSchedulesDTO, jwtPayload: JwtPayload) {
+    // return this.lessonRoomRepository.getMany(getRangeSchedulesDTO, jwtPayload.centerId);
   }
 }
