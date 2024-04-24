@@ -57,3 +57,14 @@ export function SwaggerCloseSessionLesson() {
     ApiOkResponse({ status: 200 }),
   );
 }
+
+export function SwaggerCreateSessionLessonRegistration() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '회차반 클래스 추가',
+      description: `<h2>학생이 차반 클래스 추가하기</h2>`,
+    }),
+    ApiBearerAuth('AccessToken'),
+    ApiOkResponse({ status: 200 }),
+  );
+}
