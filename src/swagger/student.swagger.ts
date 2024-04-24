@@ -24,7 +24,29 @@ export function SwaggerFindManyStudent() {
     ApiOkResponse({
       status: 200,
       type: ResponseStudentDTO,
-      description: '학생 목록은 배열로 반환합니다. - 무한 스크롤 적용됨',
+      isArray: true,
+    }),
+  );
+}
+
+export function SwaggerFindManyStudentForLesson() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '특정 클래스에 등록 가능한 학생 목록',
+      description: `<h2>특정 클래스에 등록 가능한 학생 목록</h2>`,
+    }),
+    ApiBearerAuth('AccessToken'),
+    ApiOkResponse({
+      status: 200,
+      schema: {
+        example: [
+          {
+            id: 0,
+            name: 'string',
+            phone: 'string',
+          },
+        ],
+      },
     }),
   );
 }

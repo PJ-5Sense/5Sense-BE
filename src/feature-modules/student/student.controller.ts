@@ -7,6 +7,7 @@ import { StudentService } from './student.service';
 import {
   SwaggerCreateStudent,
   SwaggerFindManyStudent,
+  SwaggerFindManyStudentForLesson,
   SwaggerStudentDetail,
   SwaggerUpdateStudent,
 } from 'src/swagger/student.swagger';
@@ -29,11 +30,21 @@ export class StudentController {
 
   @SwaggerFindManyStudent()
   @Get()
-  async findManyByCenterId(@Query() findStudentsDTO: FindStudentsDTO, @CurrentUser('centerId') centerId: number) {
+  async findMany(@Query() findStudentsDTO: FindStudentsDTO, @CurrentUser('centerId') centerId: number) {
     return {
       success: true,
       message: 'Successfully retrieved the student list',
       data: await this.studentService.findManyByCenterId(findStudentsDTO, centerId),
+    };
+  }
+
+  @SwaggerFindManyStudentForLesson()
+  @Get('lessons/:lessonId')
+  async findManyForLesson(@Param('lessonId') lessonId: number, @CurrentUser('centerId') centerId: number) {
+    return {
+      success: true,
+      message: 'Successfully retrieved the student list for Lesson',
+      data: await this.studentService.findManyForLesson(lessonId, centerId),
     };
   }
 

@@ -39,6 +39,17 @@ export class StudentService {
     };
   }
 
+  /**
+   * 해당 레슨에 등록되어있는 학생들 목록만 보여줌
+   * @param lessonId
+   * @param centerId
+   * @returns
+   */
+  async findManyForLesson(lessonId: number, centerId: number) {
+    const students = await this.studentRepository.findManyForLesson(lessonId, centerId);
+
+    return students.map(student => new ResponseStudentDTO(student));
+  }
   async findOneByStudentId(studentId: number, centerId: number) {
     const student = await this.studentRepository.findOneByStudentId(studentId, centerId);
 
