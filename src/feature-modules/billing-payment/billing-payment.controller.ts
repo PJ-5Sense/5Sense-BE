@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import { BillingPaymentDTO } from './dto/request/billing-payment.dto';
 import { CurrentUser } from '../../common/decorator/user.decorator';
 import { ApiTags } from '@nestjs/swagger';
-import { SwaggerBillingPayments, SwaggerUpdateBillingPayment } from 'src/swagger/lesson-registration.swagger';
+import { SwaggerBillingPayments, SwaggerUpdateBillingPayment } from 'src/swagger/billing-payment.swagger';
 import { UpdateBuildPaymentDTO } from './dto/request/update-build-payment.dto';
 import { BillingPaymentService } from './billing-payment.service';
 
