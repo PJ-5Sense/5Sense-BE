@@ -1,9 +1,10 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { CreateTeacherDTO } from './dto/request/create-teacher.dto';
 import { FindTeachersDTO } from './dto/request/find-teachers.dto';
-import { ResponseTeacherDTO } from './dto/response/teacher.dto';
+import { ResponseTeacherDetailDTO } from './dto/response/teacher-detail.dto';
 import { UpdateTeacherDTO } from './dto/request/update-teacher.dto';
 import { TeacherRepository } from './teacher.repository';
+import { ResponseTeacherDTO } from './dto/response/teacher.dto';
 
 @Injectable()
 export class TeacherService {
@@ -19,7 +20,7 @@ export class TeacherService {
 
   async findManyByCenterId(findTeachersDTO: FindTeachersDTO, centerId: number) {
     const [teachers, total] = await this.teacherRepository.findManyByCenterId(findTeachersDTO, centerId);
-
+    console.log(teachers);
     return {
       teachers: teachers.map(teacher => {
         return new ResponseTeacherDTO(teacher);
@@ -35,7 +36,7 @@ export class TeacherService {
   async findOneByTeacherId(teacherId: number, centerId: number) {
     const teacher = await this.teacherRepository.findOneByTeacherId(teacherId, centerId);
 
-    return new ResponseTeacherDTO(teacher);
+    return new ResponseTeacherDetailDTO(teacher);
   }
 
   /**
