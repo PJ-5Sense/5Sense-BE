@@ -41,6 +41,17 @@ export class StudentRepository {
     return await queryBuilder.offset(findStudentsDTO.getSkip()).limit(findStudentsDTO.getTake()).getManyAndCount();
   }
 
+  async findManyForLesson(lessonId: number, centerId: number) {
+    return await this.studentDAO
+      .createQueryBuilder('S')
+      .select(['S.id', 'S.name', 'S.phone'])
+      .innerJoin('S.sessionRegistrations', 'SR')
+      .addSelect(['SR.id', 'SR.lessonId'])
+      .where('S.centerId = :centerId', { centerId })
+      .andWhere('SR.lessonId = :lessonId', { lessonId })
+      .getMany();
+  }
+
   async findOneByStudentId(studentId: number, centerId: number) {
     return await this.studentDAO
       .createQueryBuilder('S') // S  = student
