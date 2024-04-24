@@ -9,8 +9,8 @@ import { TeacherEntity } from 'src/feature-modules/teacher/entity/teacher.entity
 import { UserEntity } from 'src/feature-modules/user/entity/user.entity';
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
-import { DurationLessonScheduleEntity } from 'src/feature-modules/lesson-schedule/entity/duration-lesson-schedule.entity';
-import { SessionLessonScheduleEntity } from 'src/feature-modules/lesson-schedule/entity/session-lesson-schedule.entity';
+import { DurationLessonScheduleEntity } from 'src/feature-modules/duration-lesson-registration/entity/duration-lesson-schedule.entity';
+import { SessionLessonScheduleEntity } from 'src/feature-modules/session-lesson-schedule/entity/session-lesson-schedule.entity';
 import { DurationLessonRegistrationEntity } from '../../../feature-modules/duration-lesson-registration/entity/duration-registration.entity';
 import { SessionLessonRegistrationEntity } from '../../../feature-modules/session-lesson-registration/entity/session-registration.entity';
 

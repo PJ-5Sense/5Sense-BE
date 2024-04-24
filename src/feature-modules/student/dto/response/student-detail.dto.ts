@@ -1,10 +1,8 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { StudentEntity } from 'src/feature-modules/student/entity/student.entity';
-import { DurationLessonEntity } from '../../../duration-lesson/duration-lesson.entity';
 import { DurationLesson } from '../../type/duration-lesson.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { SessionLesson } from '../../type/session-lesson.type';
-import { SessionLessonRegistrationEntity } from '../../../session-lesson-registration/entity/session-registration.entity';
 
 export class ResponseStudentDetailDTO {
   @ApiProperty()

@@ -10,6 +10,6 @@ import { BillingPaymentModule } from '../billing-payment/billing-payment.module'
   imports: [TypeOrmModule.forFeature([SessionLessonRegistrationEntity]), BillingPaymentModule],
   controllers: [LessonRegistrationController],
   providers: [SessionLessonRegistrationService, SessionLessonRegistrationRepository],
-  exports: [],
+  exports: [SessionLessonRegistrationService],
 })
 export class SessionLessonRegistrationModule {}

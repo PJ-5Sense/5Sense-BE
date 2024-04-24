@@ -19,4 +19,11 @@ export class SessionLessonRegistrationRepository {
 
     return await this.sessionRegistrationDAO.save(registration);
   }
+
+  async findOne(lessonId: number, studentId: number) {
+    return await this.sessionRegistrationDAO.findOne({
+      where: { lessonId, studentId },
+      relations: { sessionSchedules: true },
+    });
+  }
 }

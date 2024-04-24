@@ -68,3 +68,14 @@ export function SwaggerCreateSessionLessonRegistration() {
     ApiOkResponse({ status: 200 }),
   );
 }
+
+export function SwaggerCreateSessionLessonSchedule() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '회차반 일정 추가(예약)',
+      description: `<h2>회차반 일정 추가하기 (예약하기)</h2>`,
+    }),
+    ApiBearerAuth('AccessToken'),
+    ApiOkResponse({ status: 200 }),
+  );
+}

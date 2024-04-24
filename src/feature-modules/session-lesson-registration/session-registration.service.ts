@@ -22,4 +22,8 @@ export class SessionLessonRegistrationService {
       LessonType.SESSION,
     );
   }
+
+  async findOne(lessonId: number, studentId: number) {
+    return await this.lessonRegistrationRepository.findOne(lessonId, studentId);
+  }
 }
