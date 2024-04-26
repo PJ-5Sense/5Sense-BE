@@ -20,7 +20,16 @@ export class StudentRepository {
   async findManyByCenterId(findStudentsDTO: FindStudentsDTO, centerId: number) {
     const queryBuilder = this.studentDAO
       .createQueryBuilder('student')
-      .where('student.centerId = :centerId', { centerId });
+      .select(['student.id', 'student.name', 'student.phone', 'student.particulars', 'student.createdDate'])
+      .where('student.centerId = :centerId', { centerId })
+      .leftJoin('student.sessionRegistrations', 'sessionRegistrations')
+      .addSelect(['sessionRegistrations.id'])
+      .leftJoin('sessionRegistrations.sessionLesson', 'sessionLesson')
+      .addSelect(['sessionLesson.id', 'sessionLesson.name'])
+      .leftJoin('student.durationRegistrations', 'durationRegistrations')
+      .addSelect(['durationRegistrations.id'])
+      .leftJoin('durationRegistrations.durationLesson', 'durationLesson')
+      .addSelect(['durationLesson.id', 'durationLesson.name']);
 
     if (findStudentsDTO.searchBy === 'name') {
       queryBuilder

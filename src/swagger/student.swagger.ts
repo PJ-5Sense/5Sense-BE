@@ -1,6 +1,8 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { ResponseStudentDTO } from 'src/feature-modules/student/dto/response/student.dto';
+import { ResponseCreateStudentDTO } from 'src/feature-modules/student/dto/response/create-student.dto';
+import { ResponseFindManyForStudentDTO } from 'src/feature-modules/student/dto/response/find-many-for-lesson-student-dto';
+import { ResponseFindManyStudentDTO } from 'src/feature-modules/student/dto/response/find-many-student.dto';
 import { ResponseStudentDetailDTO } from 'src/feature-modules/student/dto/response/student-detail.dto';
 
 export function SwaggerCreateStudent() {
@@ -10,7 +12,7 @@ export function SwaggerCreateStudent() {
       description: `<h2>학생 등록하기</h2>`,
     }),
     ApiBearerAuth('AccessToken'),
-    ApiOkResponse({ status: 200, type: ResponseStudentDTO }),
+    ApiOkResponse({ status: 200, type: ResponseCreateStudentDTO }),
   );
 }
 
@@ -23,7 +25,7 @@ export function SwaggerFindManyStudent() {
     ApiBearerAuth('AccessToken'),
     ApiOkResponse({
       status: 200,
-      type: ResponseStudentDTO,
+      type: ResponseFindManyStudentDTO,
       isArray: true,
     }),
   );
@@ -38,15 +40,8 @@ export function SwaggerFindManyStudentForLesson() {
     ApiBearerAuth('AccessToken'),
     ApiOkResponse({
       status: 200,
-      schema: {
-        example: [
-          {
-            id: 0,
-            name: 'string',
-            phone: 'string',
-          },
-        ],
-      },
+      type: ResponseFindManyForStudentDTO,
+      isArray: true,
     }),
   );
 }
@@ -69,6 +64,6 @@ export function SwaggerUpdateStudent() {
       description: `<h2>학생 정보 수정하기</h2>`,
     }),
     ApiBearerAuth('AccessToken'),
-    ApiOkResponse({ status: 200, type: ResponseStudentDTO }),
+    ApiOkResponse({ status: 200, type: ResponseFindManyStudentDTO }),
   );
 }

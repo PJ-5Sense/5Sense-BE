@@ -5,30 +5,32 @@ import { FindStudentsDTO } from './dto/request/find-students.dto';
 import { ResponseStudentDetailDTO } from './dto/response/student-detail.dto';
 import { PageMeta } from 'src/common/dto/response-page.dto';
 import { UpdateStudentDTO } from './dto/request/update-student.dto';
-import { ResponseStudentDTO } from './dto/response/student.dto';
+import { ResponseFindManyStudentDTO } from './dto/response/find-many-student.dto';
+import { ResponseCreateStudentDTO } from './dto/response/create-student.dto';
+import { ResponseFindManyForStudentDTO } from './dto/response/find-many-for-lesson-student-dto';
 
 @Injectable()
 export class StudentService {
   constructor(private readonly studentRepository: StudentRepository) {}
 
-  async create(createStudentDTO: CreateStudentDTO, centerId: number): Promise<ResponseStudentDTO> {
+  async create(createStudentDTO: CreateStudentDTO, centerId: number) {
     if (await this.checkDuplicateStudent(createStudentDTO.name, createStudentDTO.phone, centerId))
       throw new ConflictException('Duplicate student information');
 
     const student = await this.studentRepository.create(createStudentDTO, centerId);
 
-    return new ResponseStudentDTO(student);
+    return new ResponseCreateStudentDTO(student);
   }
 
   async findManyByCenterId(
     findStudentsDTO: FindStudentsDTO,
     centerId: number,
-  ): Promise<{ students: ResponseStudentDTO[]; meta: PageMeta }> {
+  ): Promise<{ students: ResponseFindManyStudentDTO[]; meta: PageMeta }> {
     const [students, total] = await this.studentRepository.findManyByCenterId(findStudentsDTO, centerId);
 
     return {
       students: students.map(student => {
-        return new ResponseStudentDTO(student);
+        return new ResponseFindManyStudentDTO(student);
       }),
 
       meta: {
@@ -48,8 +50,9 @@ export class StudentService {
   async findManyForLesson(lessonId: number, centerId: number) {
     const students = await this.studentRepository.findManyForLesson(lessonId, centerId);
 
-    return students.map(student => new ResponseStudentDTO(student));
+    return students.map(student => new ResponseFindManyForStudentDTO(student));
   }
+
   async findOneByStudentId(studentId: number, centerId: number) {
     const student = await this.studentRepository.findOneByStudentId(studentId, centerId);
 
