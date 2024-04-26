@@ -103,6 +103,9 @@ export class LessonRoomService {
           const capacity = schedules.sessionRegistration.sessionLesson.capacity;
           const isOpenForBooking = studentCount < capacity;
 
+          // 예약 가능 여부는 무엇으로 결정되는가? -> 예약이 몇명이 되어있는지 해당 날에
+          // 그럼 허용인원과 등록된 인원에 따른 계산과 예약 가능 여부는 필요한건가?
+          // 해당 예약에 예약한 사람이 몇명인지 알아야함
           rooms[i].workTime[timeString] = {
             id: schedules.sessionRegistration.sessionLesson.id,
             type: LessonType.SESSION,

@@ -27,7 +27,7 @@ export class SessionLessonScheduleService {
       studentRegistration.sessionSchedules.map(schedule => {
         if (this.dateHelper.isSameDay(schedule.sessionDate, new Date(registrationData.sessionDate))) {
           if (schedule.startTime.slice(0, 5) === createSessionScheduleDTO.startTime) {
-            throw new ConflictException(`이미 해당 시간에 예약이 되어있습니다`);
+            throw new ConflictException(`해당 ${createSessionScheduleDTO.startTime}에 동일한 학생 예약이 존재합니다.`);
           }
         }
       });

@@ -23,15 +23,14 @@ export class SessionLessonService {
     }
   }
 
+  /**
+   * 학생이 수강하는 클래스를 추가하는 모달에 사용되는 목록 가져오기
+   * @param findManySessionLessonDTO
+   * @param centerId
+   * @returns
+   */
   async findMany(findManySessionLessonDTO: FindManySessionLessonDTO, centerId: number) {
-    const lessons = (
-      await this.sessionLessonRepository.findMany(findManySessionLessonDTO.lessonTimeLimit, centerId)
-    ).filter(lesson => {
-      // 학생 등록이 가능한 클래스만 목록에 추가되도록 함
-      if (findManySessionLessonDTO.isCheckRegistrationsCount) {
-        return lesson.sessionRegistrations.length < lesson.capacity;
-      } else return true;
-    });
+    const lessons = await this.sessionLessonRepository.findMany(findManySessionLessonDTO.lessonTimeLimit, centerId);
 
     return lessons.map(lesson => new ResponseFindManySessionLessonDTO(lesson));
   }
