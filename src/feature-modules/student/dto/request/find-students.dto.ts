@@ -13,13 +13,13 @@ export class FindStudentsDTO extends PaginationRequest {
   @IsEnum(StudentSearchType)
   searchBy: StudentSearchType;
 
-  @ApiProperty({ description: '이름 검색 문자열' })
+  @ApiProperty({ description: '이름 검색 문자열', required: false })
   @IsString()
   @IsNotEmpty()
   @ValidateIf(object => object.searchBy === 'name')
   name: string;
 
-  @ApiProperty({ description: '휴대번호 검색 문자열' })
+  @ApiProperty({ description: '휴대번호 검색 문자열', required: false })
   @IsString()
   @IsNotEmpty()
   @ValidateIf(object => object.searchBy === 'phone')

@@ -21,7 +21,6 @@ export class StudentRepository {
     const queryBuilder = this.studentDAO
       .createQueryBuilder('student')
       .select(['student.id', 'student.name', 'student.phone', 'student.particulars', 'student.createdDate'])
-      .where('student.centerId = :centerId', { centerId })
       .leftJoin('student.sessionRegistrations', 'sessionRegistrations')
       .addSelect(['sessionRegistrations.id'])
       .leftJoin('sessionRegistrations.sessionLesson', 'sessionLesson')
@@ -29,7 +28,8 @@ export class StudentRepository {
       .leftJoin('student.durationRegistrations', 'durationRegistrations')
       .addSelect(['durationRegistrations.id'])
       .leftJoin('durationRegistrations.durationLesson', 'durationLesson')
-      .addSelect(['durationLesson.id', 'durationLesson.name']);
+      .addSelect(['durationLesson.id', 'durationLesson.name'])
+      .where('student.centerId = :centerId', { centerId });
 
     if (findStudentsDTO.searchBy === 'name') {
       queryBuilder
