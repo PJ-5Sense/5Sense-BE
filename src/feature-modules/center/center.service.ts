@@ -55,11 +55,10 @@ export class CenterService {
     if (profile) {
       // TODO : 기존 S3에 존재하던 리소스를 삭제하는 작업이 필요함
       s3URL = await this.awsS3Helper.uploadFile('profile', profile, './temp', 'image/webp', 'all');
+      this.deleteLocalFile('./temp/' + profile);
     }
 
     const center = await this.centerRepository.updateCenter(s3URL, updateCenterDTO, userInfo);
-
-    this.deleteLocalFile('./temp/' + profile);
 
     return new ResponseCenterDTO(center);
   }

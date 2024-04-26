@@ -19,8 +19,9 @@ export class SessionLessonService {
       sessionLessonDTO.category.id = await this.lessonCategoryService.processEtceteraCategory(
         sessionLessonDTO.category.name,
       );
-      return await this.sessionLessonRepository.create(sessionLessonDTO, centerId);
     }
+
+    return await this.sessionLessonRepository.create(sessionLessonDTO, centerId);
   }
 
   /**
@@ -42,6 +43,8 @@ export class SessionLessonService {
   }
 
   async update(updateSessionLessonDTO: UpdateSessionLessonDTO, lessonId: number, centerId: number) {
+    await this.sessionLessonRepository.getOne(lessonId, centerId);
+
     await this.sessionLessonRepository.update(lessonId, updateSessionLessonDTO, centerId);
   }
 

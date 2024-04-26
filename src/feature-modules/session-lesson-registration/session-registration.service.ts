@@ -12,6 +12,7 @@ export class SessionLessonRegistrationService {
   ) {}
 
   async create(createSessionRegistrationDTO: CreateSessionRegistrationDTO, centerId: number) {
+    // TODO 클래스 존재여부 확인하기
     await this.lessonRegistrationRepository.create(createSessionRegistrationDTO);
 
     await this.billingPaymentService.create(

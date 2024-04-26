@@ -99,13 +99,22 @@ export class LessonRoomService {
 
         // 해당 시간의 정보가 초기화 되어 있지 않다면 초기화 시작
         if (rooms[i].workTime[timeString] !== undefined && !rooms[i].workTime[timeString].id) {
-          const studentCount = schedules.sessionRegistration.sessionLesson.sessionRegistrations.length;
+          // 스케줄에 등록된 인원 정보 가져오기
+          // 회차반 스케줄 정보 여러개있음 (해당 스케쥴에 lesson id가 같으면)
+
+          // 클래스에 예약이 된 학생 수 카운트
+          const studentCount = schedulesOfRooms[i].sessionSchedules.filter(sessionSchedule => {
+            if (
+              sessionSchedule.startTime === schedules.startTime &&
+              sessionSchedule.endTime === schedules.endTime &&
+              sessionSchedule.sessionRegistration.lessonId === schedules.sessionRegistration.lessonId
+            ) {
+              return true;
+            } else return false;
+          }).length;
           const capacity = schedules.sessionRegistration.sessionLesson.capacity;
           const isOpenForBooking = studentCount < capacity;
 
-          // 예약 가능 여부는 무엇으로 결정되는가? -> 예약이 몇명이 되어있는지 해당 날에
-          // 그럼 허용인원과 등록된 인원에 따른 계산과 예약 가능 여부는 필요한건가?
-          // 해당 예약에 예약한 사람이 몇명인지 알아야함
           rooms[i].workTime[timeString] = {
             id: schedules.sessionRegistration.sessionLesson.id,
             type: LessonType.SESSION,

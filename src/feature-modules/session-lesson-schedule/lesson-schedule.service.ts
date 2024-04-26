@@ -21,13 +21,17 @@ export class SessionLessonScheduleService {
       createSessionScheduleDTO.studentId,
     );
 
+    // 해당 시간에 예약이 되어있으면 예약 못하게 해야함
+
     if (!studentRegistration) {
       throw new NotFoundException('해당 학생/클래스 등록 정보가 없습니다.');
     } else {
       studentRegistration.sessionSchedules.map(schedule => {
         if (this.dateHelper.isSameDay(schedule.sessionDate, new Date(registrationData.sessionDate))) {
           if (schedule.startTime.slice(0, 5) === createSessionScheduleDTO.startTime) {
-            throw new ConflictException(`해당 ${createSessionScheduleDTO.startTime}에 동일한 학생 예약이 존재합니다.`);
+            throw new ConflictException(
+              `해당 ${createSessionScheduleDTO.startTime}시에 동일한 학생 예약이 존재합니다.`,
+            );
           }
         }
       });
