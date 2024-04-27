@@ -20,7 +20,7 @@ export class DurationScheduleDTO {
   @Matches(`^[0-9\\s:]{1,10}$`)
   endTime: string;
 
-  @ApiProperty({ example: '월,화,수,목,금' })
+  @ApiProperty()
   @Matches(`^[가-힣,]{1,15}$`)
   repeatDate: string;
 
