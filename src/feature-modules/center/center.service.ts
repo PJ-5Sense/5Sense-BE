@@ -24,7 +24,7 @@ export class CenterService {
     if (userInfo.centerId)
       throw new InternalServerErrorException('More than one center cannot be registered at this time');
 
-    const profile = this.configService.get('DEFAULT_PROFILE');
+    const profile = this.configService.get('DEFAULT_PROFILE').DEFAULT_PROFILE;
     const center = await this.centerRepository.create(createCenterDTO, userInfo.userId, profile);
 
     //  센터 등록 시, 1개의 룸 추가 필요함(리팩토링 필요함)
