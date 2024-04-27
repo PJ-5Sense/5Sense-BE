@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { DurationLessonScheduleEntity } from '../duration-lesson-registration/entity/duration-lesson-schedule.entity';
 import { DurationLessonRegistrationEntity } from '../duration-lesson-registration/entity/duration-registration.entity';
+import { BillingPaymentEntity } from '../billing-payment/entity/billing-payment.entity';
 
 @Entity({ name: 'duration_lesson' })
 export class DurationLessonEntity {
@@ -60,6 +61,9 @@ export class DurationLessonEntity {
 
   @OneToMany(() => DurationLessonScheduleEntity, durationSchedule => durationSchedule.durationLesson)
   durationSchedules: DurationLessonScheduleEntity[];
+
+  @OneToMany(() => BillingPaymentEntity, billingPayment => billingPayment.durationLesson)
+  billingPayments: BillingPaymentEntity[];
 
   @ManyToOne(() => TeacherEntity, teacher => teacher.id, { nullable: false })
   @JoinColumn({ name: 'teacher_id' })

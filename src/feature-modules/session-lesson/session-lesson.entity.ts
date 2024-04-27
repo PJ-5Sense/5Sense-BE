@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { SessionLessonRegistrationEntity } from '../session-lesson-registration/entity/session-registration.entity';
+import { BillingPaymentEntity } from '../billing-payment/entity/billing-payment.entity';
 
 @Entity({ name: 'session_lesson' })
 export class SessionLessonEntity {
@@ -66,6 +67,9 @@ export class SessionLessonEntity {
 
   @OneToMany(() => SessionLessonRegistrationEntity, sessionRegistration => sessionRegistration.sessionLesson)
   sessionRegistrations: SessionLessonRegistrationEntity[];
+
+  @OneToMany(() => BillingPaymentEntity, billingPayment => billingPayment.sessionLesson)
+  billingPayments: BillingPaymentEntity[];
 
   @ManyToOne(() => CategoryEntity, category => category.id, { nullable: false })
   @JoinColumn({ name: 'category_id' })

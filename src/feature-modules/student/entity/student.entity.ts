@@ -2,6 +2,7 @@ import { CenterEntity } from 'src/feature-modules/center/entity/center.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { SessionLessonRegistrationEntity } from '../../session-lesson-registration/entity/session-registration.entity';
 import { DurationLessonRegistrationEntity } from '../../duration-lesson-registration/entity/duration-registration.entity';
+import { BillingPaymentEntity } from 'src/feature-modules/billing-payment/entity/billing-payment.entity';
 
 @Entity({ name: 'student' })
 export class StudentEntity {
@@ -34,4 +35,7 @@ export class StudentEntity {
 
   @OneToMany(() => DurationLessonRegistrationEntity, durationRegistrations => durationRegistrations.student)
   durationRegistrations: DurationLessonRegistrationEntity[];
+
+  @OneToMany(() => BillingPaymentEntity, billingPayment => billingPayment.student)
+  billingPayments: BillingPaymentEntity[];
 }

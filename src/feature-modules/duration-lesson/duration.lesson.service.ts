@@ -19,18 +19,18 @@ export class DurationLessonService {
       durationLessonDTO.category.id = await this.lessonCategoryService.processEtceteraCategory(
         durationLessonDTO.category.name,
       );
-
-      const { schedules, category, ...durationLesson } = durationLessonDTO;
-
-      await this.durationLessonRepository.create(
-        {
-          ...durationLesson,
-          centerId,
-          categoryId: category.id,
-        },
-        schedules,
-      );
     }
+
+    const { schedules, category, ...durationLesson } = durationLessonDTO;
+
+    await this.durationLessonRepository.create(
+      {
+        ...durationLesson,
+        centerId,
+        categoryId: category.id,
+      },
+      schedules,
+    );
   }
 
   async findMany(centerId: number) {

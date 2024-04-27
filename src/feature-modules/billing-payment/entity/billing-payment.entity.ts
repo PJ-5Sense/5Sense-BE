@@ -34,15 +34,15 @@ export class BillingPaymentEntity {
   @JoinColumn({ name: 'center_id' })
   center: CenterEntity;
 
-  @ManyToOne(() => StudentEntity, center => center.id)
+  @ManyToOne(() => StudentEntity, student => student.id)
   @JoinColumn({ name: 'student_id' })
   student: StudentEntity;
 
-  @ManyToOne(() => DurationLessonEntity, center => center.id, { nullable: true })
+  @ManyToOne(() => DurationLessonEntity, durationLesson => durationLesson.id, { nullable: true })
   @JoinColumn({ name: 'duration_lesson_id' })
   durationLesson: DurationLessonEntity;
 
-  @ManyToOne(() => SessionLessonEntity, center => center.id, { nullable: true })
+  @ManyToOne(() => SessionLessonEntity, sessionLesson => sessionLesson.id, { nullable: true })
   @JoinColumn({ name: 'session_lesson_id' })
   sessionLesson: SessionLessonEntity;
 }
