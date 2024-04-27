@@ -99,9 +99,6 @@ export class LessonRoomService {
 
         // 해당 시간의 정보가 초기화 되어 있지 않다면 초기화 시작
         if (rooms[i].workTime[timeString] !== undefined && !rooms[i].workTime[timeString].id) {
-          // 스케줄에 등록된 인원 정보 가져오기
-          // 회차반 스케줄 정보 여러개있음 (해당 스케쥴에 lesson id가 같으면)
-
           // 클래스에 예약이 된 학생 수 카운트
           const studentCount = schedulesOfRooms[i].sessionSchedules.filter(sessionSchedule => {
             if (
@@ -131,7 +128,5 @@ export class LessonRoomService {
     return rooms;
   }
 
-  async getSchedulesWithinRange(getRangeSchedulesDTO: GetRangeSchedulesDTO, jwtPayload: JwtPayload) {
-    // return this.lessonRoomRepository.getMany(getRangeSchedulesDTO, jwtPayload.centerId);
-  }
+  async getSchedulesWithinRange(getRangeSchedulesDTO: GetRangeSchedulesDTO, jwtPayload: JwtPayload) {}
 }
