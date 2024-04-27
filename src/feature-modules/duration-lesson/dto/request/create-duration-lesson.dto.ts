@@ -56,20 +56,7 @@ export class CreateDurationLessonDTO {
   @IsInt()
   teacherId: number;
 
-  @ApiProperty({
-    type: DurationScheduleDTO,
-    example: [
-      {
-        startDate: '2024-04-27T07:28:36.895Z',
-        endDate: '2024-04-27T07:28:36.895Z',
-        startTime: '10:00',
-        endTime: '11:00',
-        repeatDate: '월,화,수,목,금',
-        lessonTime: 0,
-        roomId: 0,
-      },
-    ],
-  })
+  @ApiProperty({ type: DurationScheduleDTO, isArray: true })
   @IsArray()
   @ValidateNested()
   @ArrayNotEmpty()
