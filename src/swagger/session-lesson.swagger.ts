@@ -50,8 +50,8 @@ export function SwaggerUpdateSessionLesson() {
 export function SwaggerCloseSessionLesson() {
   return applyDecorators(
     ApiOperation({
-      summary: '클래스 정보 업데이트',
-      description: `<h2>클래스 정보 업데이트</h2>`,
+      summary: '클래스 종료',
+      description: `<h2>클래스 종료하기</h2>`,
     }),
     ApiBearerAuth('AccessToken'),
     ApiOkResponse({ status: 200 }),
