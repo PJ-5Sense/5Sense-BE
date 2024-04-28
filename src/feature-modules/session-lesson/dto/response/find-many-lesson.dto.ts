@@ -15,9 +15,14 @@ export class ResponseFindManySessionLessonDTO {
   @Expose()
   lessonTime: number;
 
+  @ApiProperty()
+  @Expose()
+  totalSessions: number;
+
   constructor(lesson: SessionLessonEntity) {
     this.id = lesson.id;
     this.name = lesson.name;
     this.lessonTime = lesson.lessonTime;
+    this.totalSessions = lesson.totalSessions;
   }
 }

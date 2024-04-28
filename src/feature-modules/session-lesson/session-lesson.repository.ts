@@ -32,7 +32,7 @@ export class SessionLessonRepository {
   async findMany(lessonTimeLimit: number | null, centerId: number) {
     const query = this.sessionLessonDAO
       .createQueryBuilder('lesson')
-      .select(['lesson.id', 'lesson.name', 'lesson.lessonTime', 'lesson.capacity'])
+      .select(['lesson.id', 'lesson.name', 'lesson.lessonTime', 'lesson.totalSessions'])
       .leftJoin('lesson.sessionRegistrations', 'registration')
       .addSelect(['registration.id'])
       .where('lesson.centerId = :centerId', { centerId })
