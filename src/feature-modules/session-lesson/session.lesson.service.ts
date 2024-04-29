@@ -44,8 +44,11 @@ export class SessionLessonService {
 
   async update(updateSessionLessonDTO: UpdateSessionLessonDTO, lessonId: number, centerId: number) {
     await this.sessionLessonRepository.getOne(lessonId, centerId);
-    // 수정 시 카테고리 확인하는 부분이 빠져있었음
-
+    if (!updateSessionLessonDTO.category.id) {
+      updateSessionLessonDTO.category.id = await this.lessonCategoryService.processEtceteraCategory(
+        updateSessionLessonDTO.category.name,
+      );
+    }
     await this.sessionLessonRepository.update(lessonId, updateSessionLessonDTO, centerId);
   }
 
