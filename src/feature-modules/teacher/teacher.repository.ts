@@ -47,7 +47,7 @@ export class TeacherRepository {
       .createQueryBuilder('teacher')
       .select(['teacher.id', 'teacher.name', 'teacher.phone'])
       .leftJoin('teacher.durationLessons', 'DL', 'teacher.id = DL.teacherId')
-      .addSelect(['DL.id'])
+      .addSelect(['DL.id', 'DL.name'])
       .leftJoin('DL.durationSchedules', 'DS', 'DS.lessonId = DL.id')
       .addSelect(['DS.id', 'DS.startDate', 'DS.endDate', 'DS.startTime', 'DS.endTime', 'DS.repeatDate'])
       .leftJoin('teacher.sessionLessons', 'SL', 'teacher.id = SL.teacherId')
