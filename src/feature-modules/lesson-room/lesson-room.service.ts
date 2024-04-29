@@ -128,5 +128,68 @@ export class LessonRoomService {
     return rooms;
   }
 
-  async getSchedulesWithinRange(getRangeSchedulesDTO: GetRangeSchedulesDTO, jwtPayload: JwtPayload) {}
+  async getSchedulesWithinRange(getRangeSchedulesDTO: GetRangeSchedulesDTO, jwtPayload: JwtPayload) {
+    const schedulesOfRooms = await this.lessonRoomRepository.getMany(
+      new Date(getRangeSchedulesDTO.startDate),
+      new Date(getRangeSchedulesDTO.endDate),
+      jwtPayload.centerId,
+    );
+
+    const startTimeParts = jwtPayload.open.split(':').map(Number);
+    const endTimeParts = jwtPayload.close.split(':').map(Number);
+    const rooms: any[] = [];
+
+    // 각 룸 정보 초기화
+    for (let i = 0; i < schedulesOfRooms.length; i++) {
+      rooms[i] = {
+        id: schedulesOfRooms[i].id,
+        name: schedulesOfRooms[i].name,
+        capacity: schedulesOfRooms[i].capacity,
+        workTime: {},
+      };
+
+      // 해당 학원의 근무시간 기간을 시간 단위로 객체 초기화
+      for (let hour = startTimeParts[0]; hour < endTimeParts[0]; hour++) {
+        for (let minutes = 0; minutes < 60; minutes += 30) {
+          const timeString = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+          // 빈 경우 예약 가능 상태만 할당
+          rooms[i].workTime[timeString] = {
+            id: null,
+            isOpenForBooking: true,
+          };
+        }
+      }
+      for (const schedules of schedulesOfRooms[i].durationSchedules) {
+        const repeatDates = schedules.repeatDate.split(',');
+        for (let j = 0; j < repeatDates.length; j++) {
+          // 반복 요일이 겹치는 경우 예약 불가능 상태로 변경
+          if (getRangeSchedulesDTO.repeatDate.includes(repeatDates[j])) {
+            const [hour, minutes] = schedules.startTime.split(':').map(Number);
+            const timeString = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+            if (rooms[i].workTime[timeString] !== undefined && !rooms[i].workTime[timeString].id) {
+              rooms[i].workTime[timeString].id = schedules.durationLesson.id;
+              rooms[i].workTime[timeString].isOpenForBooking = false;
+            }
+          }
+          break;
+        }
+      }
+
+      for (const schedules of schedulesOfRooms[i].sessionSchedules) {
+        if (getRangeSchedulesDTO.repeatDate.includes(this.dateHelper.extractDayName(schedules.sessionDate))) {
+          const [hour, minutes] = schedules.startTime.split(':').map(Number);
+          const timeString = `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+          if (rooms[i].workTime[timeString] !== undefined && !rooms[i].workTime[timeString].id) {
+            rooms[i].workTime[timeString] = {
+              id: schedules.sessionRegistration.sessionLesson.id,
+              isOpenForBooking: false,
+            };
+          }
+        }
+      }
+    }
+    return rooms;
+  }
 }

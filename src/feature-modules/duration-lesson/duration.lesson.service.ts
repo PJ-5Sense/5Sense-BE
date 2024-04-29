@@ -57,11 +57,4 @@ export class DurationLessonService {
   async closeLesson(lessonId: number, centerId: number) {
     await this.durationLessonRepository.closeLesson(lessonId, centerId);
   }
-
-  private formatLessonDurationDates(start: Date, end: Date) {
-    const startDate = `${start.getFullYear()}.` + `${start.getMonth() + 1}.` + `${start.getDate()}`;
-    const endDate = `${end.getFullYear()}.` + `${end.getMonth() + 1}.` + `${end.getDate()}`;
-
-    return startDate + ' ~ ' + endDate;
-  }
 }

@@ -8,6 +8,7 @@ import {
   SwaggerCreateLessonRoom,
   SwaggerDeleteLessonRoom,
   SwaggerGetDailyLessonRoomSchedule,
+  SwaggerGetRangeLessonRoomScheduleWithRange,
   SwaggerUpdateLessonRoom,
 } from 'src/swagger/lesson-room.swagger';
 import { GetDailySchedulesDTO } from './dto/request/get-daily-schedules.dto';
@@ -70,6 +71,7 @@ export class LessonRoomController {
     };
   }
 
+  @SwaggerGetRangeLessonRoomScheduleWithRange()
   @Get('range')
   async getSchedulesWithinRange(
     @Query() getRangeSchedulesDTO: GetRangeSchedulesDTO,
@@ -77,7 +79,7 @@ export class LessonRoomController {
   ) {
     return {
       success: true,
-      message: 'Successfully getting schedules within range',
+      message: 'Successfully getting schedules with in range',
       data: await this.lessonRoomService.getSchedulesWithinRange(getRangeSchedulesDTO, jwtPayload),
     };
   }

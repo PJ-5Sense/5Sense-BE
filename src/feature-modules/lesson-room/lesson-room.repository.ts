@@ -46,7 +46,7 @@ export class LessonRoomRepository {
         startDate,
         endDate,
       }) // SLS = sessionSchedules(Session Lesson Schedule)
-      .addSelect(['SLS.id', 'SLS.startTime'])
+      .addSelect(['SLS.id', 'SLS.startTime', 'SLS.sessionDate'])
       .leftJoin('SLS.sessionRegistration', 'SLR')
       .addSelect(['SLR.id'])
       .leftJoin('SLR.sessionLesson', 'SL')
