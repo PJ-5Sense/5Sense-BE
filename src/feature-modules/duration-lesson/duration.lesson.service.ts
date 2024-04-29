@@ -46,6 +46,11 @@ export class DurationLessonService {
 
   async updateLesson(updateDurationLessonDTO: UpdateDurationLessonDTO, lessonId: number, centerId: number) {
     const { schedules, category, ...duration } = updateDurationLessonDTO;
+
+    if (!category.id) {
+      category.id = await this.lessonCategoryService.processEtceteraCategory(category.name);
+    }
+
     await this.durationLessonRepository.update(lessonId, { ...duration, categoryId: category.id, centerId }, schedules);
   }
 
