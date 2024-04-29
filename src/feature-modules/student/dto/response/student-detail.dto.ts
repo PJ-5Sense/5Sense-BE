@@ -36,9 +36,6 @@ export class ResponseStudentDetailDTO {
     this.name = student.name;
     this.phone = student.phone;
     this.particulars = student.particulars;
-    // 결제 상태 -> duration, session 정보
-    // duration에서 스케쥴 정보
-    // session lesson -> registration -> schedules 갯수
     this.durationLessons = [];
     this.sessionLessons = [];
 
@@ -56,6 +53,7 @@ export class ResponseStudentDetailDTO {
               startTime: schedule.startTime,
               endTime: schedule.endTime,
               repeatDate: schedule.repeatDate,
+              room: schedule.lessonRoom.name,
             };
           }),
         };
@@ -64,13 +62,25 @@ export class ResponseStudentDetailDTO {
       }
 
       if (student.billingPayments[i].sessionLesson) {
+        const restOfSessions =
+          student.billingPayments[i].sessionLesson.totalSessions -
+          student.billingPayments[i].sessionLesson.sessionRegistrations[0].sessionSchedules.length;
+
         const session = {
           id: student.billingPayments[i].sessionLesson.id,
           name: student.billingPayments[i].sessionLesson.name,
-          totalSessions: student.billingPayments[i].sessionLesson.totalSessions,
           paymentStatus: student.billingPayments[i].paymentStatus,
-          sessionCount: student.billingPayments[i].sessionLesson.sessionRegistrations[0].sessionSchedules.length,
+          schedules: student.billingPayments[i].sessionLesson.sessionRegistrations[0].sessionSchedules.map(schedule => {
+            return {
+              sessionDate: schedule.sessionDate,
+              startTime: schedule.startTime,
+              endTime: schedule.endTime,
+              room: schedule.lessonRoom.name,
+              restOfSessions,
+            };
+          }),
         };
+
         this.sessionLessons.push(session);
       }
     }
