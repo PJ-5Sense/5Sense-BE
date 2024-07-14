@@ -25,14 +25,20 @@ export class ResponseRoomScheduleRangeDTO {
       '13:00': {
         id: 1,
         isOpenForBooking: false,
+        type: 'duration',
+        lessonTime: 60,
       },
       '14:00': {
         id: 2,
         isOpenForBooking: true,
+        type: 'session',
+        lessonTime: 60,
       },
       '15:00': {
         id: 3,
         isOpenForBooking: true,
+        type: 'session',
+        lessonTime: 60,
       },
     },
 
