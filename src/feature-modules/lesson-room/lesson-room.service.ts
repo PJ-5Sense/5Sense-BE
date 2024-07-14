@@ -134,6 +134,7 @@ export class LessonRoomService {
       new Date(getRangeSchedulesDTO.endDate),
       jwtPayload.centerId,
     );
+    // 요구사항 Lesson Time도 추가해주세요
 
     const startTimeParts = jwtPayload.open.split(':').map(Number);
     const endTimeParts = jwtPayload.close.split(':').map(Number);
@@ -170,6 +171,8 @@ export class LessonRoomService {
             if (rooms[i].workTime[timeString] !== undefined && !rooms[i].workTime[timeString].id) {
               rooms[i].workTime[timeString].id = schedules.durationLesson.id;
               rooms[i].workTime[timeString].isOpenForBooking = false;
+              rooms[i].workTime[timeString].lessonTime = schedules.lessonTime;
+              rooms[i].workTime[timeString].type = LessonType.DURATION;
             }
           }
           break;
@@ -185,6 +188,8 @@ export class LessonRoomService {
             rooms[i].workTime[timeString] = {
               id: schedules.sessionRegistration.sessionLesson.id,
               isOpenForBooking: false,
+              lessonTime: schedules.sessionRegistration.sessionLesson.lessonTime,
+              type: LessonType.SESSION,
             };
           }
         }
