@@ -16,9 +16,13 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
+  // prefix api 추가 08/11
+  app.setGlobalPrefix('api');
+
   if (process.env.NODE_ENV !== 'production') {
     setupSwagger(app);
   }
+
   await app.listen(configService.get('APP.PORT'));
 }
 bootstrap();

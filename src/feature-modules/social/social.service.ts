@@ -14,7 +14,7 @@ export class SocialService {
     const user = await this.socialRepository
       .createQueryBuilder('social')
       .innerJoinAndSelect('social.user', 'user')
-      .innerJoinAndSelect('user.centers', 'centers')
+      .leftJoinAndSelect('user.centers', 'centers')
       .where('social.socialId = :socialId', { socialId })
       .andWhere('social.socialType = :socialType', { socialType })
       .getOne();
