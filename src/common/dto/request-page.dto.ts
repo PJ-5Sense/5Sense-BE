@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsOptional } from 'class-validator';
 
@@ -8,17 +9,15 @@ export enum PaginationDefault {
 }
 
 export class PaginationRequest {
+  @ApiProperty({ description: 'page', example: 1 })
   @Type(() => Number)
   @IsOptional()
   page?: number = PaginationDefault.PAGE_DEFAULT;
 
+  @ApiProperty({ description: 'take', example: 10 })
   @Type(() => Number)
   @IsOptional()
   take?: number = PaginationDefault.TAKE_DEFAULT;
-
-  @Type(() => Number)
-  @IsOptional()
-  cursor?: number = PaginationDefault.SKIP_DEFAULT;
 
   getSkip() {
     return (this.page - 1) * this.take || PaginationDefault.SKIP_DEFAULT;
@@ -33,6 +32,6 @@ export class PaginationRequest {
   }
 
   hasNextPage(total: number): boolean {
-    return total / this.getTake() > 1 ? true : false;
+    return total / (this.page * this.take) > 1 ? true : false;
   }
 }

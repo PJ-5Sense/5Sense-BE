@@ -1,19 +1,25 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EnvironmentModule } from './environment/environment.module';
-import { DatabaseModule } from './database/database.module';
-import { UserModule } from './user/user.module';
-import { CenterModule } from './center/center.module';
-import { TeacherModule } from './teacher/teacher.module';
-import { StudentModule } from './student/student.module';
-import { LessonModule } from './lesson/lesson.module';
-import { AuthModule } from './auth/auth.module';
-import { CategoryModule } from './category/category.module';
-import { AuthGuard } from './common/guards/auth-jwt.guard';
+import { EnvironmentModule } from './common/environment/environment.module';
+import { DatabaseModule } from './common/database/database.module';
+import { UserModule } from './feature-modules/user/user.module';
+import { CenterModule } from './feature-modules/center/center.module';
+import { TeacherModule } from './feature-modules/teacher/teacher.module';
+import { StudentModule } from './feature-modules/student/student.module';
+import { LessonModule } from './feature-modules/combined-lesson/lesson.module';
+import { AuthModule } from './feature-modules/auth/auth.module';
+import { AuthGuard } from './common/guard/auth-jwt.guard';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filter/exception.filter';
 import { LoggerMiddleware } from './common/middleware/http-log.middleware';
+import { LessonRoomModule } from './feature-modules/lesson-room/lesson-room.module';
+import { DurationLessonModule } from './feature-modules/duration-lesson/duration-lesson.module';
+import { SessionLessonModule } from './feature-modules/session-lesson/session-lesson.module';
+import { BillingPaymentModule } from './feature-modules/billing-payment/billing-payment.module';
+import { SessionLessonScheduleModule } from './feature-modules/session-lesson-schedule/lesson-schedule.module';
+import { DurationLessonRegistrationModule } from './feature-modules/duration-lesson-registration/duration-registration.module';
+import { SessionLessonRegistrationModule } from './feature-modules/session-lesson-registration/session-registration.module';
 
 @Module({
   imports: [
@@ -23,10 +29,16 @@ import { LoggerMiddleware } from './common/middleware/http-log.middleware';
     AuthModule,
     CenterModule,
     LessonModule,
+    DurationLessonModule,
+    SessionLessonModule,
+    SessionLessonScheduleModule,
+    DurationLessonRegistrationModule,
+    SessionLessonRegistrationModule,
+    BillingPaymentModule,
     StudentModule,
     TeacherModule,
-    CategoryModule,
     CenterModule,
+    LessonRoomModule,
   ],
   controllers: [AppController],
   providers: [

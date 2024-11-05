@@ -11,7 +11,6 @@ npm install --save @nestjs/jwt
 
 [Faker Docs](https://fakerjs.dev/guide/)
 
-
 # typeorm migration & seed With typeorm-extension package
 
 **[Click Github [typeorm-extension] Click](https://github.com/tada5hi/typeorm-extension)**
@@ -41,7 +40,7 @@ npm run db:drop
 ```
  npm run seed:run --name=<이름>
 
- # EX. npm run seed:create --name=user -> 1700746434744-user
+ # EX. npm run seed:run --name=user -> 1700746434744-user
 ```
 
 ### database migration generate
